@@ -1,0 +1,210 @@
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
+  password  String
+  name      String?
+  role      Role      @default(USER)
+  image     String?
+  bio       String?
+  articles  Article[]
+  comments  Comment[]
+  activityLogs ActivityLog[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+enum Role {
+  USER
+  ADMIN
+  EDITOR
+  REPORTER
+}
+
+model Article {
+  id               Int           @id @default(autoincrement())
+  title            String
+  slug             String        @unique
+  content          String        @db.Text
+  shortDescription String?       @db.Text
+  image            String?
+  
+  // Options
+  isBreaking       Boolean       @default(false)
+  isTrending       Boolean       @default(false)
+  isFeatured       Boolean       @default(false)
+  
+  // SEO
+  videoUrl         String?
+  metaTitle        String?
+  metaDescription  String?
+  metaKeywords     String?
+
+  // Relations
+  category         Category      @relation(fields: [categoryId], references: [id])
+  categoryId       Int
+  author           User          @relation(fields: [authorId], references: [id])
+  authorId         Int
+  tags             Tag[]
+  comments         Comment[]
+  analytics        Analytics[]
+  
+  // Status
+  status           ArticleStatus @default(DRAFT)
+  published        Boolean       @default(false) 
+  publishedAt      DateTime?
+  views            Int           @default(0)
+  
+  // Dynamic fields
+  priority         Priority      @default(NORMAL)
+  scheduledAt      DateTime?
+
+  // specific categories (e.g. film rating, match score)
+  metadata         Json?
+
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+}
+
+enum Priority {
+  HIGH
+  NORMAL
+  LOW
+}
+
+enum ArticleStatus {
+  DRAFT
+  PUBLISHED
+  SCHEDULED
+  ARCHIVED
+}
+
+model Category {
+  id          Int        @id @default(autoincrement())
+  name        String     @unique
+  nameHi      String?    // Hindi name
+  slug        String     @unique
+  description String?
+  image       String?
+  icon        String?    // Icon name for sidebar
+  color       String?    // Color code for styling
+  sortOrder   Int        @default(0)
+  parentId    Int?
+  parent      Category?  @relation("SubCategories", fields: [parentId], references: [id])
+  children    Category[] @relation("SubCategories")
+  articles    Article[]
+  analytics   Analytics[]
+}
+
+model Tag {
+  id       Int       @id @default(autoincrement())
+  name     String    @unique
+  slug     String    @unique
+  articles Article[]
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  content   String
+  article   Article  @relation(fields: [articleId], references: [id])
+  articleId Int
+  user      User?    @relation(fields: [userId], references: [id])
+  userId    Int?
+  name      String?
+  email     String?
+  status    CommentStatus @default(PENDING)
+  isSpam    Boolean @default(false)
+  rejectionReason String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum CommentStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  SPAM
+}
+
+model Media {
+  id        Int      @id @default(autoincrement())
+  filename  String
+  url       String
+  type      String
+  size      Int
+  createdAt DateTime @default(now())
+}
+
+model Advertisement {
+  id        Int        @id @default(autoincrement())
+  name      String
+  position  AdPosition
+  type      AdType
+  content   String     
+  link      String?
+  isActive  Boolean    @default(true)
+  startDate DateTime?
+  endDate   DateTime?
+  clicks    Int        @default(0)
+  views     Int        @default(0)
+}
+
+enum AdPosition {
+  HEADER
+  SIDEBAR
+  FOOTER
+  IN_ARTICLE
+  POPUP
+}
+
+enum AdType {
+  IMAGE
+  CODE
+  ADSENSE
+}
+
+model Analytics {
+  id          Int      @id @default(autoincrement())
+  date        DateTime @default(now())
+  articleId   Int?
+  article     Article? @relation(fields: [articleId], references: [id])
+  categoryId  Int?
+  category    Category? @relation(fields: [categoryId], references: [id])
+  pageViews   Int      @default(0)
+  uniqueVisitors Int   @default(0)
+  avgTimeOnPage Int?   // in seconds
+  source      String?  // direct, social, search, etc.
+  createdAt   DateTime @default(now())
+  
+  @@index([date])
+  @@index([articleId])
+  @@index([categoryId])
+}
+
+
+model ActivityLog {
+  id        Int      @id @default(autoincrement())
+  action    String
+  entity    String
+  entityId  Int?
+  details   String?
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  
+  @@index([userId])
+}
+
+model Setting {
+  id    Int    @id @default(autoincrement())
+  key   String @unique
+  value String
+}

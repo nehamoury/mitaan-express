@@ -1,0 +1,54 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+
+    body.custom-cursor-enabled,
+    body.custom-cursor-enabled a,
+    body.custom-cursor-enabled button,
+    body.custom-cursor-enabled [role="button"],
+    body.custom-cursor-enabled input,
+    body.custom-cursor-enabled select,
+    body.custom-cursor-enabled textarea {
+        cursor: none !important;
+    }
+}
+
+.dark body {
+    background-color: #030712;
+    color: #f8f9fa;
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.dark ::-webkit-scrollbar-track {
+    background: #111827;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 10px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+    background: #374151;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #999;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}

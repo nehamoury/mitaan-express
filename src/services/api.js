@@ -1,0 +1,190 @@
+const API_URL = 'http://localhost:3000/api';
+
+export const fetchCategories = async () => {
+    try {
+        const response = await fetch(`${API_URL}/categories`);
+        if (!response.ok) throw new Error('Failed to fetch categories');
+        return await response.json();
+    } catch (error) {
+        console.error('Error fetching categories:', error);
+        return [];
+    }
+};
+
+export const fetchArticles = async (category = '', search = '', author = '') => {
+    try {
+        const params = new URLSearchParams();
+        if (category) params.append('category', category);
+        if (search) params.append('search', search);
+        if (author) params.append('author', author);
+
+        const url = `${API_URL}/articles?${params.toString()}`;
+        const response = await fetch(url);
+        if (!response.ok) throw new Error('Failed to fetch articles');
+        return await response.json();
+    } catch (error) {
+        console.error('Error fetching articles:', error);
+        return [];
+    }
+};
+
+export const fetchArticleBySlug = async (slug) => {
+    try {
+        const response = await fetch(`${API_URL}/articles/${slug}`);
+        if (!response.ok) throw new Error('Failed to fetch article');
+        return await response.json();
+    } catch (error) {
+        console.error('Error fetching article:', error);
+        return null;
+    }
+};
+
+export const loginUser = async (email, password) => {
+    try {
+        const response = await fetch(`${API_URL}/auth/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password }),
+        });
+
+        if (!response.ok) {
+            const contentType = response.headers.get('content-type');
+            if (contentType && contentType.includes('application/json')) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Login failed');
+            } else {
+                throw new Error(`Login failed: Server returned ${response.status} ${response.statusText}`);
+            }
+        }
+        return await response.json();
+    } catch (error) {
+        console.error('Login error:', error);
+        throw error;
+    }
+};
+
+export const registerUser = async (email, password, name) => {
+    try {
+        const response = await fetch(`${API_URL}/auth/register`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password, name }),
+        });
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Registration failed');
+        }
+        return await response.json();
+    } catch (error) {
+        console.error('Registration error:', error);
+        throw error;
+    }
+};
+
+export const fetchStats = async (token) => {
+    try {
+        const response = await fetch(`${API_URL}/admin/stats`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!response.ok) throw new Error('Failed to fetch stats');
+        return await response.json();
+    } catch (error) {
+        console.error('Stats error:', error);
+        return null;
+    }
+};
+
+export const createArticle = async (token, formData) => {
+    try {
+        const response = await fetch(`${API_URL}/articles`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(formData),
+        });
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.error || 'Failed to create article');
+        }
+        return await response.json();
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const updateArticle = async (token, id, formData) => {
+    try {
+        const response = await fetch(`${API_URL}/articles/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(formData),
+        });
+        if (!response.ok) throw new Error('Failed to update article');
+        return await response.json();
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const deleteArticle = async (token, id) => {
+    try {
+        const response = await fetch(`${API_URL}/articles/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        if (!response.ok) throw new Error('Failed to delete article');
+        return true;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const fetchSettings = async () => {
+    try {
+        const response = await fetch(`${API_URL}/settings`);
+        if (!response.ok) throw new Error('Failed to fetch settings');
+        return await response.json();
+    } catch (error) {
+        console.error('Settings error:', error);
+        return {};
+    }
+};
+
+export const updateSettings = async (token, settings) => {
+    try {
+        const response = await fetch(`${API_URL}/settings`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(settings),
+        });
+        if (!response.ok) throw new Error('Failed to update settings');
+        return await response.json();
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const fetchActivityLogs = async (token, page = 1) => {
+    try {
+        const response = await fetch(`${API_URL}/activity?page=${page}`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!response.ok) throw new Error('Failed to fetch activity logs');
+        return await response.json();
+    } catch (error) {
+        console.error('Activity logs error:', error);
+        return { logs: [], pagination: {} };
+    }
+};
+
+

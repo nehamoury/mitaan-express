@@ -1,0 +1,314 @@
+import React, { useState, useEffect, useMemo } from 'react';
+import {
+    Search, Menu, User, ChevronDown, Globe, X, Moon, Sun,
+    Image as ImageIcon, Video, Info, Mail, Home, TrendingUp,
+    ShieldAlert, Landmark, Users, Trophy, Cpu, BookOpen,
+    PenTool, Film, History, Sparkles, Activity, FileText,
+    Feather, Share2, Instagram, Facebook, Twitter, AlertTriangle,
+    Brain, Palette, Award, Star, Sunrise, Smile, Smartphone, Code
+} from 'lucide-react';
+import { motion, AnimatePresence, useScroll, useSpring } from 'framer-motion';
+import { fetchCategories } from '../services/api';
+
+const Navbar = ({
+    activeCategory,
+    onCategoryChange,
+    theme,
+    toggleTheme,
+    language,
+    toggleLanguage
+}) => {
+    const [isScrolled, setIsScrolled] = useState(false);
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [categories, setCategories] = useState([]);
+
+    const { scrollYProgress } = useScroll();
+    const scaleX = useSpring(scrollYProgress, {
+        stiffness: 100,
+        damping: 30,
+        restDelta: 0.001
+    });
+
+    const iconMap = {
+        'TrendingUp': <TrendingUp size={16} />,
+        'Trophy': <Trophy size={16} />,
+        'Cpu': <Cpu size={16} />,
+        'Feather': <Feather size={16} />,
+        'ShieldAlert': <ShieldAlert size={16} />,
+        'AlertTriangle': <AlertTriangle size={16} />,
+        'Landmark': <Landmark size={16} />,
+        'Users': <Users size={16} />,
+        'Film': <Film size={16} />,
+        'History': <History size={16} />,
+        'Clock': <History size={16} />,
+        'Activity': <Activity size={16} />,
+        'Newspaper': <FileText size={16} />,
+        'PenTool': <PenTool size={16} />,
+        'FileText': <FileText size={16} />,
+        'Brain': <Brain size={16} />,
+        'BookOpen': <BookOpen size={16} />,
+        'Search': <Search size={16} />,
+        'Smile': <Smile size={16} />,
+        'Palette': <Palette size={16} />,
+        'Award': <Award size={16} />,
+        'Star': <Star size={16} />,
+        'Sunrise': <Sunrise size={16} />,
+        'Heart': <Activity size={16} />,
+        'Smartphone': <Smartphone size={16} />,
+        'Code': <Code size={16} />
+    };
+
+    useEffect(() => {
+        const handleScroll = () => setIsScrolled(window.scrollY > 50);
+        window.addEventListener('scroll', handleScroll);
+
+        const loadCategories = async () => {
+            const data = await fetchCategories();
+            setCategories(data || []);
+        };
+        loadCategories();
+
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
+    const categoryTree = useMemo(() => {
+        const tree = [];
+        const lookup = {};
+
+        categories.forEach(cat => {
+            lookup[cat.id] = { ...cat, children: [] };
+        });
+
+        categories.forEach(cat => {
+            if (cat.parentId && lookup[cat.parentId]) {
+                lookup[cat.parentId].children.push(lookup[cat.id]);
+            } else if (!cat.parentId) {
+                tree.push(lookup[cat.id]);
+            }
+        });
+
+        return tree.sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
+    }, [categories]);
+
+    const isNavbarSolid = isScrolled || activeCategory !== 'home';
+
+    const handleLinkClick = (id) => {
+        onCategoryChange(id);
+        setIsMenuOpen(false);
+    };
+
+    const mainPages = [
+        { id: 'home', name: language === 'hi' ? 'मुख्य पृष्ठ' : 'Home', icon: <Home size={17} /> },
+        { id: 'about', name: language === 'hi' ? 'हमारे बारे में' : 'About Us', icon: <Info size={20} /> },
+        { id: 'gallery', name: language === 'hi' ? 'गैलरी' : 'Gallery', icon: <ImageIcon size={20} /> },
+        { id: 'video', name: language === 'hi' ? 'वीडियो' : 'Videos', icon: <Video size={20} /> },
+        { id: 'contact', name: language === 'hi' ? 'संपर्क करें' : 'Contact Us', icon: <Mail size={20} /> },
+        { id: 'blogs', name: language === 'hi' ? 'ब्लॉग' : 'Blog', icon: <FileText size={20} /> },
+    ];
+
+    const socialLinks = [
+        { name: 'Twitter', icon: <Twitter size={18} />, href: '#' },
+        { name: 'Facebook', icon: <Facebook size={18} />, href: '#' },
+        { name: 'Instagram', icon: <Instagram size={18} />, href: '#' },
+    ];
+
+    return (
+        <header className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-700 ${isNavbarSolid
+            ? 'bg-white/95 dark:bg-[#030712]/95 backdrop-blur-2xl shadow-2xl py-2'
+            : 'bg-transparent py-6'
+            }`}>
+            <div className="absolute top-0 left-0 w-full h-[3px] bg-slate-100 dark:bg-white/5 overflow-hidden">
+                <motion.div
+                    className="h-full bg-red-600 origin-left"
+                    style={{ scaleX }}
+                />
+            </div>
+
+            <nav className="max-w-[1600px] mx-auto px-6 lg:px-12 flex items-center justify-between relative">
+                <div className="flex items-center gap-12">
+                    <button
+                        onClick={() => setIsMenuOpen(!isMenuOpen)}
+                        className={`flex items-center gap-4 group transition-colors ${isNavbarSolid ? 'text-slate-900 dark:text-white' : 'text-white'}`}
+                    >
+                        <div className="relative overflow-hidden w-6 h-6 flex flex-col justify-center gap-1.5">
+                            <span className={`h-0.5 w-6 bg-current transition-transform duration-500 ${isMenuOpen ? 'rotate-45 translate-y-2' : ''}`} />
+                            <span className={`h-0.5 w-4 bg-current transition-opacity duration-300 ${isMenuOpen ? 'opacity-0' : ''}`} />
+                            <span className={`h-0.5 w-6 bg-current transition-transform duration-500 ${isMenuOpen ? '-rotate-45 -translate-y-2' : ''}`} />
+                        </div>
+                        <span className="hidden lg:block text-[10px] font-black uppercase tracking-[0.3em] group-hover:text-red-600 transition-colors">
+                            {language === 'hi' ? (isMenuOpen ? 'बंद करें' : 'एक्सप्लोर') : (isMenuOpen ? 'Close' : 'Explore')}
+                        </span>
+                    </button>
+                </div>
+
+                <div className="absolute left-1/2 -translate-x-1/2">
+                    <button onClick={() => handleLinkClick('home')} className="group flex items-center gap-2 lg:gap-3">
+                        <div className="w-8 h-8 lg:w-9 lg:h-9 bg-red-600 rounded lg:rounded-lg flex items-center justify-center text-white font-black text-sm lg:text-xl shadow-lg shadow-red-600/30">M</div>
+                        <div className="flex flex-col items-start leading-none">
+                            <h1 className={`text-xl lg:text-2xl font-black tracking-tighter font-serif transition-colors whitespace-nowrap ${isNavbarSolid ? 'text-slate-900 dark:text-white' : 'text-white'
+                                }`}>
+                                MITAAN EXPRESS<span className="text-red-600">.</span>
+                            </h1>
+                        </div>
+                    </button>
+                </div>
+
+                <div className="hidden lg:flex items-center gap-6 lg:gap-10">
+                    <button onClick={toggleLanguage} className={`text-[10px] font-black uppercase tracking-widest px-3 py-1 border rounded-full transition-all ${isNavbarSolid ? 'text-slate-400 border-slate-200 hover:border-red-600 hover:text-red-600' : 'text-white border-white/20 hover:bg-white hover:text-black'}`}>
+                        {language === 'hi' ? 'Hindi' : 'English'}
+                    </button>
+                    <button onClick={toggleTheme} className={`transition-all hover:scale-110 ${isNavbarSolid ? 'text-slate-400 hover:text-red-600' : 'text-white/80'}`}>
+                        {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
+                    </button>
+                    <button
+                        onClick={() => window.location.href = '/login'}
+                        className={`px-4 py-2 rounded-full font-bold text-sm transition-all ${isNavbarSolid ? 'bg-red-600 text-white hover:bg-red-700' : 'bg-white text-slate-900 hover:bg-red-600 hover:text-white'} shadow-lg`}
+                    >
+                        Login
+                    </button>
+                </div>
+            </nav>
+
+            <AnimatePresence>
+                {isMenuOpen && (
+                    <>
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setIsMenuOpen(false)}
+                            className="fixed inset-0 bg-black/70 backdrop-blur-md z-[-1]"
+                        />
+                        <motion.div
+                            initial={{ opacity: 0, y: -20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -20 }}
+                            transition={{ type: 'spring', damping: 30, stiffness: 300 }}
+                            className="absolute top-full left-0 right-0 bg-white dark:bg-[#030712] shadow-2xl border-t border-slate-100 dark:border-white/5 overflow-hidden max-h-[95vh] overflow-y-auto"
+                        >
+                            <div className="max-w-[1600px] mx-auto px-6 lg:px-20 py-12 lg:py-20">
+                                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20">
+                                    {/* Column 1: Directory */}
+                                    <div className="lg:col-span-3 space-y-10">
+                                        <div className="space-y-6">
+                                            <span className="text-[10px] font-black text-red-600 uppercase tracking-[0.4em] mb-4 block opacity-60">
+                                                {language === 'hi' ? 'पोर्टल निर्देशिका' : 'Navigation'}
+                                            </span>
+                                            <div className="flex flex-col gap-4">
+                                                {mainPages.map((p, idx) => (
+                                                    <motion.button
+                                                        key={p.id}
+                                                        initial={{ opacity: 0, x: -20 }}
+                                                        animate={{ opacity: 1, x: 0 }}
+                                                        transition={{ delay: idx * 0.05 }}
+                                                        onClick={() => handleLinkClick(p.id)}
+                                                        className={`group text-3xl font-black font-serif tracking-tighter text-left transition-all relative ${activeCategory === p.id
+                                                            ? 'text-red-600'
+                                                            : 'text-slate-900 dark:text-white hover:text-red-600'
+                                                            }`}
+                                                    >
+                                                        <span className="relative z-10 group-hover:pl-4 transition-all duration-300 inline-block">
+                                                            {p.name}
+                                                        </span>
+                                                    </motion.button>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Column 2: Categories Grid (Hierarchical) */}
+                                    <div className="lg:col-span-6 space-y-10 border-x border-slate-100 dark:border-white/5 px-0 lg:px-12">
+                                        <div className="space-y-8">
+                                            <span className="text-[10px] font-black text-red-600 uppercase tracking-[0.4em] block opacity-60 mb-8">
+                                                {language === 'hi' ? 'विशेष श्रेणियां' : 'Featured Categories'}
+                                            </span>
+
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10">
+                                                {categoryTree.map((parent, pIdx) => (
+                                                    <div key={parent.id} className="space-y-4">
+                                                        <div className="flex items-center gap-3">
+                                                            <div className="w-1.5 h-6 rounded-full" style={{ backgroundColor: parent.color || '#ef4444' }}></div>
+                                                            <h3 className="text-sm font-black uppercase tracking-widest text-slate-900 dark:text-white">
+                                                                {language === 'hi' ? parent.nameHi : parent.name}
+                                                            </h3>
+                                                        </div>
+                                                        <div className="flex flex-col gap-3 pl-4">
+                                                            {parent.children.map((child, cIdx) => (
+                                                                <button
+                                                                    key={child.id}
+                                                                    onClick={() => handleLinkClick(child.slug)}
+                                                                    className={`group flex items-center gap-3 text-xs font-bold transition-all text-left ${activeCategory === child.slug
+                                                                        ? 'text-red-600'
+                                                                        : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                                                                        }`}
+                                                                >
+                                                                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all group-hover:scale-110 ${activeCategory === child.slug ? 'bg-red-600 text-white shadow-lg shadow-red-600/20' : 'bg-slate-50 dark:bg-white/5'
+                                                                        }`}>
+                                                                        {iconMap[child.icon] || <Star size={12} />}
+                                                                    </div>
+                                                                    <span className="group-hover:translate-x-1 transition-transform">
+                                                                        {language === 'hi' ? child.nameHi : child.name}
+                                                                    </span>
+                                                                </button>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Column 3: Social & More */}
+                                    <div className="lg:col-span-3 space-y-12">
+                                        <div className="space-y-8">
+                                            <span className="text-[10px] font-black text-red-600 uppercase tracking-[0.4em] block opacity-60">
+                                                {language === 'hi' ? 'जुड़े रहें' : 'Connect With Us'}
+                                            </span>
+                                            <div className="grid grid-cols-2 gap-4">
+                                                {socialLinks.map(link => (
+                                                    <a
+                                                        key={link.name}
+                                                        href={link.href}
+                                                        className="flex flex-col items-center justify-center p-4 border border-slate-100 dark:border-white/5 rounded-2xl hover:bg-red-600 hover:text-white transition-all group shadow-sm bg-slate-50/50 dark:bg-white/5"
+                                                    >
+                                                        <div className="mb-2 transition-transform group-hover:scale-110">
+                                                            {link.icon}
+                                                        </div>
+                                                        <span className="text-[10px] font-black uppercase tracking-widest">{link.name}</span>
+                                                    </a>
+                                                ))}
+                                            </div>
+                                        </div>
+
+                                        <div className="space-y-6 pt-12 border-t border-slate-100 dark:border-white/5">
+                                            <div className="space-y-2">
+                                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest text-center lg:text-left">
+                                                    {language === 'hi' ? 'सब्सक्राइब करें' : 'Newsletter'}
+                                                </p>
+                                                <p className="text-[11px] text-slate-500 font-medium leading-relaxed text-center lg:text-left">
+                                                    {language === 'hi' ? 'हर सुबह चुनिंदा खबरें सीधे ईमेल पर।' : 'Top stories delivered daily to your inbox.'}
+                                                </p>
+                                            </div>
+                                            <div className="relative group/input">
+                                                <input
+                                                    type="email"
+                                                    placeholder={language === 'hi' ? 'email@example.com' : 'email@example.com'}
+                                                    className="w-full bg-slate-50 dark:bg-white/5 border border-slate-100 dark:border-white/5 rounded-xl px-4 py-4 text-xs font-bold outline-none focus:border-red-600 transition-colors"
+                                                />
+                                                <button className="absolute right-2 top-1/2 -translate-y-1/2 p-2.5 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all shadow-lg shadow-red-600/20">
+                                                    <Share2 size={16} />
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </motion.div>
+                    </>
+                )}
+            </AnimatePresence>
+        </header>
+    );
+};
+
+export default Navbar;

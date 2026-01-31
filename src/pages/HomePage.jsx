@@ -1,0 +1,154 @@
+import React, { useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Zap } from 'lucide-react';
+import HeroSlider from '../components/HeroSlider';
+import ArticleCard from '../components/ArticleCard';
+import PromotionalBanner from '../components/PromotionalBanner';
+import Sidebar from '../components/Sidebar';
+import InDepthSection from '../components/InDepthSection';
+import CreativeShowcase from '../components/CreativeShowcase';
+import VideoGalleryHero from '../components/VideoGalleryHero';
+import MustReadSlider from '../components/MustReadSlider';
+import { useArticles } from '../context/ArticlesContext';
+
+const HomePage = ({ language }) => {
+    const navigate = useNavigate();
+    const { published, breaking, loading } = useArticles();
+
+    // Map articles to component format
+    const homeArticles = published.slice(0, 5).map(a => ({
+        id: a.id,
+        title: a.title,
+        description: a.shortDescription || a.content?.substring(0, 150) + '...' || '',
+        image: a.image || 'https://images.unsplash.com/photo-1476242906366-d8eb64c2f661?auto=format&fit=crop&q=80&w=2000',
+        category: language === 'hi' ? (a.category?.nameHi || a.category?.name) : a.category?.name,
+        author: a.author?.name || 'Mitaan',
+        date: new Date(a.createdAt).toLocaleDateString(),
+        slug: a.slug
+    }));
+
+    const handleArticleClick = (article) => {
+        navigate(`/article/${article.id}`);
+    };
+
+    const handleCategoryChange = (category) => {
+        if (category === 'home') navigate('/');
+        else if (['about', 'contact', 'gallery', 'video', 'poetry', 'blogs'].includes(category)) navigate(`/${category}`);
+        else navigate(`/category/${category}`);
+    };
+
+    return (
+        <>
+            <HeroSlider language={language} />
+
+            <div className="relative z-10 pt-12 md:pt-20">
+                <div className="space-y-24">
+                    {/* Breaking News Ticker (Full Width) */}
+                    <div className="bg-red-600/5 dark:bg-red-600/10 border-y border-red-600/10 py-3 overflow-hidden whitespace-nowrap">
+                        <div className="flex items-center gap-10 animate-marquee-fast">
+                            {breaking.length > 0 ? (
+                                breaking.map((article, i) => (
+                                    <div
+                                        key={article.id}
+                                        className="flex items-center gap-4 cursor-pointer hover:opacity-80 transition-opacity"
+                                        onClick={() => navigate(`/article/${article.id}`)}
+                                    >
+                                        <span className="flex items-center gap-2 text-red-600 font-black text-[10px] uppercase tracking-widest">
+                                            <Zap size={14} fill="currentColor" />
+                                            {language === 'hi' ? 'ब्रेकिंग' : 'BREAKING'}
+                                        </span>
+                                        <p className="text-sm font-bold text-slate-800 dark:text-slate-200 hover:text-red-600 transition-colors">
+                                            {article.title}
+                                        </p>
+                                    </div>
+                                ))
+                            ) : (
+                                // Fallback: Show all recent articles as latest
+                                published.slice(0, 5).map((article, i) => (
+                                    <div
+                                        key={article.id}
+                                        className="flex items-center gap-4 cursor-pointer hover:opacity-80 transition-opacity"
+                                        onClick={() => navigate(`/article/${article.id}`)}
+                                    >
+                                        <span className="flex items-center gap-2 text-red-600 font-black text-[10px] uppercase tracking-widest">
+                                            <Zap size={14} fill="currentColor" />
+                                            {language === 'hi' ? 'ताज़ा ख़बर' : 'LATEST'}
+                                        </span>
+                                        <p className="text-sm font-bold text-slate-800 dark:text-slate-200 hover:text-red-600 transition-colors">
+                                            {article.title}
+                                        </p>
+                                    </div>
+                                ))
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Main Grid: Centered Content */}
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row gap-20">
+                        <div className="flex-1 space-y-24">
+                            <div className="space-y-12">
+                                <h2 className="text-[11px] font-black text-red-600 uppercase tracking-[0.4em]">
+                                    {language === 'hi' ? 'विशेष रिपोर्ट' : 'Top Feature'}
+                                </h2>
+                                {homeArticles.map(article => (
+                                    <div key={article.id} onClick={() => handleArticleClick(article)} className="cursor-pointer">
+                                        <ArticleCard
+                                            article={article}
+                                            language={language}
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                            <div data-aos="fade-up">
+                                <PromotionalBanner language={language} />
+                            </div>
+                        </div>
+                        <div className="lg:w-[420px] shrink-0" data-aos="fade-left">
+                            <Sidebar language={language} />
+                        </div>
+                    </div>
+
+                    {/* In-Depth: Full Width Background, Centered Content */}
+                    <div className="bg-slate-50 dark:bg-gray-900/40 py-24" data-aos="fade-up">
+                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                            <InDepthSection
+                                language={language}
+                                onCategoryChange={handleCategoryChange}
+                                sportsArticles={published.filter(a => a.category?.slug === 'sports')}
+                                economyArticles={published.filter(a => a.category?.slug === 'economic')}
+                                onArticleClick={handleArticleClick}
+                            />
+                        </div>
+                    </div>
+
+                    {/* Creative Showcase: New Animated Component */}
+                    <CreativeShowcase language={language} setActiveCategory={handleCategoryChange} />
+
+                    {/* Video Content: Full Width Background */}
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <VideoGalleryHero language={language} />
+                    </div>
+
+                    {/* MUST READ SECTION: Edge-to-Edge Full Width */}
+                    <MustReadSlider language={language} onArticleClick={handleArticleClick} />
+
+                    <style>{`
+                @keyframes marquee-fast {
+                  0% { transform: translateX(0); }
+                  100% { transform: translateX(-33.33%); }
+                }
+                .animate-marquee-fast {
+                  animation: marquee-fast 30s linear infinite;
+                }
+                .animate-marquee-fast:hover {
+                  animation-play-state: paused;
+                  cursor: pointer;
+                }
+              `}</style>
+                </div>
+            </div>
+        </>
+    );
+};
+
+export default HomePage;
