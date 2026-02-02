@@ -1,19 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { FileText, Trash2, Eye, EyeOff, Copy, Archive, Download, CheckSquare, Square, Search, Filter, Calendar, TrendingUp, Zap } from 'lucide-react';
-import { fetchCategories, fetchArticles as fetchArticlesApi } from '../../services/api';
+import { useAdminArticles, useCategories } from '../../hooks/useQueries';
 import { adminTranslations } from '../../lib/adminTranslations';
 
 const ArticleList = ({ adminLanguage }) => {
     const t = adminTranslations[adminLanguage || 'hi'] || adminTranslations.hi;
-    const [articles, setArticles] = useState([]);
-    const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [statusFilter, setStatusFilter] = useState('ALL');
     const [categoryFilter, setCategoryFilter] = useState('ALL');
-    const [categories, setCategories] = useState([]);
     const [selectedArticles, setSelectedArticles] = useState([]);
-    const [showBulkActions, setShowBulkActions] = useState(false);
     const [langFilter, setLangFilter] = useState('ALL');
     const navigate = useNavigate();
     const { categoryId } = useParams();
@@ -26,38 +22,19 @@ const ArticleList = ({ adminLanguage }) => {
         }
     }, [categoryId]);
 
-    useEffect(() => {
-        const loadData = async () => {
-            setLoading(true);
-            try {
-                const [articlesData, categoriesData] = await Promise.all([
-                    fetchArticlesApi(),
-                    fetchCategories()
-                ]);
-                setArticles(articlesData || []);
-                setCategories(categoriesData || []);
-            } catch (error) {
-                console.error('Failed to load data:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
-        loadData();
-    }, []);
+    // TanStack Query Hooks
+    const {
+        data: articles = [],
+        isLoading: articlesLoading,
+        refetch: refreshArticles
+    } = useAdminArticles();
 
+    const {
+        data: categories = [],
+        isLoading: categoriesLoading
+    } = useCategories();
 
-
-    // Loaders removed in favor of consolidated useEffect
-    // Helper to refresh list if needed
-    const refreshArticles = async () => {
-        setLoading(true);
-        try {
-            const data = await fetchArticlesApi();
-            setArticles(data || []);
-        } finally {
-            setLoading(false);
-        }
-    };
+    const loading = articlesLoading || categoriesLoading;
 
     const handleDelete = async (articleId) => {
         if (!window.confirm('Are you sure you want to delete this article?')) return;

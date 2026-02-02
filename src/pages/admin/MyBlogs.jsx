@@ -1,37 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FileText, Trash2, Edit, Eye, Filter, CheckSquare, Square, Search } from 'lucide-react';
-import { fetchCategories, fetchBlogs, deleteBlog } from '../../services/api';
+import { useAdminBlogs } from '../../hooks/useQueries';
+import { deleteBlog } from '../../services/api';
 import { adminTranslations } from '../../lib/adminTranslations';
 
 const MyBlogs = ({ adminLanguage }) => {
     const t = adminTranslations[adminLanguage || 'hi'] || adminTranslations.hi;
-    const [articles, setArticles] = useState([]);
-    const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [statusFilter, setStatusFilter] = useState('ALL');
     const [selectedArticles, setSelectedArticles] = useState([]);
     const navigate = useNavigate();
     const user = JSON.parse(localStorage.getItem('user') || '{}');
 
-    useEffect(() => {
-        loadData();
-    }, []);
-
-    const loadData = async () => {
-        setLoading(true);
-        try {
-            // Fetch articles filtered by current user's ID
-            if (user.id) {
-                const data = await fetchBlogs('', user.id);
-                setArticles(data || []);
-            }
-        } catch (error) {
-            console.error('Failed to load data:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
+    // TanStack Query Hook
+    const {
+        data: articles = [],
+        isLoading: loading,
+        refetch: loadData
+    } = useAdminBlogs({ author: user.id });
 
     const handleDelete = async (id) => {
         if (!window.confirm('Are you sure you want to delete this blog?')) return;

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { useCategories } from '../../hooks/useQueries';
 import {
     Plus, Edit, Trash2, FolderPlus, FolderTree,
     ChevronDown, ChevronRight, Activity, Newspaper,
@@ -41,8 +42,16 @@ const colors = [
 ];
 
 const Categories = () => {
-    const [categories, setCategories] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const token = localStorage.getItem('token');
+
+    // TanStack Query Hook
+    const {
+        data: categories = [],
+        isLoading: loading,
+        refetch: loadCategories
+    } = useCategories();
+
+    // Local State
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingCategory, setEditingCategory] = useState(null);
     const [formData, setFormData] = useState({
@@ -55,25 +64,6 @@ const Categories = () => {
         color: '#ef4444',
         sortOrder: 0
     });
-
-    const token = localStorage.getItem('token');
-
-    useEffect(() => {
-        loadCategories();
-    }, []);
-
-    const loadCategories = async () => {
-        setLoading(true);
-        try {
-            const response = await fetch('http://localhost:3000/api/categories');
-            const data = await response.json();
-            setCategories(data);
-        } catch (e) {
-            console.error(e);
-        } finally {
-            setLoading(false);
-        }
-    };
 
     const handleOpenModal = (category = null) => {
         if (category) {

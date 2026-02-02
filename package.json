@@ -13,6 +13,8 @@
     "@blocknote/core": "^0.46.2",
     "@blocknote/react": "^0.46.2",
     "@google/genai": "^1.38.0",
+    "@tanstack/react-query": "^5.90.20",
+    "@tanstack/react-query-devtools": "^5.91.3",
     "aos": "^2.3.4",
     "chart.js": "^4.5.1",
     "framer-motion": "^11.18.2",

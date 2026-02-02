@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { fetchStats } from '../../services/api';
+import { useAdminStats } from '../../hooks/useQueries';
 import { BarChart3, TrendingUp, FileText, Activity, Eye, MessageSquare, Users as UsersIcon, Clock, Zap, Globe } from 'lucide-react';
 import { adminTranslations } from '../../lib/adminTranslations';
 import {
@@ -30,37 +30,12 @@ ChartJS.register(
 
 const Dashboard = ({ adminLanguage }) => {
     const t = adminTranslations[adminLanguage || 'hi'] || adminTranslations.hi;
-    const [stats, setStats] = useState(null);
-    const [loading, setLoading] = useState(true);
     const [realtimeViews, setRealtimeViews] = useState(0);
 
+    // TanStack Query Hook
+    const { data: stats, isLoading, error } = useAdminStats();
+
     useEffect(() => {
-        const loadStats = async () => {
-            try {
-                const token = localStorage.getItem('token');
-                if (!token) {
-                    console.error('No token found');
-                    setLoading(false);
-                    return;
-                }
-
-                console.log('Fetching stats...');
-                const data = await fetchStats(token);
-                console.log('Stats received:', data);
-
-                if (data) {
-                    setStats(data);
-                } else {
-                    console.error('No data received');
-                }
-            } catch (error) {
-                console.error('Dashboard load error:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
-        loadStats();
-
         // Simulate real-time views counter
         const interval = setInterval(() => {
             setRealtimeViews(prev => prev + Math.floor(Math.random() * 5));
@@ -69,17 +44,17 @@ const Dashboard = ({ adminLanguage }) => {
         return () => clearInterval(interval);
     }, []);
 
-    if (loading) return <div className="p-8 text-center text-slate-500">{adminLanguage === 'hi' ? 'डैशबोर्ड लोड हो रहा है...' : 'Loading dashboard...'}</div>;
+    if (isLoading) return <div className="p-8 text-center text-slate-500">{adminLanguage === 'hi' ? 'डैशबोर्ड लोड हो रहा है...' : 'Loading dashboard...'}</div>;
 
-    if (!stats) {
+    if (!stats || error) {
         return (
             <div className="space-y-8">
                 <div className="bg-yellow-50 dark:bg-yellow-900/10 border border-yellow-200 dark:border-yellow-900/20 p-6 rounded-2xl">
                     <div className="flex items-center gap-3 mb-2">
-                        <div className="text-yellow-600 dark:text-yellow-400 font-black text-lg">⚠️ Authentication Required</div>
+                        <div className="text-yellow-600 dark:text-yellow-400 font-black text-lg">⚠️ {error ? 'Session Expired' : 'Authentication Required'}</div>
                     </div>
                     <p className="text-slate-700 dark:text-slate-300 mb-4">
-                        Unable to load dashboard stats. Please log out and log in again.
+                        {error ? 'Your session has expired. Please log in again.' : 'Unable to load dashboard stats. Please log out and log in again.'}
                     </p>
                     <div className="flex gap-3">
                         <button

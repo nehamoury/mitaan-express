@@ -1,118 +1,47 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageSquare, Heart, Reply, MoreHorizontal, Send, User, AlertCircle } from 'lucide-react';
+import { MessageSquare, Heart, Reply, MoreHorizontal, Send, User } from 'lucide-react';
+import { usePublicComments } from '../hooks/useQueries';
+import { useCreateComment } from '../hooks/useMutations';
 
 const CommentsSection = ({ articleId, blogId, language }) => {
-    const [comments, setComments] = useState([]);
-    const [loading, setLoading] = useState(true);
     const [newComment, setNewComment] = useState('');
     const [guestName, setGuestName] = useState('');
     const [guestEmail, setGuestEmail] = useState('');
-    const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState(null);
 
-    // Load comments from API
-    useEffect(() => {
-        const loadComments = async () => {
-            try {
-                setLoading(true);
-                const baseUrl = 'http://localhost:3000/api/comments';
-                const url = articleId
-                    ? `${baseUrl}/article/${articleId}`
-                    : `${baseUrl}/blog/${blogId}`;
+    // TanStack Query Hooks
+    const {
+        data: comments = [],
+        isLoading: loading
+    } = usePublicComments({ articleId, blogId });
 
-                const response = await fetch(url);
-                if (response.ok) {
-                    const data = await response.json();
-                    setComments(data);
-                } else {
-                    // If API not available, use default comments
-                    setComments([
-                        {
-                            id: 1,
-                            user: { name: 'Rahul Sharma' },
-                            content: language === 'hi' ? 'बहुत ही जानकारीपूर्ण लेख!' : 'Very informative article!',
-                            createdAt: new Date().toISOString(),
-                            status: 'APPROVED'
-                        }
-                    ]);
-                }
-            } catch (e) {
-                console.error('Failed to load comments', e);
-                // Fallback comments
-                setComments([
-                    {
-                        id: 1,
-                        user: { name: 'Rahul Sharma' },
-                        content: language === 'hi' ? 'बहुत ही जानकारीपूर्ण लेख!' : 'Very informative article!',
-                        createdAt: new Date().toISOString(),
-                        status: 'APPROVED'
-                    }
-                ]);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        if (articleId || blogId) {
-            loadComments();
-        }
-    }, [articleId, blogId, language]);
+    const mutation = useCreateComment();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!newComment.trim()) return;
 
-        setSubmitting(true);
-        setError(null);
-
         try {
-            // Just POST to /api/comments directly with body
-            const response = await fetch('http://localhost:3000/api/comments', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    content: newComment,
-                    articleId: articleId || null,
-                    blogId: blogId || null,
-                    guestName: guestName || 'Guest User',
-                    guestEmail: guestEmail || 'guest@example.com'
-                })
+            await mutation.mutateAsync({
+                content: newComment,
+                articleId: articleId || null,
+                blogId: blogId || null,
+                guestName: guestName || 'Guest User',
+                guestEmail: guestEmail || 'guest@example.com'
             });
 
-            if (response.ok) {
-                const newCommentData = await response.json();
-                setComments([newCommentData, ...comments]);
-                setNewComment('');
-                setGuestName('');
-                setGuestEmail('');
-            } else {
-                // Fallback: Add comment locally
-                const localComment = {
-                    id: Date.now(),
-                    user: { name: guestName || 'Guest User' },
-                    content: newComment,
-                    createdAt: new Date().toISOString(),
-                    status: 'PENDING'
-                };
-                setComments([localComment, ...comments]);
-                setNewComment('');
-            }
-        } catch (e) {
-            // Fallback: Add comment locally
-            const localComment = {
-                id: Date.now(),
-                user: { name: guestName || 'Guest User' },
-                content: newComment,
-                createdAt: new Date().toISOString(),
-                status: 'PENDING'
-            };
-            setComments([localComment, ...comments]);
             setNewComment('');
-        } finally {
-            setSubmitting(false);
+            setGuestName('');
+            setGuestEmail('');
+            setError(null);
+        } catch (e) {
+            console.error("Submission error:", e);
+            setError("Failed to post comment. Please try again.");
         }
     };
+
+    const submitting = mutation.isPending;
 
     const formatTime = (date) => {
         const diff = Date.now() - new Date(date).getTime();
@@ -143,7 +72,6 @@ const CommentsSection = ({ articleId, blogId, language }) => {
 
             {/* Comment Input */}
             <form onSubmit={handleSubmit} className="mb-16 space-y-4">
-                {/* Guest Info */}
                 <div className="flex gap-4">
                     <input
                         type="text"
@@ -184,14 +112,12 @@ const CommentsSection = ({ articleId, blogId, language }) => {
                 </div>
             </form>
 
-            {/* Loading State */}
             {loading && (
                 <div className="flex items-center justify-center py-12">
                     <div className="animate-spin w-8 h-8 border-4 border-red-600 border-t-transparent rounded-full"></div>
                 </div>
             )}
 
-            {/* Comments List */}
             {!loading && (
                 <div className="space-y-12">
                     <AnimatePresence initial={false}>

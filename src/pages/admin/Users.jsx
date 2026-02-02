@@ -1,34 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { Users as UsersIcon, Edit, Trash2, Shield, UserCheck, UserX, Search } from 'lucide-react';
+import React, { useState } from 'react';
+import { Search, Trash2, Users as UsersIcon } from 'lucide-react';
+import { useUsers } from '../../hooks/useQueries';
 
 const Users = () => {
-    const [users, setUsers] = useState([]);
-    const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [roleFilter, setRoleFilter] = useState('ALL');
 
-    useEffect(() => {
-        loadUsers();
-    }, []);
-
-    const loadUsers = async () => {
-        setLoading(true);
-        try {
-            const token = localStorage.getItem('token');
-            const response = await fetch('http://localhost:3000/api/admin/users', {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                setUsers(data);
-            }
-        } catch (error) {
-            console.error('Failed to load users:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
+    // TanStack Query Hook
+    const {
+        data: users = [],
+        isLoading: loading,
+        refetch: loadUsers
+    } = useUsers();
 
     const handleRoleChange = async (userId, newRole) => {
         try {
@@ -141,8 +124,8 @@ const Users = () => {
                             key={role}
                             onClick={() => setRoleFilter(role)}
                             className={`px-4 py-2 rounded-lg font-bold text-sm transition-all ${roleFilter === role
-                                    ? 'bg-red-600 text-white shadow-lg'
-                                    : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
+                                ? 'bg-red-600 text-white shadow-lg'
+                                : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
                                 }`}
                         >
                             {role}

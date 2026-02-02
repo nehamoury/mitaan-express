@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { fetchSettings, updateSettings } from '../../services/api';
+import { useSettings } from '../../hooks/useQueries';
+import { useUpdateSettings } from '../../hooks/useMutations';
 import { Save, Globe, Phone, Mail, MapPin, Facebook, Twitter, Instagram, Youtube, Image, Type } from 'lucide-react';
 
 const Settings = () => {
-    const [loading, setLoading] = useState(false);
-    const [initialLoading, setInitialLoading] = useState(true);
+    // TanStack Query Hooks
+    const { data: initialData, isLoading: initialLoading } = useSettings();
+    const updateMutation = useUpdateSettings();
+
     const [settings, setSettings] = useState({
         site_title: '',
         site_description: '',
@@ -20,17 +23,10 @@ const Settings = () => {
     });
 
     useEffect(() => {
-        loadSettings();
-    }, []);
-
-    const loadSettings = async () => {
-        setInitialLoading(true);
-        const data = await fetchSettings();
-        if (data) {
-            setSettings(prev => ({ ...prev, ...data }));
+        if (initialData) {
+            setSettings(prev => ({ ...prev, ...initialData }));
         }
-        setInitialLoading(false);
-    };
+    }, [initialData]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -39,17 +35,15 @@ const Settings = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setLoading(true);
-        const token = localStorage.getItem('token');
         try {
-            await updateSettings(token, settings);
+            await updateMutation.mutateAsync(settings);
             alert('Settings updated successfully!');
         } catch (error) {
             alert('Failed to update settings: ' + error.message);
-        } finally {
-            setLoading(false);
         }
     };
+
+    const loading = updateMutation.isPending;
 
     if (initialLoading) return <div className="p-8 text-center text-slate-500">Loading settings...</div>;
 
@@ -74,7 +68,7 @@ const Settings = () => {
                 {/* General Settings */}
                 <div className="space-y-6">
                     <div className="bg-white dark:bg-slate-800 p-8 rounded-3xl border border-slate-100 dark:border-white/5 shadow-sm space-y-6">
-                        <h3 className="flex items-center gap-2 font-bold text-lg text-slate-900 dark:text-white">
+                        <h3 className="flex items-center gap-2 font-bold i text-lg text-slate-900 dark:text-white">
                             <Globe className="text-red-500" /> General Info
                         </h3>
 

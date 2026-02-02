@@ -42,44 +42,45 @@ const HomePage = ({ language }) => {
             <HeroSlider language={language} />
 
             <div className="relative z-10 pt-12 md:pt-20">
-                <div className="space-y-24">
+                <div className="space-y-24 pb-32">
                     {/* Breaking News Ticker (Full Width) */}
-                    <div className="bg-red-600/5 dark:bg-red-600/10 border-y border-red-600/10 py-3 overflow-hidden whitespace-nowrap">
-                        <div className="flex items-center gap-10 animate-marquee-fast">
-                            {breaking.length > 0 ? (
-                                breaking.map((article, i) => (
+                    <div className="bg-red-600/5 dark:bg-red-600/10 border-y border-red-600/10 py-3 overflow-hidden whitespace-nowrap group">
+                        <div className="flex items-center gap-10 animate-marquee-infinite w-max">
+                            <div className="flex items-center gap-10 shrink-0 pr-10">
+                                {(breaking.length > 0 ? breaking : published.slice(0, 5)).map((article, i) => (
                                     <div
-                                        key={article.id}
+                                        key={`${article.id}-1`}
                                         className="flex items-center gap-4 cursor-pointer hover:opacity-80 transition-opacity"
                                         onClick={() => navigate(`/article/${article.id}`)}
                                     >
                                         <span className="flex items-center gap-2 text-red-600 font-black text-[10px] uppercase tracking-widest">
                                             <Zap size={14} fill="currentColor" />
-                                            {language === 'hi' ? 'ब्रेकिंग' : 'BREAKING'}
+                                            {language === 'hi' ? (breaking.length > 0 ? 'ब्रेकिंग' : 'ताज़ा ख़बर') : (breaking.length > 0 ? 'BREAKING' : 'LATEST')}
                                         </span>
                                         <p className="text-sm font-bold text-slate-800 dark:text-slate-200 hover:text-red-600 transition-colors">
                                             {article.title}
                                         </p>
                                     </div>
-                                ))
-                            ) : (
-                                // Fallback: Show all recent articles as latest
-                                published.slice(0, 5).map((article, i) => (
+                                ))}
+                            </div>
+                            {/* Duplicate for seamless loop */}
+                            <div className="flex items-center gap-10 shrink-0 pr-10">
+                                {(breaking.length > 0 ? breaking : published.slice(0, 5)).map((article, i) => (
                                     <div
-                                        key={article.id}
+                                        key={`${article.id}-2`}
                                         className="flex items-center gap-4 cursor-pointer hover:opacity-80 transition-opacity"
                                         onClick={() => navigate(`/article/${article.id}`)}
                                     >
                                         <span className="flex items-center gap-2 text-red-600 font-black text-[10px] uppercase tracking-widest">
                                             <Zap size={14} fill="currentColor" />
-                                            {language === 'hi' ? 'ताज़ा ख़बर' : 'LATEST'}
+                                            {language === 'hi' ? (breaking.length > 0 ? 'ब्रेकिंग' : 'ताज़ा ख़बर') : (breaking.length > 0 ? 'BREAKING' : 'LATEST')}
                                         </span>
                                         <p className="text-sm font-bold text-slate-800 dark:text-slate-200 hover:text-red-600 transition-colors">
                                             {article.title}
                                         </p>
                                     </div>
-                                ))
-                            )}
+                                ))}
+                            </div>
                         </div>
                     </div>
 
@@ -133,16 +134,15 @@ const HomePage = ({ language }) => {
                     <MustReadSlider language={language} onArticleClick={handleArticleClick} />
 
                     <style>{`
-                @keyframes marquee-fast {
+                @keyframes marquee-infinite {
                   0% { transform: translateX(0); }
-                  100% { transform: translateX(-33.33%); }
+                  100% { transform: translateX(-50%); }
                 }
-                .animate-marquee-fast {
-                  animation: marquee-fast 30s linear infinite;
+                .animate-marquee-infinite {
+                  animation: marquee-infinite 40s linear infinite;
                 }
-                .animate-marquee-fast:hover {
+                .group:hover .animate-marquee-infinite {
                   animation-play-state: paused;
-                  cursor: pointer;
                 }
               `}</style>
                 </div>

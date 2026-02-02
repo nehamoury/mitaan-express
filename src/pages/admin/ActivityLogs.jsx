@@ -1,30 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import { fetchActivityLogs } from '../../services/api';
-import { Activity, Clock, User, Filter, RefreshCw, ChevronLeft, ChevronRight } from 'lucide-react';
+import React, { useState } from 'react';
+import { RefreshCw, User, Clock, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useActivityLogs } from '../../hooks/useQueries';
 
 const ActivityLogs = () => {
-    const [logs, setLogs] = useState([]);
-    const [pagination, setPagination] = useState({ page: 1, total: 0, pages: 1 });
-    const [loading, setLoading] = useState(true);
+    const [currentPage, setCurrentPage] = useState(1);
 
-    useEffect(() => {
-        loadLogs(1);
-    }, []);
+    // TanStack Query Hook
+    const {
+        data,
+        isLoading: loading,
+        refetch: loadLogs
+    } = useActivityLogs(currentPage);
 
-    const loadLogs = async (page) => {
-        setLoading(true);
-        try {
-            const token = localStorage.getItem('token');
-            const data = await fetchActivityLogs(token, page);
-            if (data && data.logs) {
-                setLogs(data.logs);
-                setPagination(data.pagination);
-            }
-        } catch (error) {
-            console.error(error);
-        } finally {
-            setLoading(false);
-        }
+    const logs = data?.logs || [];
+    const pagination = data?.pagination || { page: 1, total: 0, pages: 1 };
+
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
     };
 
     const getActionColor = (action) => {
@@ -42,7 +34,7 @@ const ActivityLogs = () => {
                     <p className="text-sm text-slate-500 dark:text-slate-400">Track all admin actions and system events.</p>
                 </div>
                 <button
-                    onClick={() => loadLogs(pagination.page)}
+                    onClick={() => loadLogs()}
                     className="p-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/10 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
                 >
                     <RefreshCw size={18} className={loading ? 'animate-spin' : ''} />
@@ -117,14 +109,14 @@ const ActivityLogs = () => {
                     </span>
                     <div className="flex gap-2">
                         <button
-                            onClick={() => loadLogs(pagination.page - 1)}
+                            onClick={() => handlePageChange(pagination.page - 1)}
                             disabled={pagination.page <= 1}
                             className="p-2 border border-slate-200 dark:border-white/10 rounded-lg disabled:opacity-50 hover:bg-slate-50 dark:hover:bg-slate-800"
                         >
                             <ChevronLeft size={18} />
                         </button>
                         <button
-                            onClick={() => loadLogs(pagination.page + 1)}
+                            onClick={() => handlePageChange(pagination.page + 1)}
                             disabled={pagination.page >= pagination.pages}
                             className="p-2 border border-slate-200 dark:border-white/10 rounded-lg disabled:opacity-50 hover:bg-slate-50 dark:hover:bg-slate-800"
                         >

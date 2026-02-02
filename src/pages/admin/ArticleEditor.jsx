@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useParams, useLocation } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import { ArrowLeft, Save, Type, Globe, Tag, Zap, TrendingUp, Eye, Calendar, Image as ImageIcon, Upload } from 'lucide-react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import { fetchCategories, fetchArticleBySlug, createArticle, updateArticle } from '../../services/api';
-import { Save, ArrowLeft, Image as ImageIcon, Tag, Globe, Type, Calendar, Eye, Clock, Zap, TrendingUp, Upload } from 'lucide-react';
+import { useCategories, useArticle } from '../../hooks/useQueries';
+import { createArticle, updateArticle } from '../../services/api';
 import { adminTranslations } from '../../lib/adminTranslations';
 
 const ArticleEditor = ({ adminLanguage }) => {
@@ -15,8 +16,11 @@ const ArticleEditor = ({ adminLanguage }) => {
     const defaultCategoryId = queryParams.get('categoryId');
 
     const [loading, setLoading] = useState(false);
-    const [categories, setCategories] = useState([]);
     const [activeTab, setActiveTab] = useState('content'); // content, seo, settings
+
+    // TanStack Query Hooks
+    const { data: categories = [] } = useCategories();
+    const { data: article, isLoading: articleLoading } = useArticle(id);
 
     const [formData, setFormData] = useState({
         title: '',
@@ -43,43 +47,32 @@ const ArticleEditor = ({ adminLanguage }) => {
     const [articleId, setArticleId] = useState(null); // Store actual database ID
 
     useEffect(() => {
-        const loadInitData = async () => {
-            const cats = await fetchCategories();
-            setCategories(cats);
-
-            if (id) {
-                const token = localStorage.getItem('token');
-                const article = await fetchArticleBySlug(id, token);
-                if (article) {
-                    setArticleId(article.id); // Store the actual numeric ID
-                    setFormData({
-                        title: article.title || '',
-                        slug: article.slug || '',
-                        content: article.content || '',
-                        excerpt: article.shortDescription || article.excerpt || '',
-                        image: article.image || '',
-                        videoUrl: article.videoUrl || '',
-                        categoryId: article.categoryId || '',
-                        categoryId: article.categoryId || '',
-                        status: article.status || 'DRAFT',
-                        language: article.language || 'en',
-                        isBreaking: article.isBreaking || false,
-                        isTrending: article.isTrending || false,
-                        isFeatured: article.isFeatured || false,
-                        tags: article.tags?.map(t => t.name).join(', ') || '',
-                        metaTitle: article.metaTitle || '',
-                        metaDescription: article.metaDescription || '',
-                        metaKeywords: article.metaKeywords || '',
-                        scheduledAt: article.scheduledAt || '',
-                        priority: article.priority || 'NORMAL',
-                    });
-                }
-            } else if (defaultCategoryId) {
-                setFormData(prev => ({ ...prev, categoryId: defaultCategoryId }));
-            }
-        };
-        loadInitData();
-    }, [id, defaultCategoryId]);
+        if (article) {
+            setArticleId(article.id);
+            setFormData({
+                title: article.title || '',
+                slug: article.slug || '',
+                content: article.content || '',
+                excerpt: article.shortDescription || article.excerpt || '',
+                image: article.image || '',
+                videoUrl: article.videoUrl || '',
+                categoryId: article.categoryId?.toString() || '',
+                status: article.status || 'DRAFT',
+                language: article.language || 'en',
+                isBreaking: article.isBreaking || false,
+                isTrending: article.isTrending || false,
+                isFeatured: article.isFeatured || false,
+                tags: article.tags?.map(t => t.name).join(', ') || '',
+                metaTitle: article.metaTitle || '',
+                metaDescription: article.metaDescription || '',
+                metaKeywords: article.metaKeywords || '',
+                scheduledAt: article.scheduledAt || '',
+                priority: article.priority || 'NORMAL',
+            });
+        } else if (defaultCategoryId && !id) {
+            setFormData(prev => ({ ...prev, categoryId: defaultCategoryId }));
+        }
+    }, [article, defaultCategoryId, id]);
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;

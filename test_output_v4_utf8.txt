@@ -1,0 +1,577 @@
+﻿
+> mitaan-express@0.0.0 test
+> vitest --run
+
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90mD:/mitaan/mitaan-express[39m
+
+node.exe : [90mstderr[2m 
+| src/services/api.test.js
+[2m > 
+[22m[2mloginUser[2m > 
+[22m[2mhandles 401 JSON 
+error
+At line:1 char:1
++ & "D:\nodejs/node.exe" "D
+:\nodejs/node_modules/npm/b
+in/npm-cli.js" te ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~
+    + CategoryInfo         
+     : NotSpecified: ([9  
+  0mstderr[2m... 401 JS   
+ ON error:String) [], R    
+emoteException
+    + FullyQualifiedErrorI 
+   d : NativeCommandError
+ 
+[22m[39mLogin error: 
+Error: Bad creds
+    at loginUser (D:/mitaan
+/mitaan-express/src/service
+s/api.js:56:23)
+[90m    at 
+processTicksAndRejections (
+node:internal/process/task_
+queues:103:5)[39m
+    at D:/mitaan/mitaan-exp
+ress/src/services/api.test.
+js:29:9
+    at [90mfile:///D:/mita
+an/mitaan-express/[39mnode
+_modules/[4m@vitest/runner
+[24m/dist/index.js:915:20
+
+[90mstderr[2m | src/servi
+ces/api.test.js[2m > 
+[22m[2mloginUser[2m > 
+[22m[2mhandles 500 HTML 
+error (non-JSON)
+[22m[39mLogin error: 
+Error: Login failed: 
+Server returned 500 
+Internal Server Error
+    at loginUser (D:/mitaan
+/mitaan-express/src/service
+s/api.js:58:23)
+[90m    at 
+processTicksAndRejections (
+node:internal/process/task_
+queues:103:5)[39m
+
+ [32mΓ£ô[39m src/services/api.test.js [2m([22m[2m3 tests[22m[2m)[22m[32m 14[2mms[22m[39m
+ [32mΓ£ô[39m src/pages/admin/AdminLogin.test.jsx [2m([22m[2m4 tests[22m[2m)[22m[32m 274[2mms[22m[39m
+[90mstderr[2m | src/tests
+/navbar.test.jsx[2m > 
+[22m[2mNavbar Navigation 
+Tests[2m > 
+[22m[2mrenders Navbar 
+without crashing
+[22m[39mWarning: An 
+update to Navbar inside a 
+test was not wrapped in 
+act(...).
+
+When testing, code that 
+causes React state updates 
+should be wrapped into 
+act(...):
+
+act(() => {
+  /* fire events that 
+update state */
+});
+/* assert on the output */
+
+This ensures that you're 
+testing the behavior the 
+user would see in the 
+browser. Learn more at http
+s://reactjs.org/link/wrap-t
+ests-with-act
+    at Navbar (D:/mitaan/mi
+taan-express/src/components
+/Navbar.jsx:49:3)
+    at Router (file:///D:/m
+itaan/mitaan-express/node_m
+odules/react-router/dist/de
+velopment/chunk-JZWAC4HX.mj
+s:6594:13)
+    at MemoryRouter (file:/
+//D:/mitaan/mitaan-express/
+node_modules/react-router/d
+ist/development/chunk-JZWAC
+4HX.mjs:6510:3)
+    at QueryClientProvider 
+(file:///D:/mitaan/mitaan-e
+xpress/node_modules/@tansta
+ck/react-query/build/modern
+/QueryClientProvider.js:20:
+3)
+
+[90mstderr[2m | src/tests
+/HeroSlider.test.jsx[2m > 
+[22m[2mHeroSlider[2m > 
+[22m[2mshows default 
+content initially
+[22m[39mError fetching 
+categories: TypeError: 
+Cannot read properties of 
+undefined (reading 'ok')
+    at fetchCategories (D:/
+mitaan/mitaan-express/src/s
+ervices/api.js:6:23)
+[90m    at 
+processTicksAndRejections (
+node:internal/process/task_
+queues:103:5)[39m
+
+[90mstderr[2m | src/tests
+/HeroSlider.test.jsx[2m > 
+[22m[2mHeroSlider[2m > 
+[22m[2mhandles fetch 
+error gracefully
+[22m[39mError fetching 
+articles: Error: API Error
+    at D:/mitaan/mitaan-exp
+ress/src/tests/HeroSlider.t
+est.jsx:83:37
+    at [90mfile:///D:/mita
+an/mitaan-express/[39mnode
+_modules/[4m@vitest/runner
+[24m/dist/index.js:145:11
+    at [90mfile:///D:/mita
+an/mitaan-express/[39mnode
+_modules/[4m@vitest/runner
+[24m/dist/index.js:915:26
+    at [90mfile:///D:/mita
+an/mitaan-express/[39mnode
+_modules/[4m@vitest/runner
+[24m/dist/index.js:1243:20
+    at new Promise 
+(<anonymous>)
+    at runWithTimeout [90m
+(file:///D:/mitaan/mitaan-e
+xpress/[39mnode_modules/[
+4m@vitest/runner[24m/dist/
+index.js:1209:10[90m)[39m
+    at [90mfile:///D:/mita
+an/mitaan-express/[39mnode
+_modules/[4m@vitest/runner
+[24m/dist/index.js:1653:37
+    at Traces.$ [90m(file:
+///D:/mitaan/mitaan-express
+/[39mnode_modules/[4mvite
+st[24m/dist/chunks/traces.
+CCmnQaNT.js:142:27[90m)[3
+9m
+    at trace [90m(file:///
+D:/mitaan/mitaan-express/[
+39mnode_modules/[4mvitest
+[24m/dist/chunks/test.B8ej_
+ZHS.js:239:21[90m)[39m
+    at runTest [90m(file:/
+//D:/mitaan/mitaan-express/
+[39mnode_modules/[4m@vite
+st/runner[24m/dist/index.j
+s:1653:12[90m)[39m
+
+ [32mΓ£ô[39m src/tests/HeroSlider.test.jsx [2m([22m[2m3 tests[22m[2m)[22m[32m 149[2mms[22m[39m
+[90mstderr[2m | src/tests
+/navbar.test.jsx[2m > 
+[22m[2mNavbar Navigation 
+Tests[2m > 
+[22m[2mtoggles theme 
+when theme button is 
+clicked
+[22m[39mWarning: An 
+update to Navbar inside a 
+test was not wrapped in 
+act(...).
+
+When testing, code that 
+causes React state updates 
+should be wrapped into 
+act(...):
+
+act(() => {
+  /* fire events that 
+update state */
+});
+/* assert on the output */
+
+This ensures that you're 
+testing the behavior the 
+user would see in the 
+browser. Learn more at http
+s://reactjs.org/link/wrap-t
+ests-with-act
+    at Navbar (D:/mitaan/mi
+taan-express/src/components
+/Navbar.jsx:49:3)
+    at Router (file:///D:/m
+itaan/mitaan-express/node_m
+odules/react-router/dist/de
+velopment/chunk-JZWAC4HX.mj
+s:6594:13)
+    at MemoryRouter (file:/
+//D:/mitaan/mitaan-express/
+node_modules/react-router/d
+ist/development/chunk-JZWAC
+4HX.mjs:6510:3)
+    at QueryClientProvider 
+(file:///D:/mitaan/mitaan-e
+xpress/node_modules/@tansta
+ck/react-query/build/modern
+/QueryClientProvider.js:20:
+3)
+
+[90mstderr[2m | src/tests
+/navbar.test.jsx[2m > 
+[22m[2mNavbar Navigation 
+Tests[2m > 
+[22m[2mtoggles language 
+when language button is 
+clicked
+[22m[39mWarning: An 
+update to Navbar inside a 
+test was not wrapped in 
+act(...).
+
+When testing, code that 
+causes React state updates 
+should be wrapped into 
+act(...):
+
+act(() => {
+  /* fire events that 
+update state */
+});
+/* assert on the output */
+
+This ensures that you're 
+testing the behavior the 
+user would see in the 
+browser. Learn more at http
+s://reactjs.org/link/wrap-t
+ests-with-act
+    at Navbar (D:/mitaan/mi
+taan-express/src/components
+/Navbar.jsx:49:3)
+    at Router (file:///D:/m
+itaan/mitaan-express/node_m
+odules/react-router/dist/de
+velopment/chunk-JZWAC4HX.mj
+s:6594:13)
+    at MemoryRouter (file:/
+//D:/mitaan/mitaan-express/
+node_modules/react-router/d
+ist/development/chunk-JZWAC
+4HX.mjs:6510:3)
+    at QueryClientProvider 
+(file:///D:/mitaan/mitaan-e
+xpress/node_modules/@tansta
+ck/react-query/build/modern
+/QueryClientProvider.js:20:
+3)
+
+[90mstderr[2m | src/tests
+/navbar.test.jsx[2m > 
+[22m[2mNavbar Navigation 
+Tests[2m > 
+[22m[2mdisplays Hindi 
+text when language is set 
+to Hindi
+[22m[39mWarning: An 
+update to Navbar inside a 
+test was not wrapped in 
+act(...).
+
+When testing, code that 
+causes React state updates 
+should be wrapped into 
+act(...):
+
+act(() => {
+  /* fire events that 
+update state */
+});
+/* assert on the output */
+
+This ensures that you're 
+testing the behavior the 
+user would see in the 
+browser. Learn more at http
+s://reactjs.org/link/wrap-t
+ests-with-act
+    at Navbar (D:/mitaan/mi
+taan-express/src/components
+/Navbar.jsx:49:3)
+    at Router (file:///D:/m
+itaan/mitaan-express/node_m
+odules/react-router/dist/de
+velopment/chunk-JZWAC4HX.mj
+s:6594:13)
+    at MemoryRouter (file:/
+//D:/mitaan/mitaan-express/
+node_modules/react-router/d
+ist/development/chunk-JZWAC
+4HX.mjs:6510:3)
+    at QueryClientProvider 
+(file:///D:/mitaan/mitaan-e
+xpress/node_modules/@tansta
+ck/react-query/build/modern
+/QueryClientProvider.js:20:
+3)
+
+[90mstderr[2m | src/tests
+/navbar.test.jsx[2m > 
+[22m[2mNavbar Navigation 
+Tests[2m > 
+[22m[2mhighlights active 
+category
+[22m[39mWarning: An 
+update to Navbar inside a 
+test was not wrapped in 
+act(...).
+
+When testing, code that 
+causes React state updates 
+should be wrapped into 
+act(...):
+
+act(() => {
+  /* fire events that 
+update state */
+});
+/* assert on the output */
+
+This ensures that you're 
+testing the behavior the 
+user would see in the 
+browser. Learn more at http
+s://reactjs.org/link/wrap-t
+ests-with-act
+    at Navbar (D:/mitaan/mi
+taan-express/src/components
+/Navbar.jsx:49:3)
+    at Router (file:///D:/m
+itaan/mitaan-express/node_m
+odules/react-router/dist/de
+velopment/chunk-JZWAC4HX.mj
+s:6594:13)
+    at MemoryRouter (file:/
+//D:/mitaan/mitaan-express/
+node_modules/react-router/d
+ist/development/chunk-JZWAC
+4HX.mjs:6510:3)
+    at QueryClientProvider 
+(file:///D:/mitaan/mitaan-e
+xpress/node_modules/@tansta
+ck/react-query/build/modern
+/QueryClientProvider.js:20:
+3)
+
+ [32mΓ£ô[39m src/tests/navbar.test.jsx [2m([22m[2m9 tests[22m[2m)[22m[33m 408[2mms[22m[39m
+[90mstderr[2m | src/tests
+/smoke.test.jsx[2m > 
+[22m[2mProject Smoke 
+Tests[2m > 
+[22m[2mrenders 404 for 
+unknown route
+[22m[39mNo routes 
+matched location 
+"/unknown-route-xyz" 
+
+ [31mΓ¥»[39m src/tests/smoke.test.jsx [2m([22m[2m6 tests[22m[2m | [22m[31m4 failed[39m[2m)[22m[33m 20772[2mms[22m[39m
+     [32mΓ£ô[39m renders HomePage without crashing[32m 126[2mms[22m[39m
+[31m     [31m├ù[31m renders AboutPage without crashing[39m[33m 5025[2mms[22m[39m
+[31m     [31m├ù[31m renders ContactPage without crashing[39m[33m 5012[2mms[22m[39m
+[31m     [31m├ù[31m renders BlogsPage without crashing[39m[33m 5054[2mms[22m[39m
+[31m     [31m├ù[31m renders LoginPage (Admin Entry) without crashing[39m[33m 5014[2mms[22m[39m
+     [33m[2mΓ£ô[22m[39m renders 404 for unknown route [33m 539[2mms[22m[39m
+
+[31mΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»
+[39m[1m[41m Failed Tests 
+4 [49m[22m[31mΓÄ»ΓÄ»ΓÄ»Γ
+Ä»ΓÄ»ΓÄ»ΓÄ»[39m
+
+[41m[1m FAIL [22m[49m s
+rc/tests/smoke.test.jsx[2m
+ > [22mProject Smoke 
+Tests[2m > [22mrenders 
+AboutPage without crashing
+[31m[1mError[22m: Test 
+timed out in 5000ms.
+If this is a long-running 
+test, pass a timeout value 
+as the last argument or 
+configure it globally with 
+"testTimeout".[39m
+[36m [2mΓ¥»[22m src/test
+s/smoke.test.jsx:[2m68:5[
+22m[39m
+    [90m 66| [39m    
+})[33m;[39m
+    [90m 67| [39m
+    [90m 68| [39m    
+[34mit[39m([32m'renders 
+AboutPage without 
+crashing'[39m[33m,[39m 
+[35masync[39m () 
+[33m=>[39m {
+    [90m   | [39m    
+[31m^[39m
+    [90m 69| [39m        
+[34mrenderWithProviders[3
+9m([33m<[39m[33mApp[39m
+ [33m/[39m[33m>[39m[33
+m,[39m { route[33m:[39m 
+[32m'/about'[39m 
+})[33m;[39m
+    [90m 70| [39m        
+[35mawait[39m 
+[34mwaitFor[39m(() 
+[33m=>[39m {
+
+[31m[2mΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»
+[1/4]ΓÄ»[22m[39m
+
+[41m[1m FAIL [22m[49m s
+rc/tests/smoke.test.jsx[2m
+ > [22mProject Smoke 
+Tests[2m > [22mrenders 
+ContactPage without 
+crashing
+[31m[1mError[22m: Test 
+timed out in 5000ms.
+If this is a long-running 
+test, pass a timeout value 
+as the last argument or 
+configure it globally with 
+"testTimeout".[39m
+[36m [2mΓ¥»[22m src/test
+s/smoke.test.jsx:[2m78:5[
+22m[39m
+    [90m 76| [39m    
+})[33m;[39m
+    [90m 77| [39m
+    [90m 78| [39m    
+[34mit[39m([32m'renders 
+ContactPage without 
+crashing'[39m[33m,[39m 
+[35masync[39m () 
+[33m=>[39m {
+    [90m   | [39m    
+[31m^[39m
+    [90m 79| [39m        
+[34mrenderWithProviders[3
+9m([33m<[39m[33mApp[39m
+ [33m/[39m[33m>[39m[33
+m,[39m { route[33m:[39m 
+[32m'/contact'[39m 
+})[33m;[39m
+    [90m 80| [39m        
+[35mawait[39m 
+[34mwaitFor[39m(() 
+[33m=>[39m {
+
+[31m[2mΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»
+[2/4]ΓÄ»[22m[39m
+
+[41m[1m FAIL [22m[49m s
+rc/tests/smoke.test.jsx[2m
+ > [22mProject Smoke 
+Tests[2m > [22mrenders 
+BlogsPage without crashing
+[31m[1mError[22m: Test 
+timed out in 5000ms.
+If this is a long-running 
+test, pass a timeout value 
+as the last argument or 
+configure it globally with 
+"testTimeout".[39m
+[36m [2mΓ¥»[22m src/test
+s/smoke.test.jsx:[2m88:5[
+22m[39m
+    [90m 86| [39m    
+})[33m;[39m
+    [90m 87| [39m
+    [90m 88| [39m    
+[34mit[39m([32m'renders 
+BlogsPage without 
+crashing'[39m[33m,[39m 
+[35masync[39m () 
+[33m=>[39m {
+    [90m   | [39m    
+[31m^[39m
+    [90m 89| [39m        
+[34mrenderWithProviders[3
+9m([33m<[39m[33mApp[39m
+ [33m/[39m[33m>[39m[33
+m,[39m { route[33m:[39m 
+[32m'/blogs'[39m 
+})[33m;[39m
+    [90m 90| [39m        
+[35mawait[39m 
+[34mwaitFor[39m(() 
+[33m=>[39m {
+
+[31m[2mΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»
+[3/4]ΓÄ»[22m[39m
+
+[41m[1m FAIL [22m[49m s
+rc/tests/smoke.test.jsx[2m
+ > [22mProject Smoke 
+Tests[2m > [22mrenders 
+LoginPage (Admin Entry) 
+without crashing
+[31m[1mError[22m: Test 
+timed out in 5000ms.
+If this is a long-running 
+test, pass a timeout value 
+as the last argument or 
+configure it globally with 
+"testTimeout".[39m
+[36m [2mΓ¥»[22m src/test
+s/smoke.test.jsx:[2m98:5[
+22m[39m
+    [90m 96| [39m    
+})[33m;[39m
+    [90m 97| [39m
+    [90m 98| [39m    
+it('renders LoginPage 
+(Admin Entry) without 
+crashing', async () =>ΓÇª
+    [90m   | [39m    
+[31m^[39m
+    [90m 99| [39m        
+[34mrenderWithProviders[3
+9m([33m<[39m[33mApp[39m
+ [33m/[39m[33m>[39m[33
+m,[39m { route[33m:[39m 
+[32m'/admin/login'[39m 
+})[33m;[39m
+    [90m100| [39m        
+[35mawait[39m 
+[34mwaitFor[39m(() 
+[33m=>[39m {
+
+[31m[2mΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»
+[4/4]ΓÄ»[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m4 passed[39m[22m[90m (5)[39m
+[2m      Tests [22m [1m[31m4 failed[39m[22m[2m | [22m[1m[32m21 passed[39m[22m[90m (25)[39m
+[2m   Start at [22m 16:34:37
+[2m   Duration [22m 22.75s[2m (transform 1.13s, setup 1.22s, import 1.73s, tests 21.62s, environment 4.66s)[22m
+

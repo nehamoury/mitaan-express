@@ -39,28 +39,12 @@ const blogPosts = [
     }
 ];
 
-const BlogsPage = ({ language }) => {
-    const [articles, setArticles] = useState([]);
-    const [loading, setLoading] = useState(true);
+import { useBlogs } from '../hooks/useQueries';
 
-    useEffect(() => {
-        const loadArticles = async () => {
-            try {
-                // Fetch blogs: search='', author='', lang='' (ALL), status='PUBLISHED'
-                const data = await fetchBlogs('', '', '', 'PUBLISHED');
-                if (data && data.articles) {
-                    setArticles(data.articles);
-                } else if (Array.isArray(data)) {
-                    setArticles(data);
-                }
-            } catch (error) {
-                console.error("Failed to load articles", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-        loadArticles();
-    }, [language]);
+const BlogsPage = ({ language }) => {
+    // TanStack Query Hook
+    const { data, isLoading: loading } = useBlogs({ status: 'PUBLISHED' });
+    const articles = data?.articles || data || [];
 
     if (loading) {
         return (
@@ -76,7 +60,7 @@ const BlogsPage = ({ language }) => {
     // Empty State
     if (articles.length === 0) {
         return (
-            <div className="min-h-screen bg-white dark:bg-[#030712] text-slate-900 dark:text-white pb-20 transition-colors">
+            <div className="min-h-screen bg-white dark:bg-[#030712] text-slate-900 dark:text-white pb-32 transition-colors">
                 {/* Header Section */}
                 <div className="relative bg-slate-50 dark:bg-white/5 border-b border-slate-200 dark:border-white/10 py-20 px-6 lg:px-8 mb-16 overflow-hidden">
                     <div className="absolute top-0 right-0 p-12 opacity-5 pointer-events-none">

@@ -1,44 +1,36 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Upload, Image as ImageIcon, Trash2, Copy, Download, Search, Grid, List, FolderPlus, X, Check } from 'lucide-react';
+import { Upload, Search, Grid, List, Trash2, Check, Download, Copy } from 'lucide-react';
+import { useAdminArticles } from '../../hooks/useQueries';
 
 const MediaLibrary = () => {
     const [media, setMedia] = useState([]);
-    const [loading, setLoading] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [viewMode, setViewMode] = useState('grid'); // grid or list
     const [selectedMedia, setSelectedMedia] = useState([]);
     const [uploading, setUploading] = useState(false);
     const [dragActive, setDragActive] = useState(false);
 
-    useEffect(() => {
-        loadMedia();
-    }, []);
+    // TanStack Query Hook
+    const { data: articles = [], isLoading: loading } = useAdminArticles();
 
-    const loadMedia = async () => {
-        try {
-            const response = await fetch('http://localhost:3000/api/articles');
-            const data = await response.json();
-            const mediaItems = data.filter(a => a.image).map(a => ({
+    useEffect(() => {
+        if (articles.length > 0) {
+            const mediaItems = articles.filter(a => a.image).map(a => ({
                 id: a.id,
                 url: a.image,
                 name: a.title.substring(0, 20) + '...',
                 size: 'Unknown',
                 date: new Date(a.createdAt)
             }));
-
-            if (mediaItems.length > 0) {
-                setMedia(mediaItems);
-            } else {
-                setMedia([
-                    { id: 1, url: 'https://picsum.photos/400/300?random=1', name: 'article-image-1.jpg', size: '245 KB', date: new Date() },
-                    { id: 2, url: 'https://picsum.photos/400/300?random=2', name: 'breaking-news.jpg', size: '189 KB', date: new Date() },
-                    { id: 3, url: 'https://picsum.photos/400/300?random=3', name: 'featured-story.jpg', size: '312 KB', date: new Date() },
-                ]);
-            }
-        } catch (e) {
-            console.error("Failed to load media", e);
+            setMedia(mediaItems);
+        } else if (!loading) {
+            setMedia([
+                { id: 1, url: 'https://picsum.photos/400/300?random=1', name: 'article-image-1.jpg', size: '245 KB', date: new Date() },
+                { id: 2, url: 'https://picsum.photos/400/300?random=2', name: 'breaking-news.jpg', size: '189 KB', date: new Date() },
+                { id: 3, url: 'https://picsum.photos/400/300?random=3', name: 'featured-story.jpg', size: '312 KB', date: new Date() },
+            ]);
         }
-    };
+    }, [articles, loading]);
 
     const handleDrag = useCallback((e) => {
         e.preventDefault();

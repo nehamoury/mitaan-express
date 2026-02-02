@@ -102,7 +102,7 @@ const ArticleDetailPage = ({ language }) => {
             </div>
 
             {/* Article Header */}
-            <article className="max-w-4xl mx-auto px-4 pb-20">
+            <article className="max-w-4xl mx-auto px-4 pb-32">
                 {/* Category */}
                 <Link
                     to={`/category/${article.category?.slug || 'news'}`}

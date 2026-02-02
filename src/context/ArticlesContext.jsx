@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useMemo } from 'react';
+import { useArticles as useArticlesQuery, useCategories as useCategoriesQuery } from '../hooks/useQueries';
 
 const ArticlesContext = createContext();
 
@@ -11,49 +12,40 @@ export const useArticles = () => {
 };
 
 export const ArticlesProvider = ({ children }) => {
-    const [articles, setArticles] = useState([]);
-    const [categories, setCategories] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    // TanStack Query Hooks (renamed to avoid collision)
+    const {
+        data: articles = [],
+        isLoading: articlesLoading,
+        error: articlesError,
+        refetch: refetchArticles
+    } = useArticlesQuery();
 
-    const fetchData = async () => {
-        try {
-            setLoading(true);
-            const [articlesRes, categoriesRes] = await Promise.all([
-                fetch('http://localhost:3000/api/articles'),
-                fetch('http://localhost:3000/api/categories')
-            ]);
+    const {
+        data: categories = [],
+        isLoading: categoriesLoading,
+        error: categoriesError,
+        refetch: refetchCategories
+    } = useCategoriesQuery();
 
-            if (!articlesRes.ok || !categoriesRes.ok) throw new Error('Failed to fetch data');
+    const loading = articlesLoading || categoriesLoading;
+    const error = articlesError || categoriesError;
 
-            const [articlesData, categoriesData] = await Promise.all([
-                articlesRes.json(),
-                categoriesRes.json()
-            ]);
+    // Derived data - memoized for performance
+    const { featured, trending, breaking, videos, published } = useMemo(() => {
+        const publishedBase = articles.filter(a => a.status === 'PUBLISHED');
+        return {
+            published: publishedBase,
+            featured: publishedBase.filter(a => a.isFeatured),
+            trending: publishedBase.filter(a => a.isTrending),
+            breaking: publishedBase.filter(a => a.isBreaking),
+            videos: publishedBase.filter(a => a.videoUrl),
+        };
+    }, [articles]);
 
-            setArticles(articlesData);
-            setCategories(categoriesData);
-            setError(null);
-        } catch (e) {
-            console.error("Failed to fetch data in ArticlesProvider", e);
-            setError(e.message);
-        } finally {
-            setLoading(false);
-        }
+    const refetch = () => {
+        refetchArticles();
+        refetchCategories();
     };
-
-    useEffect(() => {
-        fetchData();
-    }, []);
-
-    // Derived data - computed once, used everywhere
-    const featured = articles.filter(a => a.isFeatured && a.status === 'PUBLISHED');
-    const trending = articles.filter(a => a.isTrending && a.status === 'PUBLISHED');
-    const breaking = articles.filter(a => a.isBreaking && a.status === 'PUBLISHED');
-    const videos = articles.filter(a => a.videoUrl && a.status === 'PUBLISHED');
-    const published = articles.filter(a => a.status === 'PUBLISHED');
-
-    const refetch = () => fetchData();
 
     return (
         <ArticlesContext.Provider value={{

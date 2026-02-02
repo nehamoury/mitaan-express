@@ -1,33 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { TrendingUp, Eye, MessageSquare, FileText, Users, BarChart3, Activity } from 'lucide-react';
+import React, { useState } from 'react';
+import { FileText, Activity, TrendingUp, Eye, MessageSquare, BarChart3 } from 'lucide-react';
+import { useAnalytics } from '../../hooks/useQueries';
 
 const Analytics = () => {
-    const [stats, setStats] = useState(null);
-    const [loading, setLoading] = useState(true);
     const [period, setPeriod] = useState('daily');
 
-    useEffect(() => {
-        loadAnalytics();
-    }, [period]);
-
-    const loadAnalytics = async () => {
-        setLoading(true);
-        try {
-            const token = localStorage.getItem('token');
-            const response = await fetch(`http://localhost:3000/api/analytics/dashboard?period=${period}`, {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                setStats(data);
-            }
-        } catch (error) {
-            console.error('Failed to load analytics:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
+    // TanStack Query Hook
+    const {
+        data: stats,
+        isLoading: loading,
+        refetch: loadAnalytics
+    } = useAnalytics(period);
 
     if (loading) return <div className="p-8 text-center text-slate-500">Loading analytics...</div>;
     if (!stats) return <div className="p-8 text-center text-slate-500">No data available</div>;
@@ -46,8 +29,8 @@ const Analytics = () => {
                             key={p}
                             onClick={() => setPeriod(p)}
                             className={`px-4 py-2 rounded-lg font-bold text-sm capitalize transition-all ${period === p
-                                    ? 'bg-red-600 text-white shadow-lg'
-                                    : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
+                                ? 'bg-red-600 text-white shadow-lg'
+                                : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
                                 }`}
                         >
                             {p}
@@ -128,9 +111,9 @@ const Analytics = () => {
                                 <tr key={article.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">
                                     <td className="px-6 py-4">
                                         <div className={`w-8 h-8 rounded-full flex items-center justify-center font-black text-sm ${index === 0 ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400' :
-                                                index === 1 ? 'bg-slate-100 text-slate-800 dark:bg-slate-700 dark:text-slate-300' :
-                                                    index === 2 ? 'bg-orange-100 text-orange-800 dark:bg-orange-900/20 dark:text-orange-400' :
-                                                        'bg-slate-50 text-slate-600 dark:bg-slate-800 dark:text-slate-400'
+                                            index === 1 ? 'bg-slate-100 text-slate-800 dark:bg-slate-700 dark:text-slate-300' :
+                                                index === 2 ? 'bg-orange-100 text-orange-800 dark:bg-orange-900/20 dark:text-orange-400' :
+                                                    'bg-slate-50 text-slate-600 dark:bg-slate-800 dark:text-slate-400'
                                             }`}>
                                             {index + 1}
                                         </div>

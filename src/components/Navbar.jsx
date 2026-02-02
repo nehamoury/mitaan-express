@@ -190,6 +190,16 @@ const Navbar = ({
                                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20">
                                     {/* Column 1: Directory */}
                                     <div className="lg:col-span-3 space-y-10">
+                                        {/* Mobile Only: Toggles */}
+                                        <div className="lg:hidden flex items-center gap-4 pb-8 border-b border-slate-100 dark:border-white/5">
+                                            <button onClick={toggleLanguage} className="flex-1 text-xs font-black uppercase tracking-widest px-4 py-3 border border-slate-200 dark:border-white/10 rounded-xl transition-all hover:border-red-600 hover:text-red-600">
+                                                {language === 'hi' ? 'भाषा: हिंदी' : 'Lang: English'}
+                                            </button>
+                                            <button onClick={toggleTheme} className="flex-1 flex items-center justify-center gap-2 text-xs font-black uppercase tracking-widest px-4 py-3 border border-slate-200 dark:border-white/10 rounded-xl transition-all hover:border-red-600 hover:text-red-600">
+                                                {theme === 'light' ? <><Moon size={16} /> Dark</> : <><Sun size={16} /> Light</>}
+                                            </button>
+                                        </div>
+
                                         <div className="space-y-6">
                                             <span className="text-[10px] font-black text-red-600 uppercase tracking-[0.4em] mb-4 block opacity-60">
                                                 {language === 'hi' ? 'पोर्टल निर्देशिका' : 'Navigation'}

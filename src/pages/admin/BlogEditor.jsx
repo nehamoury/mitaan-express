@@ -1,37 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import { fetchCategories, fetchBlogBySlug, createBlog, updateBlog } from '../../services/api';
-import { ArrowLeft } from 'lucide-react';
+import { useCategories, useBlog } from '../../hooks/useQueries';
+import { createBlog, updateBlog } from '../../services/api';
 import { adminTranslations } from '../../lib/adminTranslations';
 
-// Error Boundary for debugging
 class ErrorBoundary extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { hasError: false, error: null };
+        this.state = { hasError: false };
     }
-    static getDerivedStateFromError(error) {
-        return { hasError: true, error };
-    }
+    static getDerivedStateFromError(error) { return { hasError: true }; }
+    componentDidCatch(error, errorInfo) { console.error("BlogEditor Error:", error, errorInfo); }
     render() {
-        if (this.state.hasError) {
-            return (
-                <div className="p-8 text-center">
-                    <h2 className="text-xl font-bold text-red-600 mb-2">Something went wrong!</h2>
-                    <p className="text-slate-500 bg-slate-100 p-4 rounded text-left overflow-auto">
-                        {this.state.error?.message}
-                    </p>
-                    <button
-                        onClick={() => window.location.reload()}
-                        className="mt-4 px-4 py-2 bg-blue-600 text-white rounded"
-                    >
-                        Reload Page
-                    </button>
-                </div>
-            );
-        }
+        if (this.state.hasError) return <div className="p-8 text-center text-red-500">Something went wrong in the editor. Please refresh.</div>;
         return this.props.children;
     }
 }
@@ -42,8 +26,11 @@ const BlogEditorContent = ({ adminLanguage }) => {
     const navigate = useNavigate();
 
     const [loading, setLoading] = useState(false);
-    const [categories, setCategories] = useState([]);
     const [articleId, setArticleId] = useState(null);
+
+    // TanStack Query Hooks
+    const { data: categories = [] } = useCategories();
+    const { data: article, isLoading: articleLoading } = useBlog(id);
 
     const [formData, setFormData] = useState({
         title: '',
@@ -58,37 +45,22 @@ const BlogEditorContent = ({ adminLanguage }) => {
     });
 
     useEffect(() => {
-        console.log("BlogEditor Mounting. Params:", { id, adminLanguage });
-        const loadInitData = async () => {
-            try {
-                const cats = await fetchCategories();
-                console.log("Categories loaded:", cats?.length);
-                setCategories(cats || []);
-
-                if (id) {
-                    const token = localStorage.getItem('token');
-                    const article = await fetchBlogBySlug(id, token);
-                    if (article) {
-                        setArticleId(article.id);
-                        setFormData({
-                            title: article.title || '',
-                            slug: article.slug || '',
-                            content: article.content || '',
-                            image: article.image || '',
-                            categoryId: article.categoryId || '',
-                            status: article.status || 'DRAFT',
-                            language: article.language || 'en',
-                            tags: article.tags?.map(t => t.name).join(', ') || '',
-                            excerpt: article.shortDescription || '',
-                        });
-                    }
-                }
-            } catch (err) {
-                console.error("Initialization Error:", err);
-            }
-        };
-        loadInitData();
-    }, [id]);
+        if (article) {
+            console.log("Blog data loaded from cache/API:", article.title);
+            setArticleId(article.id);
+            setFormData({
+                title: article.title || '',
+                slug: article.slug || '',
+                content: article.content || '',
+                image: article.image || '',
+                categoryId: article.categoryId?.toString() || '',
+                status: article.status || 'DRAFT',
+                language: article.language || 'en',
+                tags: article.tags?.map(t => t.name).join(', ') || '',
+                excerpt: article.shortDescription || '',
+            });
+        }
+    }, [article]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;

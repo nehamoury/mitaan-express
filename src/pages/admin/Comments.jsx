@@ -1,38 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { MessageSquare, Check, X, AlertTriangle, Trash2, Eye } from 'lucide-react';
+import React, { useState } from 'react';
+import { MessageSquare, Check, X, AlertTriangle, Trash2 } from 'lucide-react';
+import { useAdminComments } from '../../hooks/useQueries';
 
 const Comments = () => {
-    const [comments, setComments] = useState([]);
-    const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState('PENDING'); // PENDING, APPROVED, REJECTED, SPAM, ALL
     const [selectedComment, setSelectedComment] = useState(null);
 
-    useEffect(() => {
-        loadComments();
-    }, [filter]);
-
-    const loadComments = async () => {
-        setLoading(true);
-        try {
-            const token = localStorage.getItem('token');
-            const url = filter === 'ALL'
-                ? 'http://localhost:3000/api/comments'
-                : `http://localhost:3000/api/comments?status=${filter}`;
-
-            const response = await fetch(url, {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                setComments(data);
-            }
-        } catch (error) {
-            console.error('Failed to load comments:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
+    // TanStack Query Hook
+    const {
+        data: comments = [],
+        isLoading: loading,
+        refetch: loadComments
+    } = useAdminComments(filter);
 
     const handleApprove = async (id) => {
         try {
@@ -162,8 +141,8 @@ const Comments = () => {
                         key={status}
                         onClick={() => setFilter(status)}
                         className={`px-4 py-2 rounded-lg font-bold text-sm transition-all ${filter === status
-                                ? 'bg-red-600 text-white shadow-lg'
-                                : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
+                            ? 'bg-red-600 text-white shadow-lg'
+                            : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
                             }`}
                     >
                         {status}

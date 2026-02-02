@@ -1,39 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { Zap, Eye, TrendingUp, Star, Edit, Trash2, Plus, X } from 'lucide-react';
+import React, { useState } from 'react';
+import { Zap, Star, TrendingUp, X, Plus } from 'lucide-react';
+import { useAdminArticles } from '../../hooks/useQueries';
 
 const FeaturedContent = () => {
-    const [articles, setArticles] = useState([]);
-    const [breakingNews, setBreakingNews] = useState([]);
-    const [featured, setFeatured] = useState([]);
-    const [trending, setTrending] = useState([]);
-    const [loading, setLoading] = useState(true);
+    // TanStack Query Hook
+    const {
+        data: articles = [],
+        isLoading: loading,
+        refetch: loadArticles
+    } = useAdminArticles();
+
     const [activeTab, setActiveTab] = useState('breaking');
 
-    useEffect(() => {
-        loadArticles();
-    }, []);
-
-    const loadArticles = async () => {
-        setLoading(true);
-        try {
-            const token = localStorage.getItem('token');
-            const response = await fetch('http://localhost:3000/api/articles', {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                setArticles(data);
-                setBreakingNews(data.filter(a => a.isBreaking));
-                setFeatured(data.filter(a => a.isFeatured));
-                setTrending(data.filter(a => a.isTrending));
-            }
-        } catch (error) {
-            console.error('Failed to load articles:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
+    const breakingNews = articles.filter(a => a.isBreaking);
+    const featured = articles.filter(a => a.isFeatured);
+    const trending = articles.filter(a => a.isTrending);
 
     const toggleFlag = async (articleId, flag) => {
         try {
@@ -169,8 +150,8 @@ const FeaturedContent = () => {
                         key={tab.id}
                         onClick={() => setActiveTab(tab.id)}
                         className={`flex items-center gap-2 px-4 py-3 font-bold text-sm transition-all ${activeTab === tab.id
-                                ? 'text-red-600 border-b-2 border-red-600'
-                                : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
+                            ? 'text-red-600 border-b-2 border-red-600'
+                            : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
                             }`}
                     >
                         <tab.icon size={16} />
