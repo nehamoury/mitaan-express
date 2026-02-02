@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FileText, Trash2, Edit, Eye, Filter, CheckSquare, Square, Search } from 'lucide-react';
-import { fetchCategories, fetchArticles } from '../../services/api';
+import { fetchCategories, fetchBlogs, deleteBlog } from '../../services/api';
+import { adminTranslations } from '../../lib/adminTranslations';
 
-const MyBlogs = () => {
+const MyBlogs = ({ adminLanguage }) => {
+    const t = adminTranslations[adminLanguage || 'hi'] || adminTranslations.hi;
     const [articles, setArticles] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
@@ -21,7 +23,7 @@ const MyBlogs = () => {
         try {
             // Fetch articles filtered by current user's ID
             if (user.id) {
-                const data = await fetchArticles('', '', user.id);
+                const data = await fetchBlogs('', user.id);
                 setArticles(data || []);
             }
         } catch (error) {
@@ -31,18 +33,13 @@ const MyBlogs = () => {
         }
     };
 
-    const handleDelete = async (slug) => {
-        if (!window.confirm('Are you sure you want to delete this article?')) return;
+    const handleDelete = async (id) => {
+        if (!window.confirm('Are you sure you want to delete this blog?')) return;
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch(`http://localhost:3000/api/articles/${slug}`, {
-                method: 'DELETE',
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-            if (response.ok) {
-                loadData();
-                alert('Article deleted!');
-            }
+            await deleteBlog(token, id);
+            loadData();
+            alert('Blog deleted!');
         } catch (error) {
             console.error('Delete error:', error);
         }
@@ -54,24 +51,24 @@ const MyBlogs = () => {
         return matchesSearch && matchesStatus;
     });
 
-    if (loading) return <div className="p-8 text-center text-slate-500">Loading your blogs...</div>;
-    if (!user.id) return <div className="p-8 text-center text-red-500">Please login to view your blogs</div>;
+    if (loading) return <div className="p-8 text-center text-slate-500">{adminLanguage === 'hi' ? 'आपके ब्लॉग लोड हो रहे हैं...' : 'Loading your blogs...'}</div>;
+    if (!user.id) return <div className="p-8 text-center text-red-500">{adminLanguage === 'hi' ? 'ब्लॉग देखने के लिए कृपया लॉग इन करें' : 'Please login to view your blogs'}</div>;
 
     return (
         <div className="p-4 lg:p-8 space-y-6">
             <div className="flex items-center justify-between">
                 <div>
-                    <h2 className="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight">My Blogs</h2>
+                    <h2 className="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight">{t.myBlogs}</h2>
                     <p className="text-sm text-slate-500 dark:text-slate-400">
-                        Manage your personal articles and drafts
+                        {adminLanguage === 'hi' ? 'अपने व्यक्तिगत लेखों और ड्राफ्ट को व्यवस्थित करें' : 'Manage your personal articles and drafts'}
                     </p>
                 </div>
                 <button
-                    onClick={() => navigate('/admin/articles/new')}
+                    onClick={() => navigate('/admin/my-blogs/new')}
                     className="px-4 py-2 bg-red-600 text-white rounded-lg font-bold hover:bg-red-700 transition-all flex items-center gap-2"
                 >
                     <FileText size={18} />
-                    Write New Blog
+                    {t.addNew}
                 </button>
             </div>
 
@@ -102,19 +99,19 @@ const MyBlogs = () => {
                     <table className="w-full text-left border-collapse">
                         <thead className="bg-slate-50 dark:bg-slate-900/50">
                             <tr>
-                                <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider">Title</th>
-                                <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider">Category</th>
-                                <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider">Status</th>
-                                <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider">Views</th>
-                                <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider">Date</th>
-                                <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider">Actions</th>
+                                <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider">{t.title}</th>
+                                <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider">{t.categories}</th>
+                                <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider">{t.status}</th>
+                                <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider">{t.views}</th>
+                                <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider">{t.date}</th>
+                                <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider">{t.actions}</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100 dark:divide-white/5">
                             {filteredArticles.length === 0 ? (
                                 <tr>
                                     <td colSpan="6" className="px-6 py-12 text-center text-slate-500">
-                                        You haven't written any blogs yet.
+                                        {adminLanguage === 'hi' ? 'आपने अभी तक कोई ब्लॉग नहीं लिखा है।' : "You haven't written any blogs yet."}
                                     </td>
                                 </tr>
                             ) : (
@@ -137,8 +134,8 @@ const MyBlogs = () => {
                                         </td>
                                         <td className="px-6 py-4">
                                             <span className={`px-3 py-1 rounded-full text-xs font-bold ${article.status === 'PUBLISHED'
-                                                    ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400'
-                                                    : 'bg-orange-100 text-orange-800 dark:bg-orange-900/20 dark:text-orange-400'
+                                                ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400'
+                                                : 'bg-orange-100 text-orange-800 dark:bg-orange-900/20 dark:text-orange-400'
                                                 }`}>
                                                 {article.status}
                                             </span>
@@ -152,14 +149,14 @@ const MyBlogs = () => {
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-2">
                                                 <button
-                                                    onClick={() => navigate(`/admin/articles/edit/${article.slug}`)}
+                                                    onClick={() => navigate(`/admin/my-blogs/edit/${article.slug}`)}
                                                     className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-all"
                                                     title="Edit"
                                                 >
                                                     <Edit size={16} />
                                                 </button>
                                                 <button
-                                                    onClick={() => handleDelete(article.slug)}
+                                                    onClick={() => handleDelete(article.id)}
                                                     className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all"
                                                     title="Delete"
                                                 >

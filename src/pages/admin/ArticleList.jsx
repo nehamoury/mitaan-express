@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { FileText, Trash2, Eye, EyeOff, Copy, Archive, Download, CheckSquare, Square, Search, Filter, Calendar, TrendingUp, Zap } from 'lucide-react';
 import { fetchCategories, fetchArticles as fetchArticlesApi } from '../../services/api';
+import { adminTranslations } from '../../lib/adminTranslations';
 
-const ArticleList = () => {
+const ArticleList = ({ adminLanguage }) => {
+    const t = adminTranslations[adminLanguage || 'hi'] || adminTranslations.hi;
     const [articles, setArticles] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
@@ -12,6 +14,7 @@ const ArticleList = () => {
     const [categories, setCategories] = useState([]);
     const [selectedArticles, setSelectedArticles] = useState([]);
     const [showBulkActions, setShowBulkActions] = useState(false);
+    const [langFilter, setLangFilter] = useState('ALL');
     const navigate = useNavigate();
     const { categoryId } = useParams();
 
@@ -162,7 +165,8 @@ const ArticleList = () => {
         const matchesSearch = article.title.toLowerCase().includes(searchTerm.toLowerCase());
         const matchesStatus = statusFilter === 'ALL' || article.status === statusFilter;
         const matchesCategory = categoryFilter === 'ALL' || article.category?.id === parseInt(categoryFilter);
-        return matchesSearch && matchesStatus && matchesCategory;
+        const matchesLang = langFilter === 'ALL' || article.language === langFilter;
+        return matchesSearch && matchesStatus && matchesCategory && matchesLang;
     });
 
     const stats = {
@@ -172,7 +176,7 @@ const ArticleList = () => {
         selected: selectedArticles.length
     };
 
-    if (loading) return <div className="p-8 text-center text-slate-500">Loading articles...</div>;
+    if (loading) return <div className="p-8 text-center text-slate-500">{adminLanguage === 'hi' ? 'लेख लोड हो रहे हैं...' : 'Loading articles...'}</div>;
 
     return (
         <div className="p-4 lg:p-8 space-y-6">
@@ -190,7 +194,7 @@ const ArticleList = () => {
                     className="px-4 py-2 bg-red-600 text-white rounded-lg font-bold hover:bg-red-700 transition-all flex items-center gap-2"
                 >
                     <FileText size={18} />
-                    New Article
+                    {t.addNew}
                     <span className="text-xs opacity-75"></span>
                 </button>
             </div>
@@ -227,10 +231,20 @@ const ArticleList = () => {
                         }}
                         className="px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/10 rounded-xl outline-none focus:ring-2 ring-red-600 text-slate-900 dark:text-white font-bold text-sm"
                     >
-                        <option value="ALL">All Categories</option>
+                        <option value="ALL">{adminLanguage === 'hi' ? 'सभी श्रेणियां' : 'All Categories'}</option>
                         {categories.map(cat => (
-                            <option key={cat.id} value={cat.id}>{cat.name}</option>
+                            <option key={cat.id} value={cat.id}>{adminLanguage === 'hi' ? cat.nameHi : cat.name}</option>
                         ))}
+                    </select>
+
+                    <select
+                        value={langFilter}
+                        onChange={(e) => setLangFilter(e.target.value)}
+                        className="px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/10 rounded-xl outline-none focus:ring-2 ring-red-600 text-slate-900 dark:text-white font-bold text-sm"
+                    >
+                        <option value="ALL">{t.language}: {adminLanguage === 'hi' ? 'सभी' : 'All'}</option>
+                        <option value="en">English (EN)</option>
+                        <option value="hi">Hindi (हिं)</option>
                     </select>
                 </div>
             </div>
@@ -296,12 +310,12 @@ const ArticleList = () => {
                                         )}
                                     </button>
                                 </th>
-                                <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider">Title</th>
-                                <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider">Category</th>
-                                <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider">Status</th>
-                                <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider">Views</th>
-                                <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider">Date</th>
-                                <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider">Actions</th>
+                                <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider">{t.title}</th>
+                                <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider">{t.categories}</th>
+                                <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider">{t.status}</th>
+                                <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider">{t.views}</th>
+                                <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider">{t.date}</th>
+                                <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider">{t.actions}</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100 dark:divide-white/5">

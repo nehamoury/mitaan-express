@@ -49,8 +49,8 @@ exports.createComment = async (req, res) => {
         const { content, articleId, name, email } = req.body;
         const userId = req.user?.id; // Optional if user is logged in
 
-        if (!content || !articleId) {
-            return res.status(400).json({ error: 'Content and articleId are required' });
+        if (!content || (!articleId && !req.body.blogId)) {
+            return res.status(400).json({ error: 'Content and either articleId or blogId are required' });
         }
 
         // Check for spam
@@ -59,7 +59,10 @@ exports.createComment = async (req, res) => {
         const comment = await prisma.comment.create({
             data: {
                 content,
-                articleId: parseInt(articleId),
+                content,
+                articleId: articleId ? parseInt(articleId) : null,
+                blogId: req.body.blogId ? parseInt(req.body.blogId) : null,
+                userId,
                 userId,
                 name: name || req.user?.name,
                 email: email || req.user?.email,
@@ -176,6 +179,31 @@ exports.getArticleComments = async (req, res) => {
         res.json(comments);
     } catch (error) {
         console.error('Fetch article comments error:', error);
+        res.status(500).json({ error: 'Failed to fetch comments' });
+    }
+};
+
+// Get comments for a blog (Public - only approved)
+exports.getBlogComments = async (req, res) => {
+    try {
+        const { blogId } = req.params;
+
+        const comments = await prisma.comment.findMany({
+            where: {
+                blogId: parseInt(blogId),
+                status: 'APPROVED'
+            },
+            include: {
+                user: {
+                    select: { name: true, image: true }
+                }
+            },
+            orderBy: { createdAt: 'desc' }
+        });
+
+        res.json(comments);
+    } catch (error) {
+        console.error('Fetch blog comments error:', error);
         res.status(500).json({ error: 'Failed to fetch comments' });
     }
 };

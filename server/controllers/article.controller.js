@@ -8,13 +8,14 @@ const prisma = new PrismaClient({ adapter });
 
 exports.getAllArticles = async (req, res) => {
     try {
-        const { category, tag, status, search, limit, author } = req.query;
+        const { category, tag, status, search, limit, author, lang } = req.query;
 
         const where = {};
         if (category) where.category = { slug: category };
         if (tag) where.tags = { some: { slug: tag } };
         if (status) where.status = status;
         if (author) where.authorId = parseInt(author);
+        if (lang) where.language = lang; // Filter by language (en/hi)
         if (search) {
             where.OR = [
                 { title: { contains: search, mode: 'insensitive' } },
@@ -35,6 +36,7 @@ exports.getAllArticles = async (req, res) => {
                 views: true,
                 status: true,
                 published: true,
+                language: true,
                 isFeatured: true,
                 isTrending: true,
                 isBreaking: true,
@@ -101,7 +103,7 @@ exports.createArticle = async (req, res) => {
         title, slug, content, shortDescription, image, videoUrl, categoryId,
         tags, isBreaking, isTrending, isFeatured,
         metaTitle, metaDescription, metaKeywords, status, metadata,
-        priority, scheduledAt
+        priority, scheduledAt, language
     } = req.body;
     if (!categoryId || isNaN(parseInt(categoryId))) {
         return res.status(400).json({ error: 'Please select a valid category.' });
@@ -132,6 +134,7 @@ exports.createArticle = async (req, res) => {
                 isBreaking: isBreaking || false,
                 isTrending: isTrending || false,
                 isFeatured: isFeatured || false,
+                language: language || 'en',
                 metaTitle, metaDescription, metaKeywords,
                 metadata: metadata || {},
                 status: status || 'DRAFT',
@@ -165,7 +168,7 @@ exports.updateArticle = async (req, res) => {
         title, slug, content, shortDescription, image, videoUrl, categoryId,
         tags, isBreaking, isTrending, isFeatured,
         metaTitle, metaDescription, metaKeywords, status, metadata,
-        priority, scheduledAt
+        priority, scheduledAt, language
     } = req.body;
 
     try {
@@ -178,6 +181,7 @@ exports.updateArticle = async (req, res) => {
         const updateData = {
             title, slug, content, shortDescription, image, videoUrl,
             isBreaking, isTrending, isFeatured,
+            language: language || 'en',
             metaTitle, metaDescription, metaKeywords,
             metadata: metadata || undefined, // Only update if provided
             status,

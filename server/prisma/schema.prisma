@@ -16,6 +16,7 @@ model User {
   image     String?
   bio       String?
   articles  Article[]
+  blogs     Blog[]
   comments  Comment[]
   activityLogs ActivityLog[]
   createdAt DateTime  @default(now())
@@ -59,6 +60,7 @@ model Article {
   
   // Status
   status           ArticleStatus @default(DRAFT)
+  language         String        @default("en") // "en" or "hi"
   published        Boolean       @default(false) 
   publishedAt      DateTime?
   views            Int           @default(0)
@@ -100,7 +102,9 @@ model Category {
   parentId    Int?
   parent      Category?  @relation("SubCategories", fields: [parentId], references: [id])
   children    Category[] @relation("SubCategories")
+
   articles    Article[]
+  blogs       Blog[]
   analytics   Analytics[]
 }
 
@@ -109,13 +113,46 @@ model Tag {
   name     String    @unique
   slug     String    @unique
   articles Article[]
+  blogs    Blog[]
+}
+
+model Blog {
+  id               Int           @id @default(autoincrement())
+  title            String
+  slug             String        @unique
+  content          String        @db.Text
+  shortDescription String?       @db.Text
+  image            String?
+  
+  // Relations
+  author           User          @relation(fields: [authorId], references: [id])
+  authorId         Int
+  category         Category?      @relation(fields: [categoryId], references: [id])
+  categoryId       Int?
+
+  tags             Tag[]
+  
+  // Status
+  status           ArticleStatus @default(DRAFT)
+  language         String        @default("en") // "en" or "hi"
+  published        Boolean       @default(false)
+  views            Int           @default(0)
+  
+  // Dynamic fields
+  metadata         Json?
+
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+  comments         Comment[]
 }
 
 model Comment {
   id        Int      @id @default(autoincrement())
   content   String
-  article   Article  @relation(fields: [articleId], references: [id])
-  articleId Int
+  article   Article? @relation(fields: [articleId], references: [id])
+  articleId Int?
+  blog      Blog?    @relation(fields: [blogId], references: [id])
+  blogId    Int?
   user      User?    @relation(fields: [userId], references: [id])
   userId    Int?
   name      String?

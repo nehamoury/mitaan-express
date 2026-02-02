@@ -7,12 +7,14 @@ const {
     rejectComment,
     markAsSpam,
     deleteComment,
-    getArticleComments
+    getArticleComments,
+    getBlogComments
 } = require('../controllers/comment.controller');
 const { authenticateToken, authorizeRoles } = require('../middleware/auth.middleware');
 
 // Public routes
 router.get('/article/:articleId', getArticleComments);
+router.get('/blog/:blogId', getBlogComments);
 router.post('/', createComment); // Can be used by logged-in or guest users
 
 // Admin/Editor routes

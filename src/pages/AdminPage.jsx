@@ -6,6 +6,7 @@ import Dashboard from './admin/Dashboard';
 import ArticleList from './admin/ArticleList';
 
 import ArticleEditor from './admin/ArticleEditor';
+import BlogEditor from './admin/BlogEditor';
 import Settings from './admin/Settings';
 import Categories from './admin/Categories';
 import { Menu } from 'lucide-react';
@@ -28,6 +29,7 @@ const AdminPage = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [token, setToken] = useState(localStorage.getItem('token'));
     const [theme, setTheme] = useState(() => localStorage.getItem('adminTheme') || 'light');
+    const [adminLanguage, setAdminLanguage] = useState(() => localStorage.getItem('adminLanguage') || 'hi'); // Default to Hindi
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -74,6 +76,8 @@ const AdminPage = () => {
                 handleLogout={handleLogout}
                 theme={theme}
                 toggleTheme={toggleTheme}
+                adminLanguage={adminLanguage}
+                setAdminLanguage={setAdminLanguage}
             />
 
             <main className="flex-1 min-w-0 overflow-y-auto h-screen relative">
@@ -90,20 +94,22 @@ const AdminPage = () => {
 
                 <div className="max-w-7xl mx-auto">
                     <Routes>
-                        <Route path="/" element={<Dashboard />} />
-                        <Route path="/articles" element={<ArticleList />} />
-                        <Route path="/articles/category/:categoryId" element={<ArticleList />} />
-                        <Route path="/my-blogs" element={<MyBlogs />} />
-                        <Route path="/articles/new" element={<ArticleEditor />} />
-                        <Route path="/articles/edit/:id" element={<ArticleEditor />} />
-                        <Route path="/categories" element={<Categories />} />
-                        <Route path="/comments" element={<Comments />} />
-                        <Route path="/analytics" element={<Analytics />} />
-                        <Route path="/activity" element={<ActivityLogs />} />
-                        <Route path="/users" element={<Users />} />
-                        <Route path="/featured" element={<FeaturedContent />} />
-                        <Route path="/media" element={<MediaLibrary />} />
-                        <Route path="/settings" element={<Settings />} />
+                        <Route path="/" element={<Dashboard adminLanguage={adminLanguage} />} />
+                        <Route path="/articles" element={<ArticleList adminLanguage={adminLanguage} />} />
+                        <Route path="/articles/category/:categoryId" element={<ArticleList adminLanguage={adminLanguage} />} />
+                        <Route path="/my-blogs" element={<MyBlogs adminLanguage={adminLanguage} />} />
+                        <Route path="/my-blogs/new" element={<BlogEditor adminLanguage={adminLanguage} />} />
+                        <Route path="/my-blogs/edit/:id" element={<BlogEditor adminLanguage={adminLanguage} />} />
+                        <Route path="/articles/new" element={<ArticleEditor adminLanguage={adminLanguage} />} />
+                        <Route path="/articles/edit/:id" element={<ArticleEditor adminLanguage={adminLanguage} />} />
+                        <Route path="/categories" element={<Categories adminLanguage={adminLanguage} />} />
+                        <Route path="/comments" element={<Comments adminLanguage={adminLanguage} />} />
+                        <Route path="/analytics" element={<Analytics adminLanguage={adminLanguage} />} />
+                        <Route path="/activity" element={<ActivityLogs adminLanguage={adminLanguage} />} />
+                        <Route path="/users" element={<Users adminLanguage={adminLanguage} />} />
+                        <Route path="/featured" element={<FeaturedContent adminLanguage={adminLanguage} />} />
+                        <Route path="/media" element={<MediaLibrary adminLanguage={adminLanguage} />} />
+                        <Route path="/settings" element={<Settings adminLanguage={adminLanguage} />} />
                         <Route path="*" element={<Navigate to="/admin" replace />} />
                     </Routes>
                 </div>

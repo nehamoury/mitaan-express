@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { fetchStats } from '../../services/api';
 import { BarChart3, TrendingUp, FileText, Activity, Eye, MessageSquare, Users as UsersIcon, Clock, Zap, Globe } from 'lucide-react';
+import { adminTranslations } from '../../lib/adminTranslations';
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -27,7 +28,8 @@ ChartJS.register(
     ArcElement
 );
 
-const Dashboard = () => {
+const Dashboard = ({ adminLanguage }) => {
+    const t = adminTranslations[adminLanguage || 'hi'] || adminTranslations.hi;
     const [stats, setStats] = useState(null);
     const [loading, setLoading] = useState(true);
     const [realtimeViews, setRealtimeViews] = useState(0);
@@ -67,7 +69,7 @@ const Dashboard = () => {
         return () => clearInterval(interval);
     }, []);
 
-    if (loading) return <div className="p-8 text-center text-slate-500">Loading dashboard...</div>;
+    if (loading) return <div className="p-8 text-center text-slate-500">{adminLanguage === 'hi' ? 'डैशबोर्ड लोड हो रहा है...' : 'Loading dashboard...'}</div>;
 
     if (!stats) {
         return (
@@ -187,23 +189,22 @@ const Dashboard = () => {
     };
 
     const cards = [
-        { title: 'Total Articles', value: stats.totalArticles, icon: <FileText className="text-blue-500" />, color: 'from-blue-500 to-blue-600', change: '+12%' },
-        { title: 'Total Views', value: stats.totalViews.toLocaleString(), icon: <Eye className="text-purple-500" />, color: 'from-purple-500 to-purple-600', change: '+23%' },
-        { title: 'Published', value: stats.publishedArticles, icon: <TrendingUp className="text-green-500" />, color: 'from-green-500 to-green-600', change: '+8%' },
-        { title: 'Breaking News', value: stats.breakingCount, icon: <Zap className="text-red-500" />, color: 'from-red-500 to-red-600', change: 'Live' },
+        { title: t.totalArticles, value: stats.totalArticles, icon: <FileText className="text-blue-500" />, color: 'from-blue-500 to-blue-600', change: '+12%' },
+        { title: t.views, value: stats.totalViews.toLocaleString(), icon: <Eye className="text-purple-500" />, color: 'from-purple-500 to-purple-600', change: '+23%' },
+        { title: t.publish, value: stats.publishedArticles, icon: <TrendingUp className="text-green-500" />, color: 'from-green-500 to-green-600', change: '+8%' },
+        { title: t.breakingNews, value: stats.breakingCount, icon: <Zap className="text-red-500" />, color: 'from-red-500 to-red-600', change: 'Live' },
     ];
 
     return (
         <div className="space-y-8 animate-fade-in-up">
-            {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
-                    <h2 className="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight">Dashboard Overview</h2>
-                    <p className="text-sm text-slate-500 dark:text-slate-400">Welcome to Mitaan Express Admin Panel</p>
+                    <h2 className="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight">{t.dashboard} Overview</h2>
+                    <p className="text-sm text-slate-500 dark:text-slate-400">{t.welcomeBack}, Mitaan Express</p>
                 </div>
                 <div className="flex items-center gap-3 px-4 py-2 bg-green-50 dark:bg-green-900/10 rounded-xl border border-green-200 dark:border-green-900/20">
                     <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                    <span className="text-sm font-bold text-green-700 dark:text-green-400">Live: {realtimeViews} views today</span>
+                    <span className="text-sm font-bold text-green-700 dark:text-green-400">{adminLanguage === 'hi' ? 'लाइव' : 'Live'}: {realtimeViews} {t.views} {adminLanguage === 'hi' ? 'आज' : 'today'}</span>
                 </div>
             </div>
 
@@ -297,7 +298,7 @@ const Dashboard = () => {
                 <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-white/5 shadow-sm">
                     <h3 className="font-black text-slate-900 dark:text-white text-lg mb-6 flex items-center gap-2">
                         <Clock className="text-red-600" size={20} />
-                        Recent Activity
+                        {t.recentActivity}
                     </h3>
                     <div className="space-y-3">
                         <div className="flex items-start gap-3 p-3 hover:bg-slate-50 dark:hover:bg-slate-700/30 rounded-lg transition-colors">

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageSquare, Heart, Reply, MoreHorizontal, Send, User, AlertCircle } from 'lucide-react';
 
-const CommentsSection = ({ articleId, language }) => {
+const CommentsSection = ({ articleId, blogId, language }) => {
     const [comments, setComments] = useState([]);
     const [loading, setLoading] = useState(true);
     const [newComment, setNewComment] = useState('');
@@ -16,7 +16,12 @@ const CommentsSection = ({ articleId, language }) => {
         const loadComments = async () => {
             try {
                 setLoading(true);
-                const response = await fetch(`http://localhost:3000/api/articles/${articleId}/comments`);
+                const baseUrl = 'http://localhost:3000/api/comments';
+                const url = articleId
+                    ? `${baseUrl}/article/${articleId}`
+                    : `${baseUrl}/blog/${blogId}`;
+
+                const response = await fetch(url);
                 if (response.ok) {
                     const data = await response.json();
                     setComments(data);
@@ -49,10 +54,10 @@ const CommentsSection = ({ articleId, language }) => {
             }
         };
 
-        if (articleId) {
+        if (articleId || blogId) {
             loadComments();
         }
-    }, [articleId, language]);
+    }, [articleId, blogId, language]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -62,11 +67,14 @@ const CommentsSection = ({ articleId, language }) => {
         setError(null);
 
         try {
-            const response = await fetch(`http://localhost:3000/api/articles/${articleId}/comments`, {
+            // Just POST to /api/comments directly with body
+            const response = await fetch('http://localhost:3000/api/comments', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     content: newComment,
+                    articleId: articleId || null,
+                    blogId: blogId || null,
                     guestName: guestName || 'Guest User',
                     guestEmail: guestEmail || 'guest@example.com'
                 })

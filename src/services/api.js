@@ -11,12 +11,14 @@ export const fetchCategories = async () => {
     }
 };
 
-export const fetchArticles = async (category = '', search = '', author = '') => {
+export const fetchArticles = async (category = '', search = '', author = '', lang = '', status = '') => {
     try {
         const params = new URLSearchParams();
         if (category) params.append('category', category);
         if (search) params.append('search', search);
         if (author) params.append('author', author);
+        if (lang) params.append('lang', lang);
+        if (status) params.append('status', status);
 
         const url = `${API_URL}/articles?${params.toString()}`;
         const response = await fetch(url);
@@ -140,6 +142,84 @@ export const deleteArticle = async (token, id) => {
             }
         });
         if (!response.ok) throw new Error('Failed to delete article');
+        return true;
+    } catch (error) {
+        throw error;
+    }
+}
+
+
+export const fetchBlogs = async (search = '', author = '', lang = '', status = '') => {
+    try {
+        const params = new URLSearchParams();
+        if (search) params.append('search', search);
+        if (author) params.append('author', author);
+        if (lang) params.append('lang', lang);
+        if (status) params.append('status', status);
+        const response = await fetch(`${API_URL}/blogs?${params.toString()}`);
+        if (!response.ok) throw new Error('Failed to fetch blogs');
+        return await response.json();
+    } catch (error) {
+        console.error('Error fetching blogs:', error);
+        return [];
+    }
+};
+
+export const fetchBlogBySlug = async (slug) => { // Added for editing
+    try {
+        const response = await fetch(`${API_URL}/blogs/${slug}`);
+        if (!response.ok) throw new Error('Failed to fetch blog');
+        return await response.json();
+    } catch (error) {
+        return null;
+    }
+};
+
+
+export const createBlog = async (token, formData) => {
+    try {
+        const response = await fetch(`${API_URL}/blogs`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(formData),
+        });
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.error || 'Failed to create blog');
+        }
+        return await response.json();
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const updateBlog = async (token, id, formData) => {
+    try {
+        const response = await fetch(`${API_URL}/blogs/${id}`, { // Using ID now
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(formData),
+        });
+        if (!response.ok) throw new Error('Failed to update blog');
+        return await response.json();
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const deleteBlog = async (token, id) => {
+    try {
+        const response = await fetch(`${API_URL}/blogs/${id}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!response.ok) throw new Error('Failed to delete blog');
         return true;
     } catch (error) {
         throw error;

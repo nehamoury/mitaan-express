@@ -7,8 +7,10 @@ import {
     PenTool, Film, Heart as HeartIcon
 } from 'lucide-react';
 import { fetchCategories } from '../../services/api';
+import { adminTranslations } from '../../lib/adminTranslations';
 
-const AdminSidebar = ({ isSidebarOpen, setIsSidebarOpen, handleLogout, theme, toggleTheme }) => {
+const AdminSidebar = ({ isSidebarOpen, setIsSidebarOpen, handleLogout, theme, toggleTheme, adminLanguage, setAdminLanguage }) => {
+    const t = adminTranslations[adminLanguage] || adminTranslations.en;
     const [categories, setCategories] = useState([]);
     const [isArticlesExpanded, setIsArticlesExpanded] = useState(true);
     const [expandedCategories, setExpandedCategories] = useState({});
@@ -63,16 +65,17 @@ const AdminSidebar = ({ isSidebarOpen, setIsSidebarOpen, handleLogout, theme, to
     };
 
     const navItems = [
-        { name: 'Dashboard', path: '/admin', icon: <LayoutDashboard size={18} />, end: true },
-        { name: 'My Blogs', path: '/admin/my-blogs', icon: <FileText size={18} /> },
-        { name: 'Categories', path: '/admin/categories', icon: <FolderTree size={18} /> },
-        { name: 'Featured Content', path: '/admin/featured', icon: <Star size={18} /> },
-        { name: 'Comments', path: '/admin/comments', icon: <MessageSquare size={18} /> },
-        { name: 'Analytics', path: '/admin/analytics', icon: <BarChart3 size={18} /> },
-        { name: 'Activity Logs', path: '/admin/activity', icon: <Activity size={18} /> },
-        { name: 'Users', path: '/admin/users', icon: <Users size={18} /> },
-        { name: 'Media Library', path: '/admin/media', icon: <ImageIcon size={18} /> },
-        { name: 'Settings', path: '/admin/settings', icon: <Settings size={18} /> },
+        { name: t.dashboard, path: '/admin', icon: <LayoutDashboard size={18} />, end: true },
+        { name: t.articles, path: '/admin/articles', icon: <FileText size={18} /> },
+        { name: t.myBlogs, path: '/admin/my-blogs', icon: <FileText size={18} /> },
+        { name: t.categories, path: '/admin/categories', icon: <FolderTree size={18} /> },
+        { name: t.featured, path: '/admin/featured', icon: <Star size={18} /> },
+        { name: t.comments, path: '/admin/comments', icon: <MessageSquare size={18} /> },
+        { name: t.analytics, path: '/admin/analytics', icon: <BarChart3 size={18} /> },
+        { name: t.activityLogs || 'Activity Logs', path: '/admin/activity', icon: <Activity size={18} /> },
+        { name: t.users, path: '/admin/users', icon: <Users size={18} /> },
+        { name: t.mediaLibrary || 'Media Library', path: '/admin/media', icon: <ImageIcon size={18} /> },
+        { name: t.settings, path: '/admin/settings', icon: <Settings size={18} /> },
     ];
 
     const activeClass = "bg-red-50 dark:bg-red-900/10 text-red-600 border-r-4 border-red-600 shadow-[inset_-4px_0_0_0_#ef4444]";
@@ -88,10 +91,10 @@ const AdminSidebar = ({ isSidebarOpen, setIsSidebarOpen, handleLogout, theme, to
                 />
             )}
 
-            <aside className={`fixed lg:static inset-y-0 left-0 z-50 w-72 bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-white/5 transform transition-transform duration-300 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
-                <div className="h-full flex flex-col">
+            <aside className={`fixed lg:sticky top-0 left-0 z-50 w-72 h-screen bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-white/5 transform transition-transform duration-300 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
+                <div className="h-full flex flex-col overflow-hidden">
                     {/* Logo Area */}
-                    <div className="p-6 border-b border-slate-100 dark:border-white/5">
+                    <div className="p-6 border-b border-slate-100 dark:border-white/5 flex-shrink-0">
                         <div className="flex items-center gap-3">
                             <div className="w-10 h-10 bg-gradient-to-br from-red-600 to-red-400 rounded-xl flex items-center justify-center text-white font-black text-xl shadow-lg shadow-red-600/20">M</div>
                             <div>
@@ -101,7 +104,7 @@ const AdminSidebar = ({ isSidebarOpen, setIsSidebarOpen, handleLogout, theme, to
                         </div>
                     </div>
 
-                    {/* Navigation */}
+                    {/* Navigation - This area should scroll */}
                     <nav className="flex-1 p-4 space-y-2 overflow-y-auto categories-scroll">
                         <NavLink
                             to="/admin"
@@ -110,12 +113,12 @@ const AdminSidebar = ({ isSidebarOpen, setIsSidebarOpen, handleLogout, theme, to
                             className={({ isActive }) => `group w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all text-sm ${isActive ? activeClass : inactiveClass}`}
                         >
                             <LayoutDashboard size={18} className="transition-transform group-hover:scale-110" />
-                            Dashboard
+                            {t.dashboard}
                         </NavLink>
 
                         {/* News Feed Section Label */}
                         <div className="px-4 py-2 mt-4 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.3em]">
-                            Content Management
+                            {t.content || 'Content Management'}
                         </div>
 
                         {/* Hierarchical Articles Section */}
@@ -126,7 +129,7 @@ const AdminSidebar = ({ isSidebarOpen, setIsSidebarOpen, handleLogout, theme, to
                             >
                                 <div className="flex items-center gap-3">
                                     <FileText size={18} />
-                                    {isArticlesExpanded ? (activeCategoryName || 'Articles') : 'Articles'}
+                                    {isArticlesExpanded ? (activeCategoryName || t.articles) : t.articles}
                                 </div>
                                 {isArticlesExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
                             </button>
@@ -140,7 +143,7 @@ const AdminSidebar = ({ isSidebarOpen, setIsSidebarOpen, handleLogout, theme, to
                                         className={({ isActive }) => `w-full flex items-center gap-3 px-4 py-2.5 rounded-xl font-bold transition-all text-xs uppercase tracking-tighter ${isActive ? "text-red-600 bg-red-50 dark:bg-red-900/10 shadow-[inset_0_0_0_1px_rgba(239,68,68,0.2)]" : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"}`}
                                     >
                                         <Activity size={14} />
-                                        Show All Stories
+                                        {t.showAllStories || 'Show All Stories'}
                                     </NavLink>
 
                                     <div className="my-2 border-t border-slate-50 dark:border-white/5 mx-2" />
@@ -185,7 +188,7 @@ const AdminSidebar = ({ isSidebarOpen, setIsSidebarOpen, handleLogout, theme, to
 
                         {/* Other Items */}
                         <div className="px-4 py-2 mt-4 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.3em]">
-                            System & More
+                            {t.system || 'System & More'}
                         </div>
 
                         {navItems.filter(item => item.name !== 'Dashboard' && item.name !== 'Articles').map((item) => (
@@ -214,7 +217,7 @@ const AdminSidebar = ({ isSidebarOpen, setIsSidebarOpen, handleLogout, theme, to
                     </nav>
 
                     {/* Bottom Section */}
-                    <div className="p-4 border-t border-slate-100 dark:border-white/5 space-y-3 bg-slate-50/50 dark:bg-slate-900/50">
+                    <div className="p-4 border-t border-slate-100 dark:border-white/5 space-y-3 bg-slate-50/50 dark:bg-slate-900/50 flex-shrink-0">
                         {/* User Profile */}
                         {(() => {
                             const user = JSON.parse(localStorage.getItem('user') || '{}');
@@ -238,23 +241,36 @@ const AdminSidebar = ({ isSidebarOpen, setIsSidebarOpen, handleLogout, theme, to
                             return null;
                         })()}
 
-                        <div className="grid grid-cols-2 gap-2">
+                        <div className="grid grid-cols-3 gap-2">
+                            <button
+                                onClick={() => {
+                                    const newLang = adminLanguage === 'en' ? 'hi' : 'en';
+                                    setAdminLanguage(newLang);
+                                    localStorage.setItem('adminLanguage', newLang);
+                                }}
+                                className="flex flex-col items-center justify-center p-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/10 hover:bg-slate-100 dark:hover:bg-slate-700/50 transition-all group"
+                                title={t.changeLanguage}
+                            >
+                                <Globe size={18} className="text-blue-500 group-hover:scale-110 transition-transform" />
+                                <span className="text-[9px] font-bold text-slate-500 mt-1">{adminLanguage === 'en' ? 'EN' : 'हिं'}</span>
+                            </button>
+
                             <button
                                 onClick={toggleTheme}
-                                className="flex flex-col items-center justify-center p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/10 hover:bg-slate-100 dark:hover:bg-slate-700/50 transition-all group"
+                                className="flex flex-col items-center justify-center p-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/10 hover:bg-slate-100 dark:hover:bg-slate-700/50 transition-all group"
                                 title={theme === 'light' ? 'Switch to Dark' : 'Switch to Light'}
                             >
-                                {theme === 'light' ? <Moon size={20} className="text-slate-600 group-hover:text-red-600" /> : <Sun size={20} className="text-yellow-500 group-hover:text-yellow-400" />}
-                                <span className="text-[10px] font-bold text-slate-500 mt-1">{theme === 'light' ? 'Dark' : 'Light'}</span>
+                                {theme === 'light' ? <Moon size={18} className="text-slate-600 group-hover:text-red-600" /> : <Sun size={18} className="text-yellow-500 group-hover:text-yellow-400" />}
+                                <span className="text-[9px] font-bold text-slate-500 mt-1">{theme === 'light' ? 'Dark' : 'Light'}</span>
                             </button>
 
                             <button
                                 onClick={handleLogout}
-                                className="flex flex-col items-center justify-center p-3 rounded-xl bg-red-50 dark:bg-red-900/10 border border-red-100 dark:border-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/20 transition-all group"
-                                title="Logout"
+                                className="flex flex-col items-center justify-center p-2 rounded-xl bg-red-50 dark:bg-red-900/10 border border-red-100 dark:border-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/20 transition-all group"
+                                title={t.logout}
                             >
-                                <LogOut size={20} className="text-red-600 group-hover:scale-110 transition-transform" />
-                                <span className="text-[10px] font-bold text-red-600 mt-1">Logout</span>
+                                <LogOut size={18} className="text-red-600 group-hover:scale-110 transition-transform" />
+                                <span className="text-[9px] font-bold text-red-600 mt-1">{t.logout}</span>
                             </button>
                         </div>
                     </div>

@@ -23,6 +23,7 @@ const PoetryPage = React.lazy(() => import('./pages/PoetryPage'));
 const BlogsPage = React.lazy(() => import('./pages/BlogsPage'));
 const CategoryPage = React.lazy(() => import('./pages/CategoryPage'));
 const ArticleDetailPage = React.lazy(() => import('./pages/ArticleDetailPage'));
+const BlogDetailPage = React.lazy(() => import('./pages/BlogDetailPage'));
 const AdminPage = React.lazy(() => import('./pages/AdminPage'));
 const LoginPage = React.lazy(() => import('./pages/LoginPage'));
 const SignupPage = React.lazy(() => import('./pages/SignupPage'));
@@ -42,6 +43,8 @@ const App = () => {
         if (path.startsWith('/article/')) return 'article';
         return path.substring(1) || 'home';
     }, [location.pathname]);
+
+    const isAdminRoute = location.pathname.startsWith('/admin');
 
     useEffect(() => {
         AOS.init({
@@ -83,13 +86,14 @@ const App = () => {
     }, [language]);
 
     useEffect(() => {
+        if (isAdminRoute) return; // Don't interfere with Admin theme
         localStorage.setItem('theme', theme);
         if (theme === 'dark') {
             document.documentElement.classList.add('dark');
         } else {
             document.documentElement.classList.remove('dark');
         }
-    }, [theme]);
+    }, [theme, isAdminRoute]);
 
     const toggleTheme = () => setTheme(prev => prev === 'light' ? 'dark' : 'light');
     const toggleLanguage = () => setLanguage(prev => prev === 'en' ? 'hi' : 'en');
@@ -102,7 +106,7 @@ const App = () => {
         // Menu closing is handled inside Navbar usually, or Navbar will re-render
     };
 
-    const isAdminRoute = location.pathname.startsWith('/admin');
+
 
     return (
         <ArticlesProvider>
@@ -132,6 +136,7 @@ const App = () => {
                                 <Route path="/blogs" element={<BlogsPage language={language} />} />
                                 <Route path="/category/:categoryId" element={<CategoryPage language={language} />} />
                                 <Route path="/article/:id" element={<ArticleDetailPage language={language} />} />
+                                <Route path="/blog/:slug" element={<BlogDetailPage language={language} />} />
                                 <Route path="/login" element={<LoginPage />} />
                                 <Route path="/signup" element={<SignupPage />} />
                                 <Route path="/admin/*" element={<AdminPage />} />

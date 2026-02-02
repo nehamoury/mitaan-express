@@ -10,11 +10,15 @@ if (!rootElement) {
 
 import { BrowserRouter } from 'react-router-dom';
 
+import GlobalErrorBoundary from './components/GlobalErrorBoundary';
+
 const root = ReactDOM.createRoot(rootElement);
 root.render(
     <React.StrictMode>
-        <BrowserRouter>
-            <App />
-        </BrowserRouter>
+        <GlobalErrorBoundary>
+            <BrowserRouter>
+                <App />
+            </BrowserRouter>
+        </GlobalErrorBoundary>
     </React.StrictMode>
 );

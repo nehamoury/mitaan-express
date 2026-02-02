@@ -4,8 +4,10 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { fetchCategories, fetchArticleBySlug, createArticle, updateArticle } from '../../services/api';
 import { Save, ArrowLeft, Image as ImageIcon, Tag, Globe, Type, Calendar, Eye, Clock, Zap, TrendingUp, Upload } from 'lucide-react';
+import { adminTranslations } from '../../lib/adminTranslations';
 
-const ArticleEditor = () => {
+const ArticleEditor = ({ adminLanguage }) => {
+    const t = adminTranslations[adminLanguage || 'hi'] || adminTranslations.hi;
     const { id } = useParams();
     const navigate = useNavigate();
     const location = useLocation();
@@ -25,6 +27,7 @@ const ArticleEditor = () => {
         videoUrl: '',
         categoryId: '',
         status: 'DRAFT',
+        language: 'en', // Default language
         isBreaking: false,
         isTrending: false,
         isFeatured: false,
@@ -57,7 +60,9 @@ const ArticleEditor = () => {
                         image: article.image || '',
                         videoUrl: article.videoUrl || '',
                         categoryId: article.categoryId || '',
+                        categoryId: article.categoryId || '',
                         status: article.status || 'DRAFT',
+                        language: article.language || 'en',
                         isBreaking: article.isBreaking || false,
                         isTrending: article.isTrending || false,
                         isFeatured: article.isFeatured || false,
@@ -128,6 +133,7 @@ const ArticleEditor = () => {
                 shortDescription: formData.excerpt,
                 videoUrl: formData.videoUrl,
                 status: statusOverride || formData.status,
+                language: formData.language,
                 categoryId: parseInt(formData.categoryId),
                 tags: formData.tags.split(',').map(t => t.trim()).filter(Boolean),
                 priority: formData.priority,
@@ -196,7 +202,7 @@ const ArticleEditor = () => {
                         disabled={loading}
                         className="px-4 py-2 bg-slate-600 text-white rounded-lg font-bold hover:bg-slate-700 transition-all disabled:opacity-50"
                     >
-                        Save Draft
+                        {t.saveDraft}
                     </button>
                     <button
                         onClick={(e) => handleSubmit(e, 'PUBLISHED')}
@@ -204,7 +210,7 @@ const ArticleEditor = () => {
                         className="px-4 py-2 bg-red-600 text-white rounded-lg font-bold hover:bg-red-700 transition-all disabled:opacity-50 flex items-center gap-2"
                     >
                         <Save size={18} />
-                        {id ? 'Update' : 'Publish'}
+                        {id ? t.edit : t.publish}
                     </button>
                 </div>
             </div>
@@ -212,9 +218,9 @@ const ArticleEditor = () => {
             {/* Tabs */}
             <div className="flex gap-2 border-b border-slate-200 dark:border-white/10">
                 {[
-                    { id: 'content', label: 'Content', icon: <Type size={16} /> },
-                    { id: 'seo', label: 'SEO & Meta', icon: <Globe size={16} /> },
-                    { id: 'settings', label: 'Settings', icon: <Tag size={16} /> },
+                    { id: 'content', label: t.content, icon: <Type size={16} /> },
+                    { id: 'seo', label: t.seo, icon: <Globe size={16} /> },
+                    { id: 'settings', label: t.settings, icon: <Tag size={16} /> },
                 ].map(tab => (
                     <button
                         key={tab.id}
@@ -237,7 +243,7 @@ const ArticleEditor = () => {
                         {/* Title */}
                         <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-white/5">
                             <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">
-                                Article Title *
+                                {t.title} *
                             </label>
                             <input
                                 type="text"
@@ -248,6 +254,37 @@ const ArticleEditor = () => {
                                 placeholder="Enter article title..."
                                 className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-white/10 rounded-xl outline-none focus:ring-2 ring-red-600 text-slate-900 dark:text-white text-lg font-bold"
                             />
+                        </div>
+
+                        {/* Language Selector */}
+                        <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-white/5">
+                            <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">
+                                Article Language
+                            </label>
+                            <div className="flex gap-4">
+                                <label className={`flex-1 flex items-center justify-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all ${formData.language === 'en' ? 'border-red-600 bg-red-50 dark:bg-red-900/10 text-red-600' : 'border-slate-200 dark:border-slate-700 hover:border-slate-300'}`}>
+                                    <input
+                                        type="radio"
+                                        name="language"
+                                        value="en"
+                                        checked={formData.language === 'en'}
+                                        onChange={handleChange}
+                                        className="hidden"
+                                    />
+                                    <span className="font-bold">English (EN)</span>
+                                </label>
+                                <label className={`flex-1 flex items-center justify-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all ${formData.language === 'hi' ? 'border-red-600 bg-red-50 dark:bg-red-900/10 text-red-600' : 'border-slate-200 dark:border-slate-700 hover:border-slate-300'}`}>
+                                    <input
+                                        type="radio"
+                                        name="language"
+                                        value="hi"
+                                        checked={formData.language === 'hi'}
+                                        onChange={handleChange}
+                                        className="hidden"
+                                    />
+                                    <span className="font-bold">Hindi (हिंदी)</span>
+                                </label>
+                            </div>
                         </div>
 
                         {/* Slug */}
@@ -273,7 +310,7 @@ const ArticleEditor = () => {
                         <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-white/5">
                             <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2 flex items-center gap-2">
                                 <ImageIcon size={16} />
-                                Featured Image URL
+                                {t.featuredImage}
                             </label>
                             <input
                                 type="url"
@@ -294,7 +331,7 @@ const ArticleEditor = () => {
                         <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-white/5">
                             <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2 flex items-center gap-2">
                                 <Upload size={16} />
-                                Video URL (YouTube/Vimeo)
+                                {t.videoUrl}
                             </label>
                             <input
                                 type="url"
@@ -309,7 +346,7 @@ const ArticleEditor = () => {
                         {/* Content Editor */}
                         <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-white/5">
                             <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-4">
-                                Article Content *
+                                {t.content} *
                             </label>
                             <div className="prose-editor">
                                 <ReactQuill
@@ -326,7 +363,7 @@ const ArticleEditor = () => {
                         {/* Excerpt */}
                         <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-white/5">
                             <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">
-                                Excerpt (Summary)
+                                {t.summary}
                             </label>
                             <textarea
                                 name="excerpt"
