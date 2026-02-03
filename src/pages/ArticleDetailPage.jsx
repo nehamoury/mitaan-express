@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { useArticles } from '../context/ArticlesContext';
 import CommentsSection from '../components/CommentsSection';
+import AdSpace from '../components/AdSpace';
 
 const ArticleDetailPage = ({ language }) => {
     const { id } = useParams();
@@ -163,6 +164,9 @@ const ArticleDetailPage = ({ language }) => {
                     </div>
                 )}
 
+                {/* Ad Space - Article Top */}
+                <AdSpace position="article_top" />
+
                 {/* Short Description */}
                 {article.shortDescription && (
                     <p className="text-xl text-slate-700 dark:text-slate-300 leading-relaxed mb-8 font-medium border-l-4 border-red-600 pl-6">
@@ -227,6 +231,9 @@ const ArticleDetailPage = ({ language }) => {
                         <Linkedin size={18} />
                     </button>
                 </div>
+
+                {/* Ad Space - Bottom Content */}
+                <AdSpace position="article_bottom" />
 
                 {/* Related Articles */}
                 {relatedArticles.length > 0 && (

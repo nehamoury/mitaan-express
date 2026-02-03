@@ -21,6 +21,13 @@ const Navbar = ({
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [categories, setCategories] = useState([]);
+    const [email, setEmail] = useState('');
+
+    const handleSubscribe = () => {
+        if (!email) return alert('Please enter your email address');
+        alert(`Thank you for subscribing with ${email}!`);
+        setEmail('');
+    };
 
     const { scrollYProgress } = useScroll();
     const scaleX = useSpring(scrollYProgress, {
@@ -302,10 +309,15 @@ const Navbar = ({
                                             <div className="relative group/input">
                                                 <input
                                                     type="email"
+                                                    value={email}
+                                                    onChange={(e) => setEmail(e.target.value)}
                                                     placeholder={language === 'hi' ? 'email@example.com' : 'email@example.com'}
                                                     className="w-full bg-slate-50 dark:bg-white/5 border border-slate-100 dark:border-white/5 rounded-xl px-4 py-4 text-xs font-bold outline-none focus:border-red-600 transition-colors"
                                                 />
-                                                <button className="absolute right-2 top-1/2 -translate-y-1/2 p-2.5 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all shadow-lg shadow-red-600/20">
+                                                <button
+                                                    onClick={handleSubscribe}
+                                                    className="absolute right-2 top-1/2 -translate-y-1/2 p-2.5 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all shadow-lg shadow-red-600/20"
+                                                >
                                                     <Share2 size={16} />
                                                 </button>
                                             </div>

@@ -112,11 +112,17 @@ const Footer = ({ language, onCategoryChange }) => {
                                         {language === 'hi' ? 'सोशल मीडिया' : 'SOCIAL CHANNELS'}
                                     </p>
                                     <div className="flex flex-wrap gap-3">
-                                        <button className="px-6 py-3 bg-red-600 text-white rounded-xl text-xs font-black uppercase tracking-widest shadow-lg shadow-red-600/20 hover:bg-red-700 transition-all flex items-center gap-2">
+                                        <button
+                                            onClick={() => window.open('https://whatsapp.com', '_blank')}
+                                            className="px-6 py-3 bg-red-600 text-white rounded-xl text-xs font-black uppercase tracking-widest shadow-lg shadow-red-600/20 hover:bg-red-700 transition-all flex items-center gap-2"
+                                        >
                                             <Send size={14} />
                                             WhatsApp
                                         </button>
-                                        <button className="px-6 py-3 bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-slate-100 dark:hover:bg-white/10 transition-all">
+                                        <button
+                                            onClick={() => window.open('https://instagram.com', '_blank')}
+                                            className="px-6 py-3 bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-slate-100 dark:hover:bg-white/10 transition-all"
+                                        >
                                             Instagram
                                         </button>
                                     </div>

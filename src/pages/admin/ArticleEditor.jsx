@@ -5,10 +5,17 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { useCategories, useArticle } from '../../hooks/useQueries';
 import { createArticle, updateArticle } from '../../services/api';
-import { adminTranslations } from '../../lib/adminTranslations';
+import { useAdminTranslation } from '../../context/AdminTranslationContext';
+import TransliteratedInput from '../../components/admin/TransliteratedInput';
 
-const ArticleEditor = ({ adminLanguage }) => {
-    const t = adminTranslations[adminLanguage || 'hi'] || adminTranslations.hi;
+const ArticleEditor = () => {
+    const { t, adminLang } = useAdminTranslation();
+    // Use adminLang from context for fallback logic if needed, but t() handles translation.
+    // However, the original code used `t` as an object. We need to adapt.
+    // If `t` from hook is a function `t(key)`, we need to check how it's used.
+    // Original: t.title
+    // Hook: t('title')
+    // I need to update all usages of `t.key` to `t('key')` as well.
     const { id } = useParams();
     const navigate = useNavigate();
     const location = useLocation();
@@ -17,6 +24,7 @@ const ArticleEditor = ({ adminLanguage }) => {
 
     const [loading, setLoading] = useState(false);
     const [activeTab, setActiveTab] = useState('content'); // content, seo, settings
+    const [isHindiTypingEnabled, setIsHindiTypingEnabled] = useState(false);
 
     // TanStack Query Hooks
     const { data: categories = [] } = useCategories();
@@ -191,11 +199,23 @@ const ArticleEditor = ({ adminLanguage }) => {
                 </div>
                 <div className="flex gap-3">
                     <button
+                        type="button"
+                        onClick={() => setIsHindiTypingEnabled(!isHindiTypingEnabled)}
+                        className={`px-4 py-2 rounded-lg font-bold border transition-all flex items-center gap-2 ${isHindiTypingEnabled
+                            ? 'bg-orange-600 text-white border-orange-600'
+                            : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700'
+                            }`}
+                    >
+                        <Type size={18} />
+                        {t.enable_hindi_typing || 'Hindi Typing'} {' '}
+                        {isHindiTypingEnabled ? '(ON)' : '(OFF)'}
+                    </button>
+                    <button
                         onClick={(e) => handleSubmit(e, 'DRAFT')}
                         disabled={loading}
                         className="px-4 py-2 bg-slate-600 text-white rounded-lg font-bold hover:bg-slate-700 transition-all disabled:opacity-50"
                     >
-                        {t.saveDraft}
+                        {t('save_draft') || 'Save Draft'}
                     </button>
                     <button
                         onClick={(e) => handleSubmit(e, 'PUBLISHED')}
@@ -203,7 +223,7 @@ const ArticleEditor = ({ adminLanguage }) => {
                         className="px-4 py-2 bg-red-600 text-white rounded-lg font-bold hover:bg-red-700 transition-all disabled:opacity-50 flex items-center gap-2"
                     >
                         <Save size={18} />
-                        {id ? t.edit : t.publish}
+                        {id ? t('edit') : t('publish')}
                     </button>
                 </div>
             </div>
@@ -211,9 +231,9 @@ const ArticleEditor = ({ adminLanguage }) => {
             {/* Tabs */}
             <div className="flex gap-2 border-b border-slate-200 dark:border-white/10">
                 {[
-                    { id: 'content', label: t.content, icon: <Type size={16} /> },
-                    { id: 'seo', label: t.seo, icon: <Globe size={16} /> },
-                    { id: 'settings', label: t.settings, icon: <Tag size={16} /> },
+                    { id: 'content', label: t('article_content'), icon: <Type size={16} /> },
+                    { id: 'seo', label: 'SEO', icon: <Globe size={16} /> },
+                    { id: 'settings', label: t('settings'), icon: <Tag size={16} /> },
                 ].map(tab => (
                     <button
                         key={tab.id}
@@ -236,14 +256,13 @@ const ArticleEditor = ({ adminLanguage }) => {
                         {/* Title */}
                         <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-white/5">
                             <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">
-                                {t.title} *
+                                {t('title')} *
                             </label>
-                            <input
-                                type="text"
-                                name="title"
+                            <TransliteratedInput
                                 value={formData.title}
+                                name="title"
                                 onChange={handleChange}
-                                required
+                                enabled={isHindiTypingEnabled}
                                 placeholder="Enter article title..."
                                 className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-white/10 rounded-xl outline-none focus:ring-2 ring-red-600 text-slate-900 dark:text-white text-lg font-bold"
                             />
@@ -252,7 +271,7 @@ const ArticleEditor = ({ adminLanguage }) => {
                         {/* Language Selector */}
                         <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-white/5">
                             <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">
-                                Article Language
+                                {t('language')}
                             </label>
                             <div className="flex gap-4">
                                 <label className={`flex-1 flex items-center justify-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all ${formData.language === 'en' ? 'border-red-600 bg-red-50 dark:bg-red-900/10 text-red-600' : 'border-slate-200 dark:border-slate-700 hover:border-slate-300'}`}>
@@ -303,7 +322,7 @@ const ArticleEditor = ({ adminLanguage }) => {
                         <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-white/5">
                             <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2 flex items-center gap-2">
                                 <ImageIcon size={16} />
-                                {t.featuredImage}
+                                {t('featured_image')}
                             </label>
                             <input
                                 type="url"
@@ -324,7 +343,7 @@ const ArticleEditor = ({ adminLanguage }) => {
                         <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-white/5">
                             <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2 flex items-center gap-2">
                                 <Upload size={16} />
-                                {t.videoUrl}
+                                {t('video_url')}
                             </label>
                             <input
                                 type="url"
@@ -339,7 +358,7 @@ const ArticleEditor = ({ adminLanguage }) => {
                         {/* Content Editor */}
                         <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-white/5">
                             <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-4">
-                                {t.content} *
+                                {t('article_content')} *
                             </label>
                             <div className="prose-editor">
                                 <ReactQuill
@@ -356,13 +375,15 @@ const ArticleEditor = ({ adminLanguage }) => {
                         {/* Excerpt */}
                         <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-white/5">
                             <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">
-                                {t.summary}
+                                {t('summary')}
                             </label>
-                            <textarea
-                                name="excerpt"
+                            <TransliteratedInput
                                 value={formData.excerpt}
+                                name="excerpt"
                                 onChange={handleChange}
-                                rows="3"
+                                enabled={isHindiTypingEnabled}
+                                isTextArea={true}
+                                rows={3}
                                 placeholder="Brief summary of the article..."
                                 className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-white/10 rounded-xl outline-none focus:ring-2 ring-red-600 text-slate-900 dark:text-white resize-none"
                             />

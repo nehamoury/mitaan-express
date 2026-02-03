@@ -111,6 +111,7 @@ model Category {
 model Tag {
   id       Int       @id @default(autoincrement())
   name     String    @unique
+  nameHi   String?   @unique
   slug     String    @unique
   articles Article[]
   blogs    Blog[]
@@ -172,12 +173,23 @@ enum CommentStatus {
 }
 
 model Media {
-  id        Int      @id @default(autoincrement())
-  filename  String
-  url       String
-  type      String
-  size      Int
-  createdAt DateTime @default(now())
+  id          Int       @id @default(autoincrement())
+  type        MediaType
+  title       String
+  description String?   @db.Text
+  url         String
+  thumbnail   String?
+  category    String?
+  filename    String?
+  size        String?
+  duration    String?
+  views       Int       @default(0)
+  isPublished Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  @@index([type])
+  @@index([isPublished])
 }
 
 model Advertisement {
@@ -240,8 +252,34 @@ model ActivityLog {
   @@index([userId])
 }
 
+
 model Setting {
   id    Int    @id @default(autoincrement())
   key   String @unique
   value String
 }
+
+model Media {
+  id          Int       @id @default(autoincrement())
+  type        MediaType
+  title       String
+  description String?   @db.Text
+  url         String
+  thumbnail   String?
+  category    String?
+  size        String?
+  duration    String?
+  views       Int       @default(0)
+  isPublished Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  @@index([type])
+  @@index([isPublished])
+}
+
+enum MediaType {
+  IMAGE
+  VIDEO
+}
+

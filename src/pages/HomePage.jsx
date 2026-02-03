@@ -10,6 +10,7 @@ import CreativeShowcase from '../components/CreativeShowcase';
 import VideoGalleryHero from '../components/VideoGalleryHero';
 import MustReadSlider from '../components/MustReadSlider';
 import { useArticles } from '../context/ArticlesContext';
+import AdSpace from '../components/AdSpace';
 
 const HomePage = ({ language }) => {
     const navigate = useNavigate();
@@ -84,6 +85,11 @@ const HomePage = ({ language }) => {
                         </div>
                     </div>
 
+                    {/* Ad Space - Top Banner */}
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <AdSpace position="homepage_top" />
+                    </div>
+
                     {/* Main Grid: Centered Content */}
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row gap-20">
                         <div className="flex-1 space-y-24">
@@ -111,7 +117,7 @@ const HomePage = ({ language }) => {
 
                     {/* In-Depth: Full Width Background, Centered Content */}
                     <div className="bg-slate-50 dark:bg-gray-900/40 py-24" data-aos="fade-up">
-                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div className="max-w-9xl mx-auto px-4 sm:px-6 lg:px-8">
                             <InDepthSection
                                 language={language}
                                 onCategoryChange={handleCategoryChange}
@@ -129,6 +135,7 @@ const HomePage = ({ language }) => {
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                         <VideoGalleryHero language={language} />
                     </div>
+
 
                     {/* MUST READ SECTION: Edge-to-Edge Full Width */}
                     <MustReadSlider language={language} onArticleClick={handleArticleClick} />

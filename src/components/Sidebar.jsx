@@ -62,7 +62,7 @@ const Sidebar = ({ language, showWeather = true }) => {
                 </div>
             </section>
 
-            <section className="bg-slate-900 dark:bg-white rounded-[40px] p-10 text-white dark:text-slate-900 space-y-8 relative overflow-hidden group">
+            <section className="bg-slate-900 dark:bg-white/5 border border-transparent dark:border-white/10 rounded-[40px] p-10 text-white space-y-8 relative overflow-hidden group">
                 <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform duration-700">
                     <ArrowUpRight size={120} />
                 </div>
@@ -70,10 +70,13 @@ const Sidebar = ({ language, showWeather = true }) => {
                     {language === 'hi' ? 'पूरी कहानी' : 'Go beyond'} <br />
                     <span className="text-red-600">{language === 'hi' ? 'आप तक लाते हैं' : 'the headline.'}</span>
                 </h2>
-                <p className="text-white/60 dark:text-slate-500 text-sm leading-relaxed font-medium relative z-10">
+                <p className="text-white/60 dark:text-white/60 text-sm leading-relaxed font-medium relative z-10">
                     {language === 'hi' ? 'हमारे विशेषज्ञों की गहन विश्लेषण रिपोर्ट के लिए सदस्य बनें।' : 'Subscribe to unlock in-depth analysis from our global newsroom.'}
                 </p>
-                <button className="w-full py-5 bg-red-600 text-white font-black text-[10px] uppercase tracking-[0.3em] rounded-2xl hover:bg-red-700 transition-all shadow-xl shadow-red-600/30 relative z-10">
+                <button
+                    onClick={() => window.location.href = '/login'}
+                    className="w-full py-5 bg-red-600 text-white font-black text-[10px] uppercase tracking-[0.3em] rounded-2xl hover:bg-red-700 transition-all shadow-xl shadow-red-600/30 relative z-10"
+                >
                     {language === 'hi' ? 'सदस्य बनें' : 'Join Now'}
                 </button>
             </section>

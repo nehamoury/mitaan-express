@@ -155,12 +155,20 @@ const ArticleList = ({ adminLanguage }) => {
 
     if (loading) return <div className="p-8 text-center text-slate-500">{adminLanguage === 'hi' ? 'लेख लोड हो रहे हैं...' : 'Loading articles...'}</div>;
 
+    const currentCategoryName = React.useMemo(() => {
+        if (categoryFilter === 'ALL') return null;
+        const cat = categories.find(c => c.id == categoryFilter);
+        return cat ? (adminLanguage === 'hi' ? cat.nameHi : cat.name) : null;
+    }, [categoryFilter, categories, adminLanguage]);
+
     return (
         <div className="p-4 lg:p-8 space-y-6">
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
-                    <h2 className="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight">Articles</h2>
+                    <h2 className="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight">
+                        {currentCategoryName ? `${t.articles}: ${currentCategoryName}` : t.articles}
+                    </h2>
                     <p className="text-sm text-slate-500 dark:text-slate-400">
                         {stats.total} total • {stats.published} published • {stats.draft} drafts
                         {stats.selected > 0 && ` • ${stats.selected} selected`}

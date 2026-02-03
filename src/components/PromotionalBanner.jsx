@@ -46,11 +46,17 @@ const PromotionalBanner = ({ language }) => {
                 </p>
 
                 <div className="flex items-center gap-6 pt-4">
-                    <button className="bg-red-600 hover:bg-red-700 text-white px-10 py-5 font-black text-xs uppercase tracking-widest transition-all rounded-xl flex items-center gap-3 group/btn shadow-xl shadow-red-600/20">
+                    <button
+                        onClick={() => window.location.href = '/category/poetry'}
+                        className="bg-red-600 hover:bg-red-700 text-white px-10 py-5 font-black text-xs uppercase tracking-widest transition-all rounded-xl flex items-center gap-3 group/btn shadow-xl shadow-red-600/20"
+                    >
                         {language === 'hi' ? 'काव्य पढ़ें' : 'READ POETRY'}
                         <ArrowRight size={18} className="group-hover/btn:translate-x-1 transition-transform" />
                     </button>
-                    <button className="text-slate-500 dark:text-white/60 hover:text-slate-900 dark:hover:text-white font-black text-xs uppercase tracking-widest border-b-2 border-slate-200 dark:border-white/10 hover:border-red-600 pb-1 transition-all">
+                    <button
+                        onClick={() => window.location.href = '/about'}
+                        className="text-slate-500 dark:text-white/60 hover:text-slate-900 dark:hover:text-white font-black text-xs uppercase tracking-widest border-b-2 border-slate-200 dark:border-white/10 hover:border-red-600 pb-1 transition-all"
+                    >
                         {language === 'hi' ? 'और जानें' : 'LEARN MORE'}
                     </button>
                 </div>

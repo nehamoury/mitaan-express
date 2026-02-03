@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Play, Clock, MessageSquare, User, ChevronUp, ChevronDown } from 'lucide-react';
+import { Play, Clock, MessageSquare, User, ChevronUp, ChevronDown, X } from 'lucide-react';
 import { useArticles } from '../context/ArticlesContext';
 
 const VideoGalleryHero = ({ language }) => {
     const [activeIndex, setActiveIndex] = useState(0);
     const [startIndex, setStartIndex] = useState(0);
+    const [isPlaying, setIsPlaying] = useState(false);
     const { videos: videoArticles, loading } = useArticles();
 
     // Map video articles to component format
@@ -17,7 +18,7 @@ const VideoGalleryHero = ({ language }) => {
             time: new Date(a.createdAt).toLocaleDateString(),
             comments: 0,
             image: a.image || 'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&q=80&w=1600',
-            duration: "00:00",
+            duration: a.metadata?.duration || "00:00",
             url: a.videoUrl
         }))
         : [{
@@ -27,7 +28,8 @@ const VideoGalleryHero = ({ language }) => {
             time: "7d ago",
             comments: 23,
             image: "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&q=80&w=1600",
-            duration: "12:45"
+            duration: "12:45",
+            url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
         }];
 
     if (videos.length === 0) return null;
@@ -45,6 +47,15 @@ const VideoGalleryHero = ({ language }) => {
         if (startIndex > 0) {
             setStartIndex(prev => prev - 1);
         }
+    };
+
+    const getVideoEmbedUrl = (url) => {
+        if (!url) return null;
+        const youtubeMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/);
+        if (youtubeMatch) return `https://www.youtube.com/embed/${youtubeMatch[1]}?autoplay=1`;
+        const vimeoMatch = url.match(/vimeo\.com\/(\d+)/);
+        if (vimeoMatch) return `https://player.vimeo.com/video/${vimeoMatch[1]}?autoplay=1`;
+        return url;
     };
 
     return (
@@ -65,37 +76,60 @@ const VideoGalleryHero = ({ language }) => {
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 h-[600px] lg:h-[550px]">
                 {/* Main Video Area */}
-                <div className="lg:col-span-8 relative rounded-2xl overflow-hidden group h-full bg-neutral-900">
-                    <img
-                        src={activeVideo.image}
-                        alt={activeVideo.title}
-                        className="w-full h-full object-cover opacity-80 group-hover:opacity-60 transition-opacity duration-500"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
-
-                    {/* Play Button */}
-                    <div className="absolute inset-0 flex items-center justify-center">
-                        <button className="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300 border border-white/50">
-                            <Play size={40} className="ml-2 text-white fill-white" />
-                        </button>
-                    </div>
-
-                    {/* Content Overlay */}
-                    <div className="absolute bottom-0 left-0 p-8 w-full">
-                        <h1 className="text-3xl md:text-4xl lg:text-5xl font-black font-serif leading-tight mb-4 line-clamp-2">
-                            {activeVideo.title}
-                        </h1>
-                        <div className="flex items-center gap-6 text-sm font-medium text-white/70">
-                            <div className="flex items-center gap-2">
-                                <div className="w-8 h-8 rounded-full bg-gray-700 overflow-hidden">
-                                    <User size={20} className="w-full h-full p-1" />
-                                </div>
-                                <span className="text-white font-bold">{activeVideo.author}</span>
-                            </div>
-                            <span className="flex items-center gap-1"><Clock size={14} /> {activeVideo.time}</span>
-                            <span className="flex items-center gap-1"><MessageSquare size={14} /> {activeVideo.comments}</span>
+                <div className="lg:col-span-8 relative rounded-2xl overflow-hidden group h-full bg-neutral-900 border border-slate-200 dark:border-white/5 shadow-2xl">
+                    {isPlaying ? (
+                        <div className="w-full h-full relative">
+                            <iframe
+                                src={getVideoEmbedUrl(activeVideo.url)}
+                                title={activeVideo.title}
+                                className="w-full h-full"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowFullScreen
+                            />
+                            <button
+                                onClick={() => setIsPlaying(false)}
+                                className="absolute top-4 right-4 bg-black/50 hover:bg-black/80 text-white p-2 rounded-full backdrop-blur-md transition-all z-10"
+                            >
+                                <X size={20} />
+                            </button>
                         </div>
-                    </div>
+                    ) : (
+                        <>
+                            <img
+                                src={activeVideo.image}
+                                alt={activeVideo.title}
+                                className="w-full h-full object-cover opacity-80 group-hover:opacity-60 transition-opacity duration-500"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
+
+                            {/* Play Button */}
+                            <div className="absolute inset-0 flex items-center justify-center">
+                                <button
+                                    onClick={() => setIsPlaying(true)}
+                                    className="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300 border border-white/50 active:scale-95 shadow-2xl shadow-white/10"
+                                >
+                                    <Play size={40} className="ml-2 text-white fill-white" />
+                                </button>
+                            </div>
+
+                            {/* Content Overlay */}
+                            <div className="absolute bottom-0 left-0 p-8 w-full">
+                                <h1 className="text-3xl md:text-4xl lg:text-5xl font-black font-serif leading-tight mb-4 line-clamp-2 text-white">
+                                    {activeVideo.title}
+                                </h1>
+                                <div className="flex items-center gap-6 text-sm font-medium text-white/70">
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-8 h-8 rounded-full bg-gray-700 overflow-hidden border border-white/20">
+                                            <User size={20} className="w-full h-full p-1" />
+                                        </div>
+                                        <span className="text-white font-bold">{activeVideo.author}</span>
+                                    </div>
+                                    <span className="flex items-center gap-1 text-slate-300"><Clock size={14} /> {activeVideo.time}</span>
+                                    <span className="flex items-center gap-1 text-slate-300"><MessageSquare size={14} /> {activeVideo.comments}</span>
+                                </div>
+                            </div>
+                        </>
+                    )}
                 </div>
 
                 {/* Right Playlist Sidebar */}
@@ -117,7 +151,10 @@ const VideoGalleryHero = ({ language }) => {
                                     initial={{ opacity: 0, x: 50 }}
                                     animate={{ opacity: 1, x: 0 }}
                                     exit={{ opacity: 0, x: 50 }}
-                                    onClick={() => setActiveIndex(videos.findIndex(v => v.id === video.id))}
+                                    onClick={() => {
+                                        setActiveIndex(videos.findIndex(v => v.id === video.id));
+                                        setIsPlaying(false);
+                                    }}
                                     className={`relative flex gap-4 p-3 rounded-xl cursor-pointer transition-all border group ${activeVideo.id === video.id ? 'bg-red-50 dark:bg-white/10 border-red-600' : 'bg-slate-50 dark:bg-white/5 border-transparent hover:bg-slate-100 dark:hover:bg-white/10'}`}
                                 >
                                     <div className="w-32 h-20 rounded-lg overflow-hidden shrink-0 relative">

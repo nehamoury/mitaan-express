@@ -11,7 +11,7 @@ const HeroSlider = ({ language }) => {
 
     // Map featured articles to slides format
     const slides = featured.length > 0
-        ? featured.slice(0, 5).map(a => ({
+        ? featured.slice(0, 2).map(a => ({
             id: a.id,
             tag: a.category?.name || 'FEATURED',
             title: a.title,

@@ -1,73 +1,48 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Image as ImageIcon, ZoomIn, X } from 'lucide-react';
-
-const galleryImages = [
-    {
-        id: 1,
-        title: "Mountain Sunrise",
-        category: "Nature",
-        image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&q=80&w=800"
-    },
-    {
-        id: 2,
-        title: "City Lights",
-        category: "Urban",
-        image: "https://images.unsplash.com/photo-1514565131-fce0801e5785?auto=format&fit=crop&q=80&w=800"
-    },
-    {
-        id: 3,
-        title: "Ocean Waves",
-        category: "Nature",
-        image: "https://images.unsplash.com/photo-1505142468610-359e7d316be0?auto=format&fit=crop&q=80&w=800"
-    },
-    {
-        id: 4,
-        title: "Desert Dunes",
-        category: "Landscape",
-        image: "https://images.unsplash.com/photo-1509316785289-025f5b846b35?auto=format&fit=crop&q=80&w=800"
-    },
-    {
-        id: 5,
-        title: "Forest Path",
-        category: "Nature",
-        image: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&q=80&w=800"
-    },
-    {
-        id: 6,
-        title: "Northern Lights",
-        category: "Sky",
-        image: "https://images.unsplash.com/photo-1531366936337-7c912a4589a7?auto=format&fit=crop&q=80&w=800"
-    },
-    {
-        id: 7,
-        title: "Urban Architecture",
-        category: "Urban",
-        image: "https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?auto=format&fit=crop&q=80&w=800"
-    },
-    {
-        id: 8,
-        title: "Sunset Beach",
-        category: "Nature",
-        image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=800"
-    },
-    {
-        id: 9,
-        title: "Mountain Lake",
-        category: "Landscape",
-        image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&q=80&w=800"
-    }
-];
+import { usePublicMedia, useIncrementViews } from '../hooks/useMedia';
 
 const GalleryPage = ({ language }) => {
     const [selectedImage, setSelectedImage] = useState(null);
     const [filter, setFilter] = useState('All');
 
-    const categories = ['All', 'Nature', 'Urban', 'Landscape', 'Sky'];
+    // Fetch images from API
+    const { data: mediaData = [], isLoading } = usePublicMedia('IMAGE');
+    const incrementViewsMutation = useIncrementViews();
+
+    // Extract unique categories
+    const categories = useMemo(() => {
+        const cats = ['All'];
+        mediaData.forEach(item => {
+            if (item.category && !cats.includes(item.category)) {
+                cats.push(item.category);
+            }
+        });
+        return cats;
+    }, [mediaData]);
 
     const filteredImages = filter === 'All'
-        ? galleryImages
-        : galleryImages.filter(img => img.category === filter);
+        ? mediaData
+        : mediaData.filter(img => img.category === filter);
+
+    const handleImageClick = (image) => {
+        setSelectedImage(image);
+        incrementViewsMutation.mutate(image.id);
+    };
+
+    if (isLoading) {
+        return (
+            <div className="min-h-screen bg-white dark:bg-[#030712] flex items-center justify-center">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-16 w-16 border-4 border-red-600 border-t-transparent mx-auto mb-4"></div>
+                    <p className="text-slate-600 dark:text-slate-400 font-medium">
+                        {language === 'hi' ? 'गैलरी लोड हो रही है...' : 'Loading gallery...'}
+                    </p>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-white dark:bg-[#030712] py-12">
@@ -77,8 +52,7 @@ const GalleryPage = ({ language }) => {
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="flex items-center gap-4"
-                    >
+                        className="flex items-center gap-4">
                         <div className="w-16 h-16 bg-red-600 rounded-2xl flex items-center justify-center">
                             <ImageIcon size={32} className="text-white" />
                         </div>
@@ -111,35 +85,51 @@ const GalleryPage = ({ language }) => {
 
                 {/* Gallery Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {filteredImages.map((image, index) => (
-                        <motion.div
-                            key={image.id}
-                            initial={{ opacity: 0, scale: 0.9 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            transition={{ delay: index * 0.05 }}
-                            onClick={() => setSelectedImage(image)}
-                            className="group relative aspect-square rounded-3xl overflow-hidden cursor-pointer shadow-xl hover:shadow-2xl transition-all"
-                        >
-                            <img
-                                src={image.image}
-                                alt={image.title}
-                                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                <div className="absolute bottom-0 left-0 right-0 p-6 space-y-2">
-                                    <span className="text-xs font-black text-red-500 uppercase tracking-widest">
-                                        {image.category}
-                                    </span>
-                                    <h3 className="text-xl font-bold text-white font-serif">
-                                        {image.title}
-                                    </h3>
+                    {filteredImages.length === 0 ? (
+                        <div className="col-span-full text-center py-20">
+                            <ImageIcon size={64} className="mx-auto text-slate-300 dark:text-slate-700 mb-4" />
+                            <p className="text-slate-500 dark:text-slate-400 font-medium">
+                                {language === 'hi' ? 'कोई छवि नहीं मिली' : 'No images found'}
+                            </p>
+                        </div>
+                    ) : (
+                        filteredImages.map((image, index) => (
+                            <motion.div
+                                key={image.id}
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                transition={{ delay: index * 0.05 }}
+                                onClick={() => handleImageClick(image)}
+                                className="group relative aspect-square rounded-3xl overflow-hidden cursor-pointer shadow-xl hover:shadow-2xl transition-all"
+                            >
+                                <img
+                                    src={image.url}
+                                    alt={image.title}
+                                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                    <div className="absolute bottom-0 left-0 right-0 p-6 space-y-2">
+                                        {image.category && (
+                                            <span className="text-xs font-black text-red-500 uppercase tracking-widest">
+                                                {image.category}
+                                            </span>
+                                        )}
+                                        <h3 className="text-xl font-bold text-white font-serif">
+                                            {image.title}
+                                        </h3>
+                                        {image.description && (
+                                            <p className="text-sm text-white/70 line-clamp-2">
+                                                {image.description}
+                                            </p>
+                                        )}
+                                    </div>
+                                    <div className="absolute top-4 right-4 w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
+                                        <ZoomIn size={20} className="text-white" />
+                                    </div>
                                 </div>
-                                <div className="absolute top-4 right-4 w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
-                                    <ZoomIn size={20} className="text-white" />
-                                </div>
-                            </div>
-                        </motion.div>
-                    ))}
+                            </motion.div>
+                        ))
+                    )}
                 </div>
 
                 {/* Lightbox */}
@@ -160,7 +150,7 @@ const GalleryPage = ({ language }) => {
                         <motion.img
                             initial={{ scale: 0.8 }}
                             animate={{ scale: 1 }}
-                            src={selectedImage.image}
+                            src={selectedImage.url}
                             alt={selectedImage.title}
                             className="max-w-full max-h-[90vh] object-contain rounded-2xl"
                             onClick={(e) => e.stopPropagation()}

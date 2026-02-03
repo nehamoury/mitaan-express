@@ -7,12 +7,13 @@ import {
     PenTool, Film, Heart as HeartIcon
 } from 'lucide-react';
 import { fetchCategories } from '../../services/api';
-import { adminTranslations } from '../../lib/adminTranslations';
 
-const AdminSidebar = ({ isSidebarOpen, setIsSidebarOpen, handleLogout, theme, toggleTheme, adminLanguage, setAdminLanguage }) => {
-    const t = adminTranslations[adminLanguage] || adminTranslations.en;
+import { useAdminTranslation } from '../../context/AdminTranslationContext';
+
+const AdminSidebar = ({ isSidebarOpen, setIsSidebarOpen, handleLogout, theme, toggleTheme }) => {
+    const { t, adminLang, toggleAdminLang } = useAdminTranslation();
     const [categories, setCategories] = useState([]);
-    const [isArticlesExpanded, setIsArticlesExpanded] = useState(true);
+    const [isArticlesExpanded, setIsArticlesExpanded] = useState(false);
     const [expandedCategories, setExpandedCategories] = useState({});
 
     const location = useLocation();
@@ -65,17 +66,17 @@ const AdminSidebar = ({ isSidebarOpen, setIsSidebarOpen, handleLogout, theme, to
     };
 
     const navItems = [
-        { name: t.dashboard, path: '/admin', icon: <LayoutDashboard size={18} />, end: true },
-        { name: t.articles, path: '/admin/articles', icon: <FileText size={18} /> },
-        { name: t.myBlogs, path: '/admin/my-blogs', icon: <FileText size={18} /> },
-        { name: t.categories, path: '/admin/categories', icon: <FolderTree size={18} /> },
-        { name: t.featured, path: '/admin/featured', icon: <Star size={18} /> },
-        { name: t.comments, path: '/admin/comments', icon: <MessageSquare size={18} /> },
-        { name: t.analytics, path: '/admin/analytics', icon: <BarChart3 size={18} /> },
-        { name: t.activityLogs || 'Activity Logs', path: '/admin/activity', icon: <Activity size={18} /> },
-        { name: t.users, path: '/admin/users', icon: <Users size={18} /> },
-        { name: t.mediaLibrary || 'Media Library', path: '/admin/media', icon: <ImageIcon size={18} /> },
-        { name: t.settings, path: '/admin/settings', icon: <Settings size={18} /> },
+        { name: t('dashboard'), path: '/admin', icon: <LayoutDashboard size={18} />, end: true },
+        { name: t('articles'), path: '/admin/articles', icon: <FileText size={18} /> },
+        { name: t('myBlogs'), path: '/admin/my-blogs', icon: <FileText size={18} /> },
+        { name: t('categories'), path: '/admin/categories', icon: <FolderTree size={18} /> },
+        { name: t('featured'), path: '/admin/featured', icon: <Star size={18} /> },
+        { name: t('comments'), path: '/admin/comments', icon: <MessageSquare size={18} /> },
+        { name: t('analytics'), path: '/admin/analytics', icon: <BarChart3 size={18} /> },
+        { name: t('activityLogs') || 'Activity Logs', path: '/admin/activity', icon: <Activity size={18} /> },
+        { name: t('users'), path: '/admin/users', icon: <Users size={18} /> },
+        { name: t('mediaLibrary') || 'Media Library', path: '/admin/media', icon: <ImageIcon size={18} /> },
+        { name: t('settings'), path: '/admin/settings', icon: <Settings size={18} /> },
     ];
 
     const activeClass = "bg-red-50 dark:bg-red-900/10 text-red-600 border-r-4 border-red-600 shadow-[inset_-4px_0_0_0_#ef4444]";
@@ -113,12 +114,12 @@ const AdminSidebar = ({ isSidebarOpen, setIsSidebarOpen, handleLogout, theme, to
                             className={({ isActive }) => `group w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all text-sm ${isActive ? activeClass : inactiveClass}`}
                         >
                             <LayoutDashboard size={18} className="transition-transform group-hover:scale-110" />
-                            {t.dashboard}
+                            {t('dashboard')}
                         </NavLink>
 
                         {/* News Feed Section Label */}
                         <div className="px-4 py-2 mt-4 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.3em]">
-                            {t.content || 'Content Management'}
+                            {t('content') || 'Content Management'}
                         </div>
 
                         {/* Hierarchical Articles Section */}
@@ -129,7 +130,7 @@ const AdminSidebar = ({ isSidebarOpen, setIsSidebarOpen, handleLogout, theme, to
                             >
                                 <div className="flex items-center gap-3">
                                     <FileText size={18} />
-                                    {isArticlesExpanded ? (activeCategoryName || t.articles) : t.articles}
+                                    {isArticlesExpanded ? (activeCategoryName || t('articles')) : t('articles')}
                                 </div>
                                 {isArticlesExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
                             </button>
@@ -143,7 +144,7 @@ const AdminSidebar = ({ isSidebarOpen, setIsSidebarOpen, handleLogout, theme, to
                                         className={({ isActive }) => `w-full flex items-center gap-3 px-4 py-2.5 rounded-xl font-bold transition-all text-xs uppercase tracking-tighter ${isActive ? "text-red-600 bg-red-50 dark:bg-red-900/10 shadow-[inset_0_0_0_1px_rgba(239,68,68,0.2)]" : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"}`}
                                     >
                                         <Activity size={14} />
-                                        {t.showAllStories || 'Show All Stories'}
+                                        {t('showAllStories') || 'Show All Stories'}
                                     </NavLink>
 
                                     <div className="my-2 border-t border-slate-50 dark:border-white/5 mx-2" />
@@ -188,7 +189,7 @@ const AdminSidebar = ({ isSidebarOpen, setIsSidebarOpen, handleLogout, theme, to
 
                         {/* Other Items */}
                         <div className="px-4 py-2 mt-4 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.3em]">
-                            {t.system || 'System & More'}
+                            {t('system') || 'System & More'}
                         </div>
 
                         {navItems.filter(item => item.name !== 'Dashboard' && item.name !== 'Articles').map((item) => (
@@ -243,16 +244,12 @@ const AdminSidebar = ({ isSidebarOpen, setIsSidebarOpen, handleLogout, theme, to
 
                         <div className="grid grid-cols-3 gap-2">
                             <button
-                                onClick={() => {
-                                    const newLang = adminLanguage === 'en' ? 'hi' : 'en';
-                                    setAdminLanguage(newLang);
-                                    localStorage.setItem('adminLanguage', newLang);
-                                }}
+                                onClick={toggleAdminLang}
                                 className="flex flex-col items-center justify-center p-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/10 hover:bg-slate-100 dark:hover:bg-slate-700/50 transition-all group"
-                                title={t.changeLanguage}
+                                title={t('changeLanguage')}
                             >
                                 <Globe size={18} className="text-blue-500 group-hover:scale-110 transition-transform" />
-                                <span className="text-[9px] font-bold text-slate-500 mt-1">{adminLanguage === 'en' ? 'EN' : 'हिं'}</span>
+                                <span className="text-[9px] font-bold text-slate-500 mt-1">{adminLang === 'en' ? 'EN' : 'हिं'}</span>
                             </button>
 
                             <button
@@ -267,10 +264,10 @@ const AdminSidebar = ({ isSidebarOpen, setIsSidebarOpen, handleLogout, theme, to
                             <button
                                 onClick={handleLogout}
                                 className="flex flex-col items-center justify-center p-2 rounded-xl bg-red-50 dark:bg-red-900/10 border border-red-100 dark:border-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/20 transition-all group"
-                                title={t.logout}
+                                title={t('logout')}
                             >
                                 <LogOut size={18} className="text-red-600 group-hover:scale-110 transition-transform" />
-                                <span className="text-[9px] font-bold text-red-600 mt-1">{t.logout}</span>
+                                <span className="text-[9px] font-bold text-red-600 mt-1">{t('logout')}</span>
                             </button>
                         </div>
                     </div>
