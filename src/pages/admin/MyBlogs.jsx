@@ -3,10 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import { FileText, Trash2, Edit, Eye, Filter, CheckSquare, Square, Search } from 'lucide-react';
 import { useAdminBlogs } from '../../hooks/useQueries';
 import { deleteBlog } from '../../services/api';
-import { adminTranslations } from '../../lib/adminTranslations';
+import { useAdminTranslation } from '../../context/AdminTranslationContext';
 
-const MyBlogs = ({ adminLanguage }) => {
-    const t = adminTranslations[adminLanguage || 'hi'] || adminTranslations.hi;
+const MyBlogs = () => {
+    const { t, adminLang: adminLanguage } = useAdminTranslation();
     const [searchTerm, setSearchTerm] = useState('');
     const [statusFilter, setStatusFilter] = useState('ALL');
     const [selectedArticles, setSelectedArticles] = useState([]);
@@ -45,7 +45,7 @@ const MyBlogs = ({ adminLanguage }) => {
         <div className="p-4 lg:p-8 space-y-6">
             <div className="flex items-center justify-between">
                 <div>
-                    <h2 className="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight">{t.myBlogs}</h2>
+                    <h2 className="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight">{t('myBlogs')}</h2>
                     <p className="text-sm text-slate-500 dark:text-slate-400">
                         {adminLanguage === 'hi' ? 'अपने व्यक्तिगत लेखों और ड्राफ्ट को व्यवस्थित करें' : 'Manage your personal articles and drafts'}
                     </p>
@@ -55,7 +55,7 @@ const MyBlogs = ({ adminLanguage }) => {
                     className="px-4 py-2 bg-red-600 text-white rounded-lg font-bold hover:bg-red-700 transition-all flex items-center gap-2"
                 >
                     <FileText size={18} />
-                    {t.addNew}
+                    {t('addNew')}
                 </button>
             </div>
 
@@ -86,12 +86,12 @@ const MyBlogs = ({ adminLanguage }) => {
                     <table className="w-full text-left border-collapse">
                         <thead className="bg-slate-50 dark:bg-slate-900/50">
                             <tr>
-                                <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider">{t.title}</th>
-                                <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider">{t.categories}</th>
-                                <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider">{t.status}</th>
-                                <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider">{t.views}</th>
-                                <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider">{t.date}</th>
-                                <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider">{t.actions}</th>
+                                <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider">{t('title')}</th>
+                                <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider">{t('categories')}</th>
+                                <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider">{t('status')}</th>
+                                <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider">{t('views')}</th>
+                                <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider">{t('date')}</th>
+                                <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider">{t('actions')}</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100 dark:divide-white/5">

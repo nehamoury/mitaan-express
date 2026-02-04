@@ -1,7 +1,7 @@
 export const adminTranslations = {
     // English
     en: {
-        // Sidebar
+        // Sidebar & Navigation
         dashboard: "Dashboard",
         articles: "Articles",
         add_article: "Add Article",
@@ -9,6 +9,7 @@ export const adminTranslations = {
         categories: "Categories",
         tags: "Tags",
         media: "Media Library",
+        mediaLibrary: "Media Library",
         comments: "Comments",
         users: "Users",
         reports: "Reports",
@@ -22,9 +23,19 @@ export const adminTranslations = {
         content: "Content Management",
         showAllStories: "Show All Stories",
         changeLanguage: "Change Language",
+        welcomeBack: "Welcome back",
+        recentActivity: "Recent Activity",
+
+        // Stats & Dashboard
+        totalArticles: "Total Articles",
+        views: "Total Views",
+        activeUsers: "Active Users",
+        breakingNews: "Breaking News",
+        trending: "Trending",
 
         // Commons
         save: "Save",
+        update: "Update",
         cancel: "Cancel",
         edit: "Edit",
         delete: "Delete",
@@ -32,25 +43,38 @@ export const adminTranslations = {
         actions: "Actions",
         status: "Status",
         date: "Date",
+        addNew: "Add New",
+        author: "Author",
+        publish: "Publish",
+        saveDraft: "Save Draft",
 
         // Article Editor
         article_title: "Article Title",
         article_content: "Content",
         excerpt: "Excerpt / Short Description",
         featured_image: "Featured Image",
-        publish: "Publish",
-        save_draft: "Save Draft",
+        featuredImage: "Featured Image",
         language: "Language",
         typing_language: "Typing Language",
         enable_hindi_typing: "Enable Hindi Typing",
         title: "Title",
         summary: "Summary",
-        video_url: "Video URL"
+        video_url: "Video URL",
+        videoUrl: "Video URL",
+        seo: "SEO & Meta",
+        metaTitle: "Meta Title",
+        metaDescription: "Meta Description",
+        metaKeywords: "Meta Keywords",
+        priority: "Priority",
+        publishDate: "Publish Date",
+        lockedCategory: "Locked to current category",
+        createArticle: "Create New Article",
+        editArticle: "Edit Article"
     },
 
     // Hindi
     hi: {
-        // Sidebar
+        // Sidebar & Navigation
         dashboard: "डैशबोर्ड",
         articles: "लेख (Articles)",
         add_article: "नया लेख जोड़ें",
@@ -58,6 +82,7 @@ export const adminTranslations = {
         categories: "श्रेणियाँ (Categories)",
         tags: "टैग्स",
         media: "मीडिया लाइब्रेरी",
+        mediaLibrary: "मीडिया लाइब्रेरी",
         comments: "टिप्पणियाँ",
         users: "उपयोगकर्ता (Users)",
         reports: "रिपोर्ट्स",
@@ -71,9 +96,19 @@ export const adminTranslations = {
         content: "कंटेंट प्रबंधन",
         showAllStories: "सभी कहानियाँ देखें",
         changeLanguage: "भाषा बदलें",
+        welcomeBack: "आपका स्वागत है",
+        recentActivity: "हाल की गतिविधि",
+
+        // Stats & Dashboard
+        totalArticles: "कुल लेख",
+        views: "कुल व्यूज",
+        activeUsers: "सक्रिय उपयोगकर्ता",
+        breakingNews: "ब्रेकिंग न्यूज़",
+        trending: "ट्रेंडिंग",
 
         // Commons
         save: "सेव करें",
+        update: "अपडेट करें",
         cancel: "रद्द करें",
         edit: "संपादित करें",
         delete: "हटाएं",
@@ -81,19 +116,32 @@ export const adminTranslations = {
         actions: "कार्रवाई",
         status: "स्थिति",
         date: "दिनांक",
+        addNew: "नया जोड़ें",
+        author: "लेखक",
+        publish: "प्रकाशित करें",
+        saveDraft: "ड्राफ्ट सेव करें",
 
         // Article Editor
         article_title: "लेख का शीर्षक",
         article_content: "सामग्री (Content)",
         excerpt: "संक्षिप्त विवरण (Excerpt)",
         featured_image: "मुख्य तस्वीर",
-        publish: "प्रकाशित करें",
-        save_draft: "ड्राफ्ट सेव करें",
+        featuredImage: "फीचर्ड इमेज",
         language: "भाषा",
         typing_language: "टाइपिंग भाषा",
         enable_hindi_typing: "हिंदी टाइपिंग चालू करें",
         title: "शीर्षक",
         summary: "सारांश",
-        video_url: "वीडियो URL"
+        video_url: "वीडियो URL",
+        videoUrl: "वीडियो URL",
+        seo: "SEO और मेटा",
+        metaTitle: "मेटा शीर्षक",
+        metaDescription: "मेटा विवरण",
+        metaKeywords: "मेटा कीवर्ड",
+        priority: "प्राथमिकता",
+        publishDate: "प्रकाशन की तारीख",
+        lockedCategory: "वर्तमान श्रेणी के लिए लॉक किया गया",
+        createArticle: "नया लेख बनाएँ",
+        editArticle: "लेख संपादित करें"
     }
 };

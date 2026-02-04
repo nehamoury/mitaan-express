@@ -5,7 +5,7 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { useCategories, useBlog } from '../../hooks/useQueries';
 import { createBlog, updateBlog } from '../../services/api';
-import { adminTranslations } from '../../lib/adminTranslations';
+import { useAdminTranslation } from '../../context/AdminTranslationContext';
 
 class ErrorBoundary extends React.Component {
     constructor(props) {
@@ -20,8 +20,8 @@ class ErrorBoundary extends React.Component {
     }
 }
 
-const BlogEditorContent = ({ adminLanguage }) => {
-    const t = adminTranslations[adminLanguage || 'hi'] || adminTranslations.hi;
+const BlogEditorContent = () => {
+    const { t, adminLang: adminLanguage } = useAdminTranslation();
     const { id } = useParams();
     const navigate = useNavigate();
 
@@ -127,7 +127,7 @@ const BlogEditorContent = ({ adminLanguage }) => {
         ],
     };
 
-    if (!t) return <div>Loading translations...</div>;
+
 
     return (
         <div className="max-w-5xl mx-auto p-4 lg:p-8 space-y-6">
@@ -141,7 +141,7 @@ const BlogEditorContent = ({ adminLanguage }) => {
                     </button>
                     <div>
                         <h2 className="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight">
-                            {id ? (t.editArticle || 'Edit Blog') : (t.createArticle || 'Write New Blog')}
+                            {id ? (t('editArticle') || 'Edit Blog') : (t('createArticle') || 'Write New Blog')}
                         </h2>
                     </div>
                 </div>
@@ -151,14 +151,14 @@ const BlogEditorContent = ({ adminLanguage }) => {
                         disabled={loading}
                         className="px-4 py-2 text-slate-600 dark:text-slate-400 font-bold hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-all"
                     >
-                        {t.saveDraft || 'Save Draft'}
+                        {t('saveDraft') || 'Save Draft'}
                     </button>
                     <button
                         onClick={(e) => handleSubmit(e, 'PUBLISHED')}
                         disabled={loading}
                         className="px-6 py-2 bg-black dark:bg-white text-white dark:text-black rounded-full font-black hover:opacity-90 transition-all flex items-center gap-2"
                     >
-                        {id ? (t.update || 'Update') : (t.publish || 'Publish')}
+                        {id ? (t('update') || 'Update') : (t('publish') || 'Publish')}
                     </button>
                 </div>
             </div>
@@ -170,7 +170,7 @@ const BlogEditorContent = ({ adminLanguage }) => {
                         name="title"
                         value={formData.title}
                         onChange={handleChange}
-                        placeholder={t.title || "Title"}
+                        placeholder={t('title') || "Title"}
                         className="w-full text-4xl font-black bg-transparent border-none outline-none placeholder:text-slate-300 dark:placeholder:text-slate-700 text-slate-900 dark:text-white"
                     />
 
@@ -188,10 +188,10 @@ const BlogEditorContent = ({ adminLanguage }) => {
 
                 <div className="space-y-6">
                     <div className="bg-slate-50 dark:bg-slate-900/50 p-6 rounded-2xl border border-slate-100 dark:border-white/5 space-y-4">
-                        <h3 className="font-bold text-slate-900 dark:text-white">{t.settings || 'Settings'}</h3>
+                        <h3 className="font-bold text-slate-900 dark:text-white">{t('settings') || 'Settings'}</h3>
 
                         <div>
-                            <label className="block text-xs font-bold text-slate-500 uppercase mb-2">{t.featuredImage || 'Featured Image'}</label>
+                            <label className="block text-xs font-bold text-slate-500 uppercase mb-2">{t('featuredImage') || 'Featured Image'}</label>
                             <div className="relative group">
                                 <input
                                     type="url"
@@ -208,7 +208,7 @@ const BlogEditorContent = ({ adminLanguage }) => {
                         </div>
 
                         <div>
-                            <label className="block text-xs font-bold text-slate-500 uppercase mb-2">{t.categories || 'Category'}</label>
+                            <label className="block text-xs font-bold text-slate-500 uppercase mb-2">{t('categories') || 'Category'}</label>
                             <select
                                 name="categoryId"
                                 value={formData.categoryId}
@@ -223,7 +223,7 @@ const BlogEditorContent = ({ adminLanguage }) => {
                         </div>
 
                         <div>
-                            <label className="block text-xs font-bold text-slate-500 uppercase mb-2">{t.tags || 'Tags'}</label>
+                            <label className="block text-xs font-bold text-slate-500 uppercase mb-2">{t('tags') || 'Tags'}</label>
                             <input
                                 type="text"
                                 name="tags"
@@ -235,7 +235,7 @@ const BlogEditorContent = ({ adminLanguage }) => {
                         </div>
 
                         <div>
-                            <label className="block text-xs font-bold text-slate-500 uppercase mb-2">{t.summary || 'Excerpt'}</label>
+                            <label className="block text-xs font-bold text-slate-500 uppercase mb-2">{t('summary') || 'Excerpt'}</label>
                             <textarea
                                 name="excerpt"
                                 value={formData.excerpt}

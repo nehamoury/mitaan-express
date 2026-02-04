@@ -207,7 +207,7 @@ const ArticleEditor = () => {
                             }`}
                     >
                         <Type size={18} />
-                        {t.enable_hindi_typing || 'Hindi Typing'} {' '}
+                        {t('enable_hindi_typing') || 'Hindi Typing'} {' '}
                         {isHindiTypingEnabled ? '(ON)' : '(OFF)'}
                     </button>
                     <button

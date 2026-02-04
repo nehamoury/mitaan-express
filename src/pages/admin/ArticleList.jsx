@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { FileText, Trash2, Eye, EyeOff, Copy, Archive, Download, CheckSquare, Square, Search, Filter, Calendar, TrendingUp, Zap } from 'lucide-react';
 import { useAdminArticles, useCategories } from '../../hooks/useQueries';
-import { adminTranslations } from '../../lib/adminTranslations';
+import { useAdminTranslation } from '../../context/AdminTranslationContext';
 
-const ArticleList = ({ adminLanguage }) => {
-    const t = adminTranslations[adminLanguage || 'hi'] || adminTranslations.hi;
+const ArticleList = () => {
+    const { t, adminLang: adminLanguage } = useAdminTranslation();
     const [searchTerm, setSearchTerm] = useState('');
     const [statusFilter, setStatusFilter] = useState('ALL');
     const [categoryFilter, setCategoryFilter] = useState('ALL');
@@ -167,7 +167,7 @@ const ArticleList = ({ adminLanguage }) => {
             <div className="flex items-center justify-between">
                 <div>
                     <h2 className="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight">
-                        {currentCategoryName ? `${t.articles}: ${currentCategoryName}` : t.articles}
+                        {currentCategoryName ? `${t('articles')}: ${currentCategoryName}` : t('articles')}
                     </h2>
                     <p className="text-sm text-slate-500 dark:text-slate-400">
                         {stats.total} total • {stats.published} published • {stats.draft} drafts
@@ -179,7 +179,7 @@ const ArticleList = ({ adminLanguage }) => {
                     className="px-4 py-2 bg-red-600 text-white rounded-lg font-bold hover:bg-red-700 transition-all flex items-center gap-2"
                 >
                     <FileText size={18} />
-                    {t.addNew}
+                    {t('addNew')}
                     <span className="text-xs opacity-75"></span>
                 </button>
             </div>
@@ -227,7 +227,7 @@ const ArticleList = ({ adminLanguage }) => {
                         onChange={(e) => setLangFilter(e.target.value)}
                         className="px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/10 rounded-xl outline-none focus:ring-2 ring-red-600 text-slate-900 dark:text-white font-bold text-sm"
                     >
-                        <option value="ALL">{t.language}: {adminLanguage === 'hi' ? 'सभी' : 'All'}</option>
+                        <option value="ALL">{t('language')}: {adminLanguage === 'hi' ? 'सभी' : 'All'}</option>
                         <option value="en">English (EN)</option>
                         <option value="hi">Hindi (हिं)</option>
                     </select>
@@ -295,12 +295,12 @@ const ArticleList = ({ adminLanguage }) => {
                                         )}
                                     </button>
                                 </th>
-                                <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider">{t.title}</th>
-                                <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider">{t.categories}</th>
-                                <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider">{t.status}</th>
-                                <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider">{t.views}</th>
-                                <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider">{t.date}</th>
-                                <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider">{t.actions}</th>
+                                <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider">{t('title')}</th>
+                                <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider">{t('categories')}</th>
+                                <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider">{t('status')}</th>
+                                <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider">{t('views')}</th>
+                                <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider">{t('date')}</th>
+                                <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider">{t('actions')}</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100 dark:divide-white/5">

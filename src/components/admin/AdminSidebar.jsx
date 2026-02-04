@@ -192,7 +192,7 @@ const AdminSidebar = ({ isSidebarOpen, setIsSidebarOpen, handleLogout, theme, to
                             {t('system') || 'System & More'}
                         </div>
 
-                        {navItems.filter(item => item.name !== 'Dashboard' && item.name !== 'Articles').map((item) => (
+                        {navItems.filter(item => item.path !== '/admin' && item.path !== '/admin/articles').map((item) => (
                             <NavLink
                                 key={item.path}
                                 to={item.path}
@@ -217,8 +217,8 @@ const AdminSidebar = ({ isSidebarOpen, setIsSidebarOpen, handleLogout, theme, to
                         </a>
                     </nav>
 
-                    {/* Bottom Section */}
-                    <div className="p-4 border-t border-slate-100 dark:border-white/5 space-y-3 bg-slate-50/50 dark:bg-slate-900/50 flex-shrink-0">
+                    {/* Bottom Section - Mobile Only */}
+                    <div className="lg:hidden p-4 border-t border-slate-100 dark:border-white/5 space-y-3 bg-slate-50/50 dark:bg-slate-900/50 flex-shrink-0">
                         {/* User Profile */}
                         {(() => {
                             const user = JSON.parse(localStorage.getItem('user') || '{}');
@@ -249,7 +249,6 @@ const AdminSidebar = ({ isSidebarOpen, setIsSidebarOpen, handleLogout, theme, to
                                 title={t('changeLanguage')}
                             >
                                 <Globe size={18} className="text-blue-500 group-hover:scale-110 transition-transform" />
-                                <span className="text-[9px] font-bold text-slate-500 mt-1">{adminLang === 'en' ? 'EN' : 'हिं'}</span>
                             </button>
 
                             <button
@@ -271,6 +270,7 @@ const AdminSidebar = ({ isSidebarOpen, setIsSidebarOpen, handleLogout, theme, to
                             </button>
                         </div>
                     </div>
+
                 </div>
             </aside>
 
