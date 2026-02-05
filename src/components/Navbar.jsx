@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import {
-    Search, Menu, User, ChevronDown, Globe, X, Moon, Sun,
+    Search, Menu, User, ChevronDown, Globe, X, Moon, Sun, ArrowRight,
     Image as ImageIcon, Video, Info, Mail, Home, TrendingUp,
     ShieldAlert, Landmark, Users, Trophy, Cpu, BookOpen,
     PenTool, Film, History, Sparkles, Activity, FileText,
     Feather, Share2, Instagram, Facebook, Twitter, AlertTriangle,
-    Brain, Palette, Award, Star, Sunrise, Smile, Smartphone, Code
+    Brain, Palette, Award, Star, Sunrise, Smile, Smartphone, Code, Heart as HeartIcon
 } from 'lucide-react';
 import { motion, AnimatePresence, useScroll, useSpring } from 'framer-motion';
 import { fetchCategories } from '../services/api';
@@ -132,24 +132,25 @@ const Navbar = ({
     ];
 
     return (
-        <header className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-700 ${isNavbarSolid
-            ? 'bg-white/95 dark:bg-[#030712]/95 backdrop-blur-2xl shadow-2xl py-2'
-            : 'bg-transparent py-6'
+        <header className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-500 ease-in-out ${isNavbarSolid
+            ? 'bg-white/95 dark:bg-black backdrop-blur-2xl shadow-xl py-2'
+            : 'bg-transparent py-4'
             }`}>
-            <div className="absolute top-0 left-0 w-full h-[3px] bg-slate-100 dark:bg-white/5 overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-[2px] bg-slate-100 dark:bg-white/5 overflow-hidden">
                 <motion.div
                     className="h-full bg-red-600 origin-left"
                     style={{ scaleX }}
                 />
             </div>
 
-            <nav className="max-w-[1600px] mx-auto px-6 lg:px-12 flex items-center justify-between relative">
-                <div className="flex items-center gap-12">
+            <nav className="max-w-[1600px] mx-auto px-4 lg:px-12 grid grid-cols-3 items-center relative gap-4">
+                {/* Left Section: Menu Toggle */}
+                <div className="flex items-center justify-start min-w-0">
                     <button
                         onClick={() => setIsMenuOpen(!isMenuOpen)}
-                        className={`flex items-center gap-4 group transition-colors ${isNavbarSolid ? 'text-slate-900 dark:text-white' : 'text-white'}`}
+                        className={`flex items-center gap-3 lg:gap-4 group transition-colors shrink-0 ${isNavbarSolid ? 'text-slate-900 dark:text-white' : 'text-white'}`}
                     >
-                        <div className="relative overflow-hidden w-6 h-6 flex flex-col justify-center gap-1.5">
+                        <div className="relative overflow-hidden w-6 h-6 flex flex-col justify-center gap-1.5 shrink-0">
                             <span className={`h-0.5 w-6 bg-current transition-transform duration-500 ${isMenuOpen ? 'rotate-45 translate-y-2' : ''}`} />
                             <span className={`h-0.5 w-4 bg-current transition-opacity duration-300 ${isMenuOpen ? 'opacity-0' : ''}`} />
                             <span className={`h-0.5 w-6 bg-current transition-transform duration-500 ${isMenuOpen ? '-rotate-45 -translate-y-2' : ''}`} />
@@ -160,11 +161,12 @@ const Navbar = ({
                     </button>
                 </div>
 
-                <div className="absolute left-1/2 -translate-x-1/2">
-                    <button onClick={() => handleLinkClick('home')} className="group flex items-center gap-2 lg:gap-3">
-                        <div className="w-8 h-8 lg:w-9 lg:h-9 bg-red-600 rounded lg:rounded-lg flex items-center justify-center text-white font-black text-sm lg:text-xl shadow-lg shadow-red-600/30">M</div>
-                        <div className="flex flex-col items-start leading-none">
-                            <h1 className={`text-xl lg:text-2xl font-black tracking-tighter font-serif transition-colors whitespace-nowrap ${isNavbarSolid ? 'text-slate-900 dark:text-white' : 'text-white'
+                {/* Center Section: Logo/Title */}
+                <div className="flex justify-center min-w-0">
+                    <button onClick={() => handleLinkClick('home')} className="group flex items-center gap-2 lg:gap-3 max-w-full">
+                        <div className="w-7 h-7 lg:w-9 lg:h-9 bg-red-600 rounded lg:rounded-lg flex items-center justify-center text-white font-black text-xs lg:text-xl shadow-lg shadow-red-600/30 shrink-0">M</div>
+                        <div className="flex flex-col items-start leading-none min-w-0 overflow-hidden">
+                            <h1 className={`text-sm sm:text-base lg:text-2xl font-black tracking-tighter font-serif transition-all duration-300 truncate drop-shadow-sm ${isNavbarSolid ? 'text-slate-900 dark:text-white' : 'text-white'
                                 }`}>
                                 MITAAN EXPRESS<span className="text-red-600">.</span>
                             </h1>
@@ -172,18 +174,25 @@ const Navbar = ({
                     </button>
                 </div>
 
-                <div className="hidden lg:flex items-center gap-6 lg:gap-10">
-                    <button onClick={toggleLanguage} className={`text-[10px] font-black uppercase tracking-widest px-3 py-1 border rounded-full transition-all ${isNavbarSolid ? 'text-slate-400 border-slate-200 hover:border-red-600 hover:text-red-600' : 'text-white border-white/20 hover:bg-white hover:text-black'}`}>
-                        {language === 'hi' ? 'Hindi' : 'English'}
-                    </button>
-                    <button onClick={toggleTheme} className={`transition-all hover:scale-110 ${isNavbarSolid ? 'text-slate-400 hover:text-red-600' : 'text-white/80'}`}>
-                        {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
-                    </button>
+                {/* Right Section: Toggles & Donate */}
+                <div className="flex items-center justify-end gap-3 lg:gap-8">
+                    <div className="hidden lg:flex items-center gap-6">
+                        <button onClick={toggleLanguage} className={`text-[10px] font-black uppercase tracking-widest px-3 py-1 border rounded-full transition-all ${isNavbarSolid ? 'text-slate-400 border-slate-200 hover:border-red-600 hover:text-red-600' : 'text-white border-white/20 hover:bg-white hover:text-black'}`}>
+                            {language === 'hi' ? 'Hindi' : 'English'}
+                        </button>
+                        <button onClick={toggleTheme} className={`transition-all hover:scale-110 ${isNavbarSolid ? 'text-slate-400 hover:text-red-600' : 'text-white/80'}`}>
+                            {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
+                        </button>
+                    </div>
+
                     <button
-                        onClick={() => window.location.href = '/login'}
-                        className={`px-4 py-2 rounded-full font-bold text-sm transition-all ${isNavbarSolid ? 'bg-red-600 text-white hover:bg-red-700' : 'bg-white text-slate-900 hover:bg-red-600 hover:text-white'} shadow-lg`}
+                        onClick={() => window.location.href = '/donate'}
+                        className={`hidden md:flex items-center gap-2 px-3 lg:px-6 py-2 rounded-full font-black text-[10px] lg:text-xs uppercase tracking-widest transition-all ${isNavbarSolid ? 'bg-red-50 text-red-600 hover:bg-red-100' : 'bg-white/10 text-white hover:bg-white/20 backdrop-blur-md border border-white/20'} shadow-sm shrink-0`}
                     >
-                        Login
+                        <HeartIcon size={14} className="fill-current" />
+                        <span className={language === 'hi' ? '' : 'hidden lg:inline'}>
+                            {language === 'hi' ? 'सहयोग' : 'Donate'}
+                        </span>
                     </button>
                 </div>
             </nav>
@@ -203,24 +212,46 @@ const Navbar = ({
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -20 }}
                             transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-                            className="absolute top-full left-0 right-0 bg-white dark:bg-[#030712] shadow-2xl border-t border-slate-100 dark:border-white/5 overflow-hidden max-h-[95vh] overflow-y-auto"
+                            className="absolute top-full left-0 right-0 bg-white dark:bg-black shadow-2xl border-t border-slate-100 dark:border-white/5 overflow-hidden max-h-[95vh] overflow-y-auto"
                         >
                             <div className="max-w-[1600px] mx-auto px-6 lg:px-20 py-12 lg:py-20">
                                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20">
                                     {/* Column 1: Directory */}
                                     <div className="lg:col-span-3 space-y-10">
-                                        {/* Mobile Only: Toggles */}
-                                        <div className="lg:hidden flex items-center gap-4 pb-8 border-b border-slate-100 dark:border-white/5">
-                                            <button onClick={toggleLanguage} className="flex-1 text-xs font-black uppercase tracking-widest px-4 py-3 border border-slate-200 dark:border-white/10 rounded-xl transition-all hover:border-red-600 hover:text-red-600">
-                                                {language === 'hi' ? 'भाषा: हिंदी' : 'Lang: English'}
+                                        {/* Mobile Only: Toggles - Compact Vertical Stack (Line by Line) */}
+                                        <div className="lg:hidden flex flex-col gap-2 pb-8 border-b border-slate-100 dark:border-white/5">
+                                            <button onClick={toggleLanguage} className="flex items-center justify-between p-3 border border-slate-100 dark:border-white/10 rounded-xl transition-all active:scale-[0.98] bg-slate-50/50 dark:bg-white/5">
+                                                <div className="flex items-center gap-3">
+                                                    <Globe size={18} className="text-red-600" />
+                                                    <span className="text-[11px] font-black uppercase tracking-tight">{language === 'hi' ? 'भाषा: हिंदी' : 'Lang: English'}</span>
+                                                </div>
+                                                <ChevronDown size={14} className="text-slate-400" />
                                             </button>
-                                            <button onClick={toggleTheme} className="flex-1 flex items-center justify-center gap-2 text-xs font-black uppercase tracking-widest px-4 py-3 border border-slate-200 dark:border-white/10 rounded-xl transition-all hover:border-red-600 hover:text-red-600">
-                                                {theme === 'light' ? <><Moon size={16} /> Dark</> : <><Sun size={16} /> Light</>}
+
+                                            <button onClick={toggleTheme} className="flex items-center justify-between p-3 border border-slate-100 dark:border-white/10 rounded-xl transition-all active:scale-[0.98] bg-slate-50/50 dark:bg-white/5">
+                                                <div className="flex items-center gap-3">
+                                                    {theme === 'light' ? <Moon size={18} className="text-red-600" /> : <Sun size={18} className="text-red-600" />}
+                                                    <span className="text-[11px] font-black uppercase tracking-tight">{theme === 'light' ? 'DARK MODE' : 'LIGHT MODE'}</span>
+                                                </div>
+                                                <div className={`w-8 h-4 rounded-full relative transition-colors ${theme === 'light' ? 'bg-slate-200' : 'bg-red-600'}`}>
+                                                    <div className={`absolute top-1 w-2 h-2 rounded-full bg-white transition-all ${theme === 'light' ? 'left-1' : 'left-5'}`} />
+                                                </div>
+                                            </button>
+
+                                            <button
+                                                onClick={() => window.location.href = '/donate'}
+                                                className="flex items-center justify-between p-3 bg-red-600 text-white rounded-xl transition-all active:scale-[0.98] shadow-lg shadow-red-600/20"
+                                            >
+                                                <div className="flex items-center gap-3">
+                                                    <HeartIcon size={18} className="fill-current text-white" />
+                                                    <span className="text-[11px] font-black uppercase tracking-tight">{language === 'hi' ? 'सहयोग करें' : 'DONATE'}</span>
+                                                </div>
+                                                <ArrowRight size={14} />
                                             </button>
                                         </div>
 
                                         <div className="space-y-6">
-                                            <span className="text-[10px] font-black text-red-600 uppercase tracking-[0.4em] mb-4 block opacity-60">
+                                            <span className="text-[8px] font-black text-red-600 uppercase tracking-[0.4em] mb-4 block opacity-60">
                                                 {language === 'hi' ? 'पोर्टल निर्देशिका' : 'Navigation'}
                                             </span>
                                             <div className="flex flex-col gap-4">
@@ -231,7 +262,7 @@ const Navbar = ({
                                                         animate={{ opacity: 1, x: 0 }}
                                                         transition={{ delay: idx * 0.05 }}
                                                         onClick={() => handleLinkClick(p.id)}
-                                                        className={`group text-3xl font-black font-serif tracking-tighter text-left transition-all relative ${activeCategory === p.id
+                                                        className={`group text-2xl font-black font-serif tracking-tighter text-left transition-all relative ${activeCategory === p.id
                                                             ? 'text-red-600'
                                                             : 'text-slate-900 dark:text-white hover:text-red-600'
                                                             }`}
@@ -245,8 +276,8 @@ const Navbar = ({
                                         </div>
                                     </div>
 
-                                    {/* Column 2: Categories Grid (Hierarchical) */}
-                                    <div className="lg:col-span-6 space-y-10 border-x border-slate-100 dark:border-white/5 px-0 lg:px-12">
+                                    {/* Column 2: Categories Grid (Hierarchical) - Hidden on Mobile */}
+                                    <div className="hidden lg:block lg:col-span-6 space-y-10 border-x border-slate-100 dark:border-white/5 px-0 lg:px-12">
                                         <div className="space-y-8">
                                             <span className="text-[10px] font-black text-red-600 uppercase tracking-[0.4em] block opacity-60 mb-8">
                                                 {language === 'hi' ? 'विशेष श्रेणियां' : 'Featured Categories'}
@@ -341,7 +372,7 @@ const Navbar = ({
                     </>
                 )}
             </AnimatePresence>
-        </header>
+        </header >
     );
 };
 

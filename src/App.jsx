@@ -3,7 +3,7 @@ import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import FooterTicker from './components/FooterTicker';
+
 import CursorTracker from './components/CursorTracker';
 import BackToTop from './components/BackToTop';
 import { ArticlesProvider } from './context/ArticlesContext';
@@ -27,6 +27,7 @@ const BlogDetailPage = React.lazy(() => import('./pages/BlogDetailPage'));
 const AdminPage = React.lazy(() => import('./pages/AdminPage'));
 const LoginPage = React.lazy(() => import('./pages/LoginPage'));
 const SignupPage = React.lazy(() => import('./pages/SignupPage'));
+const DonationPage = React.lazy(() => import('./pages/DonationPage'));
 
 const App = () => {
     const [language, setLanguage] = useState(() => localStorage.getItem('lang') || 'hi');
@@ -47,6 +48,11 @@ const App = () => {
     const isAdminRoute = location.pathname.startsWith('/admin');
 
     useEffect(() => {
+        // Prevent browser from restoring scroll position on refresh
+        if ('scrollRestoration' in window.history) {
+            window.history.scrollRestoration = 'manual';
+        }
+
         AOS.init({
             duration: 1000,
             once: true,
@@ -139,6 +145,7 @@ const App = () => {
                                 <Route path="/blog/:slug" element={<BlogDetailPage language={language} />} />
                                 <Route path="/login" element={<LoginPage />} />
                                 <Route path="/signup" element={<SignupPage />} />
+                                <Route path="/donate" element={<DonationPage language={language} />} />
                                 <Route path="/admin/*" element={<AdminPage />} />
                             </Routes>
                         </AnimatePresence>
@@ -149,7 +156,7 @@ const App = () => {
                     <>
                         <BackToTop />
                         <Footer language={language} onCategoryChange={handleCategoryChange} />
-                        <FooterTicker language={language} />
+
                     </>
                 )}
             </div>

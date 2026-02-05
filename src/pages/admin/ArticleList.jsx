@@ -153,13 +153,13 @@ const ArticleList = () => {
         selected: selectedArticles.length
     };
 
-    if (loading) return <div className="p-8 text-center text-slate-500">{adminLanguage === 'hi' ? 'लेख लोड हो रहे हैं...' : 'Loading articles...'}</div>;
-
     const currentCategoryName = React.useMemo(() => {
         if (categoryFilter === 'ALL') return null;
         const cat = categories.find(c => c.id == categoryFilter);
         return cat ? (adminLanguage === 'hi' ? cat.nameHi : cat.name) : null;
     }, [categoryFilter, categories, adminLanguage]);
+
+    if (loading) return <div className="p-8 text-center text-slate-500">{adminLanguage === 'hi' ? 'लेख लोड हो रहे हैं...' : 'Loading articles...'}</div>;
 
     return (
         <div className="p-4 lg:p-8 space-y-6">

@@ -7,7 +7,6 @@ import {
     Facebook, Twitter, Linkedin
 } from 'lucide-react';
 import { fetchBlogBySlug, fetchArticles } from '../services/api';
-import CommentsSection from '../components/CommentsSection';
 
 const BlogDetailPage = ({ language }) => {
     const { slug } = useParams();
@@ -172,8 +171,24 @@ const BlogDetailPage = ({ language }) => {
                         </div>
                     )}
 
-                    {/* Comments */}
-                    <CommentsSection blogId={blog.id} language={language} />
+                    {/* Share Section */}
+                    <div className="flex flex-wrap items-center gap-4 mt-8 pt-8 border-t border-slate-200 dark:border-slate-800">
+                        <span className="font-bold text-slate-700 dark:text-slate-300">{language === 'hi' ? 'शेयर करें:' : 'Share this story:'}</span>
+                        <div className="flex gap-2">
+                            <button onClick={() => handleShare('facebook')} className="p-3 bg-[#1877F2] text-white rounded-full hover:opacity-90 transition-opacity" title="Share on Facebook">
+                                <Facebook size={18} />
+                            </button>
+                            <button onClick={() => handleShare('twitter')} className="p-3 bg-[#1DA1F2] text-white rounded-full hover:opacity-90 transition-opacity" title="Share on Twitter">
+                                <Twitter size={18} />
+                            </button>
+                            <button onClick={() => handleShare('linkedin')} className="p-3 bg-[#0A66C2] text-white rounded-full hover:opacity-90 transition-opacity" title="Share on LinkedIn">
+                                <Linkedin size={18} />
+                            </button>
+                            <button onClick={() => handleShare('copy')} className="p-3 bg-slate-600 text-white rounded-full hover:opacity-90 transition-opacity" title="Copy Link">
+                                {copied ? <Check size={18} className="text-green-400" /> : <Share2 size={18} />}
+                            </button>
+                        </div>
+                    </div>
                 </article>
 
                 {/* Sidebar */}

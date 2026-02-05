@@ -65,7 +65,7 @@ exports.getAllArticles = async (req, res) => {
         res.json(articles);
     } catch (error) {
         console.error('Fetch error:', error);
-        res.status(500).json({ error: 'Failed to fetch articles' });
+        res.status(500).json({ error: 'Failed to fetch articles', details: error.message, stack: error.stack });
     }
 };
 

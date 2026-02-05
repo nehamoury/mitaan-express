@@ -228,9 +228,13 @@ export const useCreateComment = () => {
 
     return useMutation({
         mutationFn: async (commentData) => {
+            const token = getToken();
+            const headers = { 'Content-Type': 'application/json' };
+            if (token) headers['Authorization'] = `Bearer ${token}`;
+
             const response = await fetch('http://localhost:3000/api/comments', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers,
                 body: JSON.stringify(commentData),
             });
             if (!response.ok) throw new Error('Failed to post comment');

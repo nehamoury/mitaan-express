@@ -11,6 +11,7 @@ import VideoGalleryHero from '../components/VideoGalleryHero';
 import MustReadSlider from '../components/MustReadSlider';
 import { useArticles } from '../context/ArticlesContext';
 import AdSpace from '../components/AdSpace';
+import AdPopup from '../components/AdPopup';
 
 const HomePage = ({ language }) => {
     const navigate = useNavigate();
@@ -40,9 +41,10 @@ const HomePage = ({ language }) => {
 
     return (
         <>
+            <AdPopup language={language} />
             <HeroSlider language={language} />
 
-            <div className="relative z-10 pt-12 md:pt-20">
+            <div className="relative z-10 overflow-x-hidden">
                 <div className="space-y-24 pb-32">
                     {/* Breaking News Ticker (Full Width) */}
                     <div className="bg-red-600/5 dark:bg-red-600/10 border-y border-red-600/10 py-3 overflow-hidden whitespace-nowrap group">
@@ -116,7 +118,7 @@ const HomePage = ({ language }) => {
                     </div>
 
                     {/* In-Depth: Full Width Background, Centered Content */}
-                    <div className="bg-slate-50 dark:bg-gray-900/40 py-24" data-aos="fade-up">
+                    <div className="bg-slate-50 dark:bg-black py-24 border-y border-slate-100 dark:border-white/5" data-aos="fade-up">
                         <div className="max-w-9xl mx-auto px-4 sm:px-6 lg:px-8">
                             <InDepthSection
                                 language={language}

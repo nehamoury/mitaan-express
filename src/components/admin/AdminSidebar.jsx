@@ -71,12 +71,12 @@ const AdminSidebar = ({ isSidebarOpen, setIsSidebarOpen, handleLogout, theme, to
         { name: t('myBlogs'), path: '/admin/my-blogs', icon: <FileText size={18} /> },
         { name: t('categories'), path: '/admin/categories', icon: <FolderTree size={18} /> },
         { name: t('featured'), path: '/admin/featured', icon: <Star size={18} /> },
-        { name: t('comments'), path: '/admin/comments', icon: <MessageSquare size={18} /> },
         { name: t('analytics'), path: '/admin/analytics', icon: <BarChart3 size={18} /> },
         { name: t('activityLogs') || 'Activity Logs', path: '/admin/activity', icon: <Activity size={18} /> },
         { name: t('users'), path: '/admin/users', icon: <Users size={18} /> },
         { name: t('mediaLibrary') || 'Media Library', path: '/admin/media', icon: <ImageIcon size={18} /> },
         { name: t('settings'), path: '/admin/settings', icon: <Settings size={18} /> },
+        { name: 'Donations', path: '/admin/donations', icon: <HeartIcon size={18} /> },
     ];
 
     const activeClass = "bg-red-50 dark:bg-red-900/10 text-red-600 border-r-4 border-red-600 shadow-[inset_-4px_0_0_0_#ef4444]";

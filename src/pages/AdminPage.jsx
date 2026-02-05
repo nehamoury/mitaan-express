@@ -13,12 +13,12 @@ import Categories from './admin/Categories';
 import { Menu, Moon, Sun, LogOut, Globe, ChevronDown } from 'lucide-react';
 
 import MediaLibrary from './admin/MediaLibrary';
-import Comments from './admin/Comments';
 import Analytics from './admin/Analytics';
 import ActivityLogs from './admin/ActivityLogs';
 import Users from './admin/Users';
 import MyBlogs from './admin/MyBlogs';
 import FeaturedContent from './admin/FeaturedContent';
+import AdminDonations from './admin/AdminDonations';
 
 // Placeholders
 
@@ -176,13 +176,13 @@ const AdminContent = () => {
                         <Route path="/articles/new" element={<ArticleEditor />} />
                         <Route path="/articles/edit/:id" element={<ArticleEditor />} />
                         <Route path="/categories" element={<Categories />} />
-                        <Route path="/comments" element={<Comments />} />
                         <Route path="/analytics" element={<Analytics />} />
                         <Route path="/activity" element={<ActivityLogs />} />
                         <Route path="/users" element={<Users />} />
                         <Route path="/featured" element={<FeaturedContent />} />
                         <Route path="/media" element={<MediaLibrary />} />
                         <Route path="/settings" element={<Settings />} />
+                        <Route path="/donations" element={<AdminDonations />} />
                         <Route path="*" element={<Navigate to="/admin" replace />} />
                     </Routes>
                 </div>

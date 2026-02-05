@@ -140,17 +140,12 @@ const HeroSlider = ({ language }) => {
 
                         <motion.h1
                             variants={itemVariants}
-                            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white leading-[1.1] md:leading-[1.05] font-serif tracking-tighter max-w-4xl"
+                            className="text-2xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white leading-[1.1] md:leading-[1.05] font-serif tracking-tighter max-w-4xl mb-12"
                         >
                             {currentSlide.title}
                         </motion.h1>
 
-                        <motion.p
-                            variants={itemVariants}
-                            className="text-white/70 text-sm md:text-base lg:text-lg max-w-xl leading-relaxed font-medium line-clamp-3 md:line-clamp-none"
-                        >
-                            {currentSlide.description}
-                        </motion.p>
+
 
                         <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-5 pt-6">
                             {/* Primary Button: Read Story */}

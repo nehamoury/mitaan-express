@@ -1,3 +1,4 @@
+require('./logger-shim');
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
@@ -20,22 +21,22 @@ const articleRoutes = require('./routes/article.routes');
 const categoryRoutes = require('./routes/category.routes');
 const adminRoutes = require('./routes/admin.routes');
 const settingsRoutes = require('./routes/settings.routes');
-const commentRoutes = require('./routes/comment.routes');
 const analyticsRoutes = require('./routes/analytics.routes');
 const activityRoutes = require('./routes/activity.routes');
 const blogRoutes = require('./routes/blog.routes');
 const mediaRoutes = require('./routes/media.routes');
+const donationRoutes = require('./routes/donation.routes');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/articles', articleRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/settings', settingsRoutes);
-app.use('/api/comments', commentRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/activity', activityRoutes);
 app.use('/api/blogs', blogRoutes);
 app.use('/api/media', mediaRoutes);
+app.use('/api/donations', donationRoutes);
 
 app.get('/', (req, res) => {
     res.send('Mitaan Express API is running');
