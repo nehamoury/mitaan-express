@@ -13,6 +13,7 @@
     "@blocknote/core": "^0.46.2",
     "@blocknote/react": "^0.46.2",
     "@google/genai": "^1.38.0",
+    "@tailwindcss/postcss": "^4.1.18",
     "@tanstack/react-query": "^5.90.20",
     "@tanstack/react-query-devtools": "^5.91.3",
     "aos": "^2.3.4",
@@ -29,6 +30,7 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.58.0",
+    "@tailwindcss/typography": "^0.5.19",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",

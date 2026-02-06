@@ -5,6 +5,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -242,13 +243,14 @@ enum MediaType {
 
 model Donation {
   id        Int      @id @default(autoincrement())
-  name      String
-  email     String
+  name      String?
+  email     String?
   amount    Float
   message   String?
   paymentId String?  // For tracking if needed
+  details   String?  // UTR, Transaction ID, or Bank Reference
   status    String   @default("PENDING") // PENDING, SUCCESS, FAILED
-  method    String?  // Form or QR
+  method    String?  // Form, QR, or Bank
   createdAt DateTime @default(now())
 }
 

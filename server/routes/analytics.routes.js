@@ -10,6 +10,6 @@ const { authenticateToken, authorizeRoles } = require('../middleware/auth.middle
 // All analytics routes require admin authentication
 router.get('/dashboard', authenticateToken, authorizeRoles('ADMIN', 'EDITOR'), getDashboardStats);
 router.get('/traffic', authenticateToken, authorizeRoles('ADMIN'), getTrafficAnalytics);
-router.get('/comments', authenticateToken, authorizeRoles('ADMIN', 'EDITOR'), getCommentActivity);
+
 
 module.exports = router;

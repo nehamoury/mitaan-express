@@ -6,9 +6,7 @@ const { authenticateToken, authorizeRoles } = require('../middleware/auth.middle
 router.get('/', articleController.getAllArticles);
 router.get('/:slug', articleController.getArticleBySlug);
 
-// Comments Routes
-router.get('/:id/comments', articleController.getArticleComments);
-router.post('/:id/comments', articleController.createComment);
+
 
 // Protected Routes
 router.post('/', authenticateToken, authorizeRoles('ADMIN', 'EDITOR'), articleController.createArticle);

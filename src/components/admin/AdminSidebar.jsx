@@ -74,7 +74,7 @@ const AdminSidebar = ({ isSidebarOpen, setIsSidebarOpen, handleLogout, theme, to
         { name: t('analytics'), path: '/admin/analytics', icon: <BarChart3 size={18} /> },
         { name: t('activityLogs') || 'Activity Logs', path: '/admin/activity', icon: <Activity size={18} /> },
         { name: t('users'), path: '/admin/users', icon: <Users size={18} /> },
-        { name: t('mediaLibrary') || 'Media Library', path: '/admin/media', icon: <ImageIcon size={18} /> },
+        { name: t('mediaLibrary') || 'Gallery', path: '/admin/media', icon: <ImageIcon size={18} /> },
         { name: t('settings'), path: '/admin/settings', icon: <Settings size={18} /> },
         { name: 'Donations', path: '/admin/donations', icon: <HeartIcon size={18} /> },
     ];

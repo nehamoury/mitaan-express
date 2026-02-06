@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSettings } from '../../hooks/useQueries';
 import { useUpdateSettings } from '../../hooks/useMutations';
 import { Save, Globe, Phone, Mail, MapPin, Facebook, Twitter, Instagram, Youtube, Image, Type, DollarSign } from 'lucide-react';
+import DonationSettings from '../../components/admin/settings/DonationSettings';
 
 const Settings = () => {
     // TanStack Query Hooks
@@ -27,6 +28,12 @@ const Settings = () => {
         ad_article_top_enabled: 'false',
         ad_article_bottom_code: '',
         ad_article_bottom_enabled: 'false',
+        // Donation Settings
+        donation_upi_id: '',
+        donation_account_holder: '',
+        donation_bank_name: '',
+        donation_account_number: '',
+        donation_ifsc: '',
     });
 
     useEffect(() => {
@@ -40,13 +47,15 @@ const Settings = () => {
         setSettings(prev => ({ ...prev, [name]: value }));
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    const handleSaveSection = async (keys) => {
         try {
-            await updateMutation.mutateAsync(settings);
-            alert('Settings updated successfully!');
+            const updateData = {};
+            keys.forEach(key => updateData[key] = settings[key]);
+
+            await updateMutation.mutateAsync(updateData);
+            alert('Section saved successfully!');
         } catch (error) {
-            alert('Failed to update settings: ' + error.message);
+            alert('Failed to save section: ' + error.message);
         }
     };
 
@@ -61,23 +70,24 @@ const Settings = () => {
                     <h2 className="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight">Website Settings</h2>
                     <p className="text-sm text-slate-500 dark:text-slate-400">Manage global site configuration</p>
                 </div>
-                <button
-                    onClick={handleSubmit}
-                    disabled={loading}
-                    className="px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl flex items-center gap-2 transition-all shadow-lg shadow-red-600/30"
-                >
-                    <Save size={18} />
-                    {loading ? 'Saving...' : 'Save Changes'}
-                </button>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {/* General Settings */}
                 <div className="space-y-6">
                     <div className="bg-white dark:bg-slate-800 p-8 rounded-3xl border border-slate-100 dark:border-white/5 shadow-sm space-y-6">
-                        <h3 className="flex items-center gap-2 font-bold i text-lg text-slate-900 dark:text-white">
-                            <Globe className="text-red-500" /> General Info
-                        </h3>
+                        <div className="flex items-center justify-between">
+                            <h3 className="flex items-center gap-2 font-bold text-lg text-slate-900 dark:text-white">
+                                <Globe className="text-red-500" /> General Info
+                            </h3>
+                            <button
+                                onClick={() => handleSaveSection(['site_title', 'site_description', 'logo_url', 'footer_text'])}
+                                disabled={loading}
+                                className="px-4 py-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold rounded-lg text-xs uppercase tracking-wider hover:scale-105 transition-transform disabled:opacity-50"
+                            >
+                                {loading ? 'Saving...' : 'Save General'}
+                            </button>
+                        </div>
 
                         <div>
                             <label className="block text-xs font-bold uppercase text-slate-500 mb-2">Site Title</label>
@@ -132,9 +142,18 @@ const Settings = () => {
                     </div>
 
                     <div className="bg-white dark:bg-slate-800 p-8 rounded-3xl border border-slate-100 dark:border-white/5 shadow-sm space-y-6">
-                        <h3 className="flex items-center gap-2 font-bold text-lg text-slate-900 dark:text-white">
-                            <Phone className="text-green-500" /> Contact Info
-                        </h3>
+                        <div className="flex items-center justify-between">
+                            <h3 className="flex items-center gap-2 font-bold text-lg text-slate-900 dark:text-white">
+                                <Phone className="text-green-500" /> Contact Info
+                            </h3>
+                            <button
+                                onClick={() => handleSaveSection(['contact_email', 'contact_phone', 'contact_address'])}
+                                disabled={loading}
+                                className="px-4 py-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold rounded-lg text-xs uppercase tracking-wider hover:scale-105 transition-transform disabled:opacity-50"
+                            >
+                                {loading ? 'Saving...' : 'Save Contact'}
+                            </button>
+                        </div>
 
                         <div>
                             <label className="block text-xs font-bold uppercase text-slate-500 mb-2">Email</label>
@@ -184,9 +203,18 @@ const Settings = () => {
                 {/* Social Media */}
                 <div className="space-y-6">
                     <div className="bg-white dark:bg-slate-800 p-8 rounded-3xl border border-slate-100 dark:border-white/5 shadow-sm space-y-6">
-                        <h3 className="flex items-center gap-2 font-bold text-lg text-slate-900 dark:text-white">
-                            <Facebook className="text-blue-600" /> Social Media
-                        </h3>
+                        <div className="flex items-center justify-between">
+                            <h3 className="flex items-center gap-2 font-bold text-lg text-slate-900 dark:text-white">
+                                <Facebook className="text-blue-600" /> Social Media
+                            </h3>
+                            <button
+                                onClick={() => handleSaveSection(['social_facebook', 'social_twitter', 'social_instagram', 'social_youtube'])}
+                                disabled={loading}
+                                className="px-4 py-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold rounded-lg text-xs uppercase tracking-wider hover:scale-105 transition-transform disabled:opacity-50"
+                            >
+                                {loading ? 'Saving...' : 'Save Social'}
+                            </button>
+                        </div>
 
                         <div>
                             <label className="block text-xs font-bold uppercase text-slate-500 mb-2">Facebook URL</label>
@@ -247,9 +275,18 @@ const Settings = () => {
 
                     {/* Advertisement Management */}
                     <div className="bg-white dark:bg-slate-800 p-8 rounded-3xl border border-slate-100 dark:border-white/5 shadow-sm space-y-6">
-                        <h3 className="flex items-center gap-2 font-bold text-lg text-slate-900 dark:text-white">
-                            <DollarSign className="text-green-500" /> Advertisement Management
-                        </h3>
+                        <div className="flex items-center justify-between">
+                            <h3 className="flex items-center gap-2 font-bold text-lg text-slate-900 dark:text-white">
+                                <DollarSign className="text-green-500" /> Advertisement Management
+                            </h3>
+                            <button
+                                onClick={() => handleSaveSection(['ad_homepage_top_code', 'ad_homepage_top_enabled', 'ad_article_top_code', 'ad_article_top_enabled', 'ad_article_bottom_code', 'ad_article_bottom_enabled'])}
+                                disabled={loading}
+                                className="px-4 py-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold rounded-lg text-xs uppercase tracking-wider hover:scale-105 transition-transform disabled:opacity-50"
+                            >
+                                {loading ? 'Saving...' : 'Save Ads'}
+                            </button>
+                        </div>
                         <p className="text-xs text-slate-500">Manage AdSense codes for different positions</p>
 
                         {/* Homepage Top Banner */}
@@ -333,6 +370,15 @@ const Settings = () => {
                             />
                         </div>
                     </div>
+                </div>
+                {/* Donation Settings */}
+                <div className="lg:col-span-2">
+                    <DonationSettings
+                        settings={settings}
+                        handleChange={handleChange}
+                        loading={loading}
+                        onSave={() => handleSaveSection(['donation_upi_id', 'donation_account_holder', 'donation_bank_name', 'donation_account_number', 'donation_ifsc'])}
+                    />
                 </div>
             </div>
         </div>

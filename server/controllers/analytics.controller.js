@@ -1,10 +1,4 @@
-const { PrismaClient } = require('@prisma/client');
-const { PrismaPg } = require('@prisma/adapter-pg');
-const { Pool } = require('pg');
-
-const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-const adapter = new PrismaPg(pool);
-const prisma = new PrismaClient({ adapter });
+const prisma = require('../prisma');
 
 // Get dashboard stats
 exports.getDashboardStats = async (req, res) => {
@@ -39,13 +33,7 @@ exports.getDashboardStats = async (req, res) => {
         });
         const totalViews = viewsResult._sum.views || 0;
 
-        // Total comments
-        const totalComments = await prisma.comment.count();
 
-        // Pending comments
-        const pendingComments = await prisma.comment.count({
-            where: { status: 'PENDING' }
-        });
 
         // Most viewed articles (Top 10)
         const mostViewedArticles = await prisma.article.findMany({
@@ -103,9 +91,7 @@ exports.getDashboardStats = async (req, res) => {
             overview: {
                 totalArticles,
                 publishedArticles,
-                totalViews,
-                totalComments,
-                pendingComments
+                totalViews
             },
             mostViewedArticles,
             categoryStats: categoryStats.map(cat => ({
@@ -114,8 +100,7 @@ exports.getDashboardStats = async (req, res) => {
                 count: cat._count.articles
             })),
             recentActivity: {
-                articles: recentArticles,
-                comments: recentComments
+                articles: recentArticles
             }
         });
     } catch (error) {
@@ -164,45 +149,4 @@ exports.getTrafficAnalytics = async (req, res) => {
     }
 };
 
-// Get comment activity
-exports.getCommentActivity = async (req, res) => {
-    try {
-        const { days = 7 } = req.query;
 
-        const startDate = new Date();
-        startDate.setDate(startDate.getDate() - parseInt(days));
-
-        const comments = await prisma.comment.findMany({
-            where: {
-                createdAt: {
-                    gte: startDate
-                }
-            },
-            select: {
-                createdAt: true,
-                status: true
-            }
-        });
-
-        // Group by date and status
-        const dailyComments = {};
-        comments.forEach(comment => {
-            const date = comment.createdAt.toISOString().split('T')[0];
-            if (!dailyComments[date]) {
-                dailyComments[date] = { total: 0, approved: 0, pending: 0, rejected: 0, spam: 0 };
-            }
-            dailyComments[date].total++;
-            dailyComments[date][comment.status.toLowerCase()]++;
-        });
-
-        res.json({
-            dailyComments: Object.entries(dailyComments).map(([date, stats]) => ({
-                date,
-                ...stats
-            }))
-        });
-    } catch (error) {
-        console.error('Comment activity error:', error);
-        res.status(500).json({ error: 'Failed to fetch comment activity' });
-    }
-};

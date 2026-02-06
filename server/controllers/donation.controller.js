@@ -1,22 +1,22 @@
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
+const prisma = require('../prisma');
 
 const createDonation = async (req, res) => {
     try {
-        const { name, email, amount, message, method } = req.body;
+        const { name, email, amount, message, method, details } = req.body;
 
-        if (!name || !email || !amount) {
-            return res.status(400).json({ message: 'Name, email and amount are required' });
+        if (!amount) {
+            return res.status(400).json({ message: 'Amount is required' });
         }
 
         const donation = await prisma.donation.create({
             data: {
-                name,
+                name: name || "Anonymous", // Use "Anonymous" if no name provided
                 email,
                 amount: parseFloat(amount),
                 message,
                 method,
-                status: 'SUCCESS' // Assuming success for now since we don't have real PG
+                details,
+                status: 'SUCCESS'
             }
         });
 

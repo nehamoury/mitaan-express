@@ -206,20 +206,7 @@ const Dashboard = () => {
             </div>
 
             {/* Charts Row */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Views Trend */}
-                <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-white/5 shadow-sm">
-                    <div className="flex items-center justify-between mb-6">
-                        <h3 className="font-black text-slate-900 dark:text-white text-lg flex items-center gap-2">
-                            <TrendingUp className="text-red-600" size={20} />
-                            Views Trend (7 Days)
-                        </h3>
-                    </div>
-                    <div className="h-64">
-                        <Line data={viewsData} options={chartOptions} />
-                    </div>
-                </div>
-
+            <div className="grid grid-cols-1 gap-6">
                 {/* Category Distribution */}
                 <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-white/5 shadow-sm">
                     <div className="flex items-center justify-between mb-6">

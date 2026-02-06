@@ -1,10 +1,4 @@
-const { PrismaClient } = require('@prisma/client');
-const { PrismaPg } = require('@prisma/adapter-pg');
-const { Pool } = require('pg');
-
-const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-const adapter = new PrismaPg(pool);
-const prisma = new PrismaClient({ adapter });
+const prisma = require('../prisma');
 
 exports.getAllArticles = async (req, res) => {
     try {
@@ -80,7 +74,6 @@ exports.getArticleBySlug = async (req, res) => {
                 },
                 author: { select: { name: true, image: true, bio: true } },
                 tags: true,
-                comments: { include: { user: true } }
             },
         });
 
@@ -94,7 +87,8 @@ exports.getArticleBySlug = async (req, res) => {
 
         res.json(article);
     } catch (error) {
-        res.status(500).json({ error: 'Failed' });
+        console.error('Fetch article error:', error);
+        res.status(500).json({ error: 'Failed to fetch article', details: error.message });
     }
 };
 
@@ -213,52 +207,4 @@ exports.deleteArticle = async (req, res) => {
     }
 };
 
-// Get comments for an article
-exports.getArticleComments = async (req, res) => {
-    const { id } = req.params;
-    try {
-        const comments = await prisma.comment.findMany({
-            where: {
-                articleId: parseInt(id),
-                status: 'APPROVED'
-            },
-            include: {
-                user: {
-                    select: { name: true, image: true }
-                }
-            },
-            orderBy: { createdAt: 'desc' }
-        });
-        res.json(comments);
-    } catch (error) {
-        console.error('Get comments error:', error);
-        res.status(500).json({ error: 'Failed to fetch comments' });
-    }
-};
 
-// Create a new comment
-exports.createComment = async (req, res) => {
-    const { id } = req.params;
-    const { content, guestName, guestEmail } = req.body;
-
-    try {
-        const comment = await prisma.comment.create({
-            data: {
-                content,
-                name: guestName || 'Guest User',
-                email: guestEmail || null,
-                status: 'PENDING', // Comments need approval
-                article: { connect: { id: parseInt(id) } }
-            },
-            include: {
-                user: {
-                    select: { name: true, image: true }
-                }
-            }
-        });
-        res.json(comment);
-    } catch (error) {
-        console.error('Create comment error:', error);
-        res.status(500).json({ error: 'Failed to create comment' });
-    }
-};
