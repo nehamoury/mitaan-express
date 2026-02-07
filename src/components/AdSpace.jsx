@@ -1,10 +1,12 @@
 import React from 'react';
 import { useSettings } from '../hooks/useQueries';
+import AdBanner from './AdBanner';
 
 const AdSpace = ({ position = 'homepage_top', className = '' }) => {
     const { data: settings, isLoading: loading } = useSettings();
 
-    const adCode = settings?.[`ad_${position}_code`] || '';
+    const imageUrl = settings?.[`ad_${position}_image_url`] || '';
+    const linkUrl = settings?.[`ad_${position}_link_url`] || '';
     const isEnabled = settings?.[`ad_${position}_enabled`] === 'true';
 
     if (loading) {
@@ -44,8 +46,8 @@ const AdSpace = ({ position = 'homepage_top', className = '' }) => {
     const adIndex = position.length % mockAds.length;
     const ad = mockAds[adIndex];
 
-    // If ads are disabled or no code, show a premium House Ad
-    if (!isEnabled || !adCode) {
+    // If ads are disabled or no image, show a premium House Ad
+    if (!isEnabled || !imageUrl) {
         return (
             <div className={`relative overflow-hidden ${ad.bg} rounded-xl shadow-lg my-12 w-full min-h-[200px] h-auto flex flex-col md:flex-row items-center justify-between p-8 md:p-12 group cursor-pointer hover:shadow-2xl transition-all duration-500 ${className}`}>
                 {/* Background Pattern */}
@@ -70,12 +72,16 @@ const AdSpace = ({ position = 'homepage_top', className = '' }) => {
         );
     }
 
-    // Render AdSense code
+    // Render image-based ad using AdBanner
     return (
-        <div
-            className={`my-8 ${className}`}
-            dangerouslySetInnerHTML={{ __html: adCode }}
-        />
+        <div className={`my-8 ${className}`}>
+            <AdBanner
+                imageUrl={imageUrl}
+                linkUrl={linkUrl}
+                enabled={isEnabled}
+                className="rounded-xl overflow-hidden shadow-lg"
+            />
+        </div>
     );
 };
 

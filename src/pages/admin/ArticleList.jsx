@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { FileText, Trash2, Eye, EyeOff, Copy, Archive, Download, CheckSquare, Square, Search, Filter, Calendar, TrendingUp, Zap } from 'lucide-react';
+import { FileText, Trash2, Eye, EyeOff, Copy, Archive, Download, CheckSquare, Square, Search, Filter, Calendar, TrendingUp, Zap, ToggleLeft, ToggleRight } from 'lucide-react';
 import { useAdminArticles, useCategories } from '../../hooks/useQueries';
 import { useAdminTranslation } from '../../context/AdminTranslationContext';
 
@@ -76,6 +76,21 @@ const ArticleList = () => {
             }
         } catch (error) {
             console.error('Duplicate error:', error);
+        }
+    };
+
+    const handleToggleActive = async (articleId, currentStatus) => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch(`http://localhost:3000/api/articles/${articleId}/toggle-active`, {
+                method: 'PATCH',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (response.ok) {
+                refreshArticles();
+            }
+        } catch (error) {
+            console.error('Toggle error:', error);
         }
     };
 
@@ -298,6 +313,7 @@ const ArticleList = () => {
                                 <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider">{t('title')}</th>
                                 <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider">{t('categories')}</th>
                                 <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider">{t('status')}</th>
+                                <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider">{adminLanguage === 'hi' ? 'सक्रिय' : 'Active'}</th>
                                 <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider">{t('views')}</th>
                                 <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider">{t('date')}</th>
                                 <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider">{t('actions')}</th>
@@ -306,7 +322,7 @@ const ArticleList = () => {
                         <tbody className="divide-y divide-slate-100 dark:divide-white/5">
                             {filteredArticles.length === 0 ? (
                                 <tr>
-                                    <td colSpan="7" className="px-6 py-12 text-center text-slate-500">
+                                    <td colSpan="8" className="px-6 py-12 text-center text-slate-500">
                                         <FileText size={48} className="mx-auto mb-4 opacity-20" />
                                         <p>No articles found</p>
                                     </td>
@@ -363,6 +379,15 @@ const ArticleList = () => {
                                                 }`}>
                                                 {article.status}
                                             </span>
+                                        </td>
+                                        <td className="px-6 py-4" onClick={(e) => e.stopPropagation()}>
+                                            <button
+                                                onClick={() => handleToggleActive(article.id, article.published)}
+                                                className={`p-2 rounded-lg transition-all ${article.published ? 'text-green-600 hover:bg-green-50 dark:hover:bg-green-900/20' : 'text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'}`}
+                                                title={article.published ? 'Active (Click to deactivate)' : 'Inactive (Click to activate)'}
+                                            >
+                                                {article.published ? <ToggleRight size={24} /> : <ToggleLeft size={24} />}
+                                            </button>
                                         </td>
                                         <td className="px-6 py-4 text-slate-600 dark:text-slate-400">
                                             {article.views || 0}

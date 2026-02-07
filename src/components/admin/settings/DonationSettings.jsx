@@ -1,15 +1,17 @@
 import React from 'react';
 import { Heart, CreditCard, Landmark, QrCode } from 'lucide-react';
+import { useAdminTranslation } from '../../../context/AdminTranslationContext';
 
 const DonationSettings = ({ settings, handleChange, onSave, loading }) => {
+    const { t } = useAdminTranslation();
     return (
         <div className="bg-white dark:bg-slate-800 p-8 rounded-3xl border border-slate-100 dark:border-white/5 shadow-sm space-y-6">
             <div className="flex items-center justify-between">
                 <div>
                     <h3 className="flex items-center gap-2 font-bold text-lg text-slate-900 dark:text-white">
-                        <Heart className="text-red-600" /> Donation Settings
+                        <Heart className="text-red-600" /> {t('donationSettings')}
                     </h3>
-                    <p className="text-xs text-slate-500">Manage UPI IDs and Bank Details for the Donation Page</p>
+                    <p className="text-xs text-slate-500">{t('manageDonations')}</p>
                 </div>
                 <button
                     onClick={onSave}
@@ -23,7 +25,7 @@ const DonationSettings = ({ settings, handleChange, onSave, loading }) => {
             {/* UPI Settings */}
             <div className="space-y-4 pt-4 border-t border-slate-100 dark:border-white/5">
                 <h4 className="flex items-center gap-2 font-bold text-sm text-slate-700 dark:text-slate-300">
-                    <QrCode size={16} /> UPI & QR Configuration
+                    <QrCode size={16} /> {t('upiConfig')}
                 </h4>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -44,12 +46,12 @@ const DonationSettings = ({ settings, handleChange, onSave, loading }) => {
             {/* Bank Settings */}
             <div className="space-y-4 pt-4 border-t border-slate-100 dark:border-white/5">
                 <h4 className="flex items-center gap-2 font-bold text-sm text-slate-700 dark:text-slate-300">
-                    <Landmark size={16} /> Bank Account Details
+                    <Landmark size={16} /> {t('bankDetails')}
                 </h4>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label className="block text-xs font-bold uppercase text-slate-500 mb-2">Account Holder Name</label>
+                        <label className="block text-xs font-bold uppercase text-slate-500 mb-2">{t('accHolder')}</label>
                         <input
                             name="donation_account_holder"
                             value={settings.donation_account_holder || ''}
@@ -59,7 +61,7 @@ const DonationSettings = ({ settings, handleChange, onSave, loading }) => {
                         />
                     </div>
                     <div>
-                        <label className="block text-xs font-bold uppercase text-slate-500 mb-2">Bank Name</label>
+                        <label className="block text-xs font-bold uppercase text-slate-500 mb-2">{t('bankName')}</label>
                         <input
                             name="donation_bank_name"
                             value={settings.donation_bank_name || ''}
@@ -69,7 +71,7 @@ const DonationSettings = ({ settings, handleChange, onSave, loading }) => {
                         />
                     </div>
                     <div>
-                        <label className="block text-xs font-bold uppercase text-slate-500 mb-2">Account Number</label>
+                        <label className="block text-xs font-bold uppercase text-slate-500 mb-2">{t('accNumber')}</label>
                         <input
                             name="donation_account_number"
                             value={settings.donation_account_number || ''}
@@ -79,7 +81,7 @@ const DonationSettings = ({ settings, handleChange, onSave, loading }) => {
                         />
                     </div>
                     <div>
-                        <label className="block text-xs font-bold uppercase text-slate-500 mb-2">IFSC Code</label>
+                        <label className="block text-xs font-bold uppercase text-slate-500 mb-2">{t('ifscCode')}</label>
                         <input
                             name="donation_ifsc"
                             value={settings.donation_ifsc || ''}

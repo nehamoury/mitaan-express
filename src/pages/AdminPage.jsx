@@ -19,6 +19,8 @@ import Users from './admin/Users';
 import MyBlogs from './admin/MyBlogs';
 import FeaturedContent from './admin/FeaturedContent';
 import AdminDonations from './admin/AdminDonations';
+import AdminAds from './admin/AdminAds';
+import PageManager from './admin/PageManager';
 
 // Placeholders
 
@@ -183,6 +185,8 @@ const AdminContent = () => {
                         <Route path="/media" element={<MediaLibrary />} />
                         <Route path="/settings" element={<Settings />} />
                         <Route path="/donations" element={<AdminDonations />} />
+                        <Route path="/ads" element={<AdminAds />} />
+                        <Route path="/pages" element={<PageManager />} />
                         <Route path="*" element={<Navigate to="/admin" replace />} />
                     </Routes>
                 </div>

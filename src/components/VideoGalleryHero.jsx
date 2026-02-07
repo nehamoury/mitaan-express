@@ -1,18 +1,34 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Play, Clock, MessageSquare, User, ChevronUp, ChevronDown, X } from 'lucide-react';
+import { usePublicMedia } from '../hooks/useMedia';
 import { useArticles } from '../context/ArticlesContext';
 
 const VideoGalleryHero = ({ language }) => {
     const [activeIndex, setActiveIndex] = useState(0);
     const [startIndex, setStartIndex] = useState(0);
     const [isPlaying, setIsPlaying] = useState(false);
-    const { videos: videoArticles, loading } = useArticles();
 
-    // Map video articles to component format
-    const videos = videoArticles.length > 0
-        ? videoArticles.map(a => ({
-            id: a.id,
+    // Fetch from Media Library (Primary)
+    const { data: mediaVideos = [] } = usePublicMedia('VIDEO');
+
+    // Fetch from Articles (Fallback)
+    const { videos: videoArticles } = useArticles();
+
+    // Prioritize Media Library videos
+    const displayVideos = mediaVideos.length > 0
+        ? mediaVideos.map(v => ({
+            id: `media-${v.id}`,
+            title: v.title,
+            author: 'Mitaan Express',
+            time: new Date(v.createdAt).toLocaleDateString(),
+            comments: 0, // Media items don't have comments yet
+            image: v.thumbnail || 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&q=80&w=800',
+            duration: v.duration || "00:00",
+            url: v.url
+        }))
+        : videoArticles.map(a => ({
+            id: `article-${a.id}`,
             title: a.title,
             author: a.author?.name || 'Mitaan',
             time: new Date(a.createdAt).toLocaleDateString(),
@@ -20,17 +36,19 @@ const VideoGalleryHero = ({ language }) => {
             image: a.image || 'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&q=80&w=1600',
             duration: a.metadata?.duration || "00:00",
             url: a.videoUrl
-        }))
-        : [{
-            id: 1,
-            title: "Business Agility in the Digital Age",
-            author: "Nisi Nyung",
-            time: "7d ago",
-            comments: 23,
-            image: "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&q=80&w=1600",
-            duration: "12:45",
-            url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
-        }];
+        }));
+
+    // Default fallback if both are empty
+    const videos = displayVideos.length > 0 ? displayVideos : [{
+        id: 1,
+        title: "Business Agility in the Digital Age",
+        author: "Nisi Nyung",
+        time: "7d ago",
+        comments: 23,
+        image: "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&q=80&w=1600",
+        duration: "12:45",
+        url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+    }];
 
     if (videos.length === 0) return null;
 

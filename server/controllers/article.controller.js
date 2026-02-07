@@ -207,4 +207,30 @@ exports.deleteArticle = async (req, res) => {
     }
 };
 
+// Toggle article active/inactive status
+exports.toggleActive = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const article = await prisma.article.findUnique({
+            where: { id: parseInt(id) },
+            select: { published: true }
+        });
 
+        if (!article) {
+            return res.status(404).json({ error: 'Article not found' });
+        }
+
+        const updated = await prisma.article.update({
+            where: { id: parseInt(id) },
+            data: { published: !article.published }
+        });
+
+        res.json({
+            message: `Article ${updated.published ? 'activated' : 'deactivated'}`,
+            published: updated.published
+        });
+    } catch (error) {
+        console.error('Toggle error:', error);
+        res.status(500).json({ error: 'Toggle failed' });
+    }
+};

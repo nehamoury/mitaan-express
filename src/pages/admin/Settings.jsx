@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSettings } from '../../hooks/useQueries';
 import { useUpdateSettings } from '../../hooks/useMutations';
-import { Save, Globe, Phone, Mail, MapPin, Facebook, Twitter, Instagram, Youtube, Image, Type, DollarSign } from 'lucide-react';
-import DonationSettings from '../../components/admin/settings/DonationSettings';
+import { Save, Globe, Phone, Mail, MapPin, Facebook, Twitter, Instagram, Youtube, Image, Type } from 'lucide-react';
 
 const Settings = () => {
     // TanStack Query Hooks
@@ -28,12 +27,6 @@ const Settings = () => {
         ad_article_top_enabled: 'false',
         ad_article_bottom_code: '',
         ad_article_bottom_enabled: 'false',
-        // Donation Settings
-        donation_upi_id: '',
-        donation_account_holder: '',
-        donation_bank_name: '',
-        donation_account_number: '',
-        donation_ifsc: '',
     });
 
     useEffect(() => {
@@ -272,113 +265,6 @@ const Settings = () => {
                             </div>
                         </div>
                     </div>
-
-                    {/* Advertisement Management */}
-                    <div className="bg-white dark:bg-slate-800 p-8 rounded-3xl border border-slate-100 dark:border-white/5 shadow-sm space-y-6">
-                        <div className="flex items-center justify-between">
-                            <h3 className="flex items-center gap-2 font-bold text-lg text-slate-900 dark:text-white">
-                                <DollarSign className="text-green-500" /> Advertisement Management
-                            </h3>
-                            <button
-                                onClick={() => handleSaveSection(['ad_homepage_top_code', 'ad_homepage_top_enabled', 'ad_article_top_code', 'ad_article_top_enabled', 'ad_article_bottom_code', 'ad_article_bottom_enabled'])}
-                                disabled={loading}
-                                className="px-4 py-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold rounded-lg text-xs uppercase tracking-wider hover:scale-105 transition-transform disabled:opacity-50"
-                            >
-                                {loading ? 'Saving...' : 'Save Ads'}
-                            </button>
-                        </div>
-                        <p className="text-xs text-slate-500">Manage AdSense codes for different positions</p>
-
-                        {/* Homepage Top Banner */}
-                        <div className="space-y-3 p-4 bg-slate-50 dark:bg-slate-900/50 rounded-xl">
-                            <div className="flex items-center justify-between">
-                                <label className="block text-sm font-bold text-slate-700 dark:text-slate-300">Homepage Top Banner</label>
-                                <label className="relative inline-flex items-center cursor-pointer">
-                                    <input
-                                        type="checkbox"
-                                        checked={settings.ad_homepage_top_enabled === 'true'}
-                                        onChange={(e) => setSettings(prev => ({ ...prev, ad_homepage_top_enabled: e.target.checked ? 'true' : 'false' }))}
-                                        className="sr-only peer"
-                                    />
-                                    <div className="w-11 h-6 bg-slate-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-red-500/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
-                                    <span className="ml-3 text-xs font-medium text-slate-600 dark:text-slate-400">
-                                        {settings.ad_homepage_top_enabled === 'true' ? 'Enabled' : 'Disabled'}
-                                    </span>
-                                </label>
-                            </div>
-                            <textarea
-                                name="ad_homepage_top_code"
-                                value={settings.ad_homepage_top_code}
-                                onChange={handleChange}
-                                rows={4}
-                                className="w-full p-3 bg-white dark:bg-slate-800 rounded-lg outline-none focus:ring-2 focus:ring-red-500/20 font-mono text-xs"
-                                placeholder="Paste your AdSense code here..."
-                            />
-                        </div>
-
-                        {/* Article Top Banner */}
-                        <div className="space-y-3 p-4 bg-slate-50 dark:bg-slate-900/50 rounded-xl">
-                            <div className="flex items-center justify-between">
-                                <label className="block text-sm font-bold text-slate-700 dark:text-slate-300">Article Top Banner</label>
-                                <label className="relative inline-flex items-center cursor-pointer">
-                                    <input
-                                        type="checkbox"
-                                        checked={settings.ad_article_top_enabled === 'true'}
-                                        onChange={(e) => setSettings(prev => ({ ...prev, ad_article_top_enabled: e.target.checked ? 'true' : 'false' }))}
-                                        className="sr-only peer"
-                                    />
-                                    <div className="w-11 h-6 bg-slate-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-red-500/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
-                                    <span className="ml-3 text-xs font-medium text-slate-600 dark:text-slate-400">
-                                        {settings.ad_article_top_enabled === 'true' ? 'Enabled' : 'Disabled'}
-                                    </span>
-                                </label>
-                            </div>
-                            <textarea
-                                name="ad_article_top_code"
-                                value={settings.ad_article_top_code}
-                                onChange={handleChange}
-                                rows={4}
-                                className="w-full p-3 bg-white dark:bg-slate-800 rounded-lg outline-none focus:ring-2 focus:ring-red-500/20 font-mono text-xs"
-                                placeholder="Paste your AdSense code here..."
-                            />
-                        </div>
-
-                        {/* Article Bottom Banner */}
-                        <div className="space-y-3 p-4 bg-slate-50 dark:bg-slate-900/50 rounded-xl">
-                            <div className="flex items-center justify-between">
-                                <label className="block text-sm font-bold text-slate-700 dark:text-slate-300">Article Bottom Banner</label>
-                                <label className="relative inline-flex items-center cursor-pointer">
-                                    <input
-                                        type="checkbox"
-                                        checked={settings.ad_article_bottom_enabled === 'true'}
-                                        onChange={(e) => setSettings(prev => ({ ...prev, ad_article_bottom_enabled: e.target.checked ? 'true' : 'false' }))}
-                                        className="sr-only peer"
-                                    />
-                                    <div className="w-11 h-6 bg-slate-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-red-500/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
-                                    <span className="ml-3 text-xs font-medium text-slate-600 dark:text-slate-400">
-                                        {settings.ad_article_bottom_enabled === 'true' ? 'Enabled' : 'Disabled'}
-                                    </span>
-                                </label>
-                            </div>
-                            <textarea
-                                name="ad_article_bottom_code"
-                                value={settings.ad_article_bottom_code}
-                                onChange={handleChange}
-                                rows={4}
-                                className="w-full p-3 bg-white dark:bg-slate-800 rounded-lg outline-none focus:ring-2 focus:ring-red-500/20 font-mono text-xs"
-                                placeholder="Paste your AdSense code here..."
-                            />
-                        </div>
-                    </div>
-                </div>
-                {/* Donation Settings */}
-                <div className="lg:col-span-2">
-                    <DonationSettings
-                        settings={settings}
-                        handleChange={handleChange}
-                        loading={loading}
-                        onSave={() => handleSaveSection(['donation_upi_id', 'donation_account_holder', 'donation_bank_name', 'donation_account_number', 'donation_ifsc'])}
-                    />
                 </div>
             </div>
         </div>

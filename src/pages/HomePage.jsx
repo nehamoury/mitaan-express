@@ -8,6 +8,7 @@ import Sidebar from '../components/Sidebar';
 import InDepthSection from '../components/InDepthSection';
 import CreativeShowcase from '../components/CreativeShowcase';
 import VideoGalleryHero from '../components/VideoGalleryHero';
+import GalleryStrip from '../components/GalleryStrip';
 import MustReadSlider from '../components/MustReadSlider';
 import { useArticles } from '../context/ArticlesContext';
 import AdSpace from '../components/AdSpace';
@@ -138,6 +139,8 @@ const HomePage = ({ language }) => {
                         <VideoGalleryHero language={language} />
                     </div>
 
+                    {/* NEW: Gallery Strip */}
+                    <GalleryStrip language={language} />
 
                     {/* MUST READ SECTION: Edge-to-Edge Full Width */}
                     <MustReadSlider language={language} onArticleClick={handleArticleClick} />

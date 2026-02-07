@@ -12,5 +12,6 @@ router.get('/:slug', articleController.getArticleBySlug);
 router.post('/', authenticateToken, authorizeRoles('ADMIN', 'EDITOR'), articleController.createArticle);
 router.put('/:id', authenticateToken, authorizeRoles('ADMIN', 'EDITOR'), articleController.updateArticle);
 router.delete('/:id', authenticateToken, authorizeRoles('ADMIN'), articleController.deleteArticle);
+router.patch('/:id/toggle-active', authenticateToken, authorizeRoles('ADMIN', 'EDITOR'), articleController.toggleActive);
 
 module.exports = router;

@@ -1,44 +1,43 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink, useLocation, useParams } from 'react-router-dom';
 import {
     LayoutDashboard, FileText, Image as ImageIcon, Settings, Users,
     LogOut, Globe, FolderTree, MessageSquare, BarChart3, Moon,
     Sun, Star, ChevronDown, ChevronRight, Activity, Newspaper,
-    PenTool, Film, Heart as HeartIcon
+    PenTool, Film, Heart as HeartIcon, DollarSign, Layout
 } from 'lucide-react';
 import { fetchCategories } from '../../services/api';
-
+import logo from '../../assets/logo.png';
 import { useAdminTranslation } from '../../context/AdminTranslationContext';
 
 const AdminSidebar = ({ isSidebarOpen, setIsSidebarOpen, handleLogout, theme, toggleTheme }) => {
-    const { t, adminLang, toggleAdminLang } = useAdminTranslation();
-    const [categories, setCategories] = useState([]);
-    const [isArticlesExpanded, setIsArticlesExpanded] = useState(false);
-    const [expandedCategories, setExpandedCategories] = useState({});
-
+    const { t, toggleAdminLang } = useAdminTranslation();
     const location = useLocation();
+    const { categoryId } = useParams();
+
+    const [isArticlesExpanded, setIsArticlesExpanded] = useState(false);
+    const [categories, setCategories] = useState([]);
+    const [expandedCategories, setExpandedCategories] = useState({});
+    const [activeCategoryName, setActiveCategoryName] = useState('');
+
+    useEffect(() => {
+        if (location.pathname.startsWith('/admin/articles')) {
+            setIsArticlesExpanded(true);
+        }
+    }, [location.pathname]);
 
     useEffect(() => {
         const loadCategories = async () => {
-            const data = await fetchCategories();
-            setCategories(data || []);
+            try {
+                const data = await fetchCategories();
+                setCategories(data || []);
+            } catch (error) {
+                console.error('Error loading categories for sidebar:', error);
+            }
         };
         loadCategories();
     }, []);
 
-    // Get active category name from URL
-    const activeCategoryName = useMemo(() => {
-        const path = location.pathname;
-        if (path === '/admin/articles') return 'All Articles';
-        if (path.includes('/admin/articles/category/')) {
-            const id = path.split('/').pop();
-            const cat = categories.find(c => c.id.toString() === id);
-            return cat ? `${cat.nameHi} / ${cat.name}` : 'Filtering...';
-        }
-        return null;
-    }, [location.pathname, categories]);
-
-    // Transform categories into a tree structure
     const categoryTree = useMemo(() => {
         const tree = [];
         const lookup = {};
@@ -58,6 +57,21 @@ const AdminSidebar = ({ isSidebarOpen, setIsSidebarOpen, handleLogout, theme, to
         return tree.sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
     }, [categories]);
 
+    useEffect(() => {
+        if (categoryId) {
+            const catIdNum = parseInt(categoryId);
+            const activeCat = categories.find(c => c.id === catIdNum);
+            if (activeCat) {
+                setActiveCategoryName(activeCat.name);
+                if (activeCat.parentId) {
+                    setExpandedCategories(prev => ({ ...prev, [activeCat.parentId]: true }));
+                }
+            }
+        } else {
+            setActiveCategoryName('');
+        }
+    }, [categoryId, categories]);
+
     const toggleCategory = (id) => {
         setExpandedCategories(prev => ({
             ...prev,
@@ -75,8 +89,10 @@ const AdminSidebar = ({ isSidebarOpen, setIsSidebarOpen, handleLogout, theme, to
         { name: t('activityLogs') || 'Activity Logs', path: '/admin/activity', icon: <Activity size={18} /> },
         { name: t('users'), path: '/admin/users', icon: <Users size={18} /> },
         { name: t('mediaLibrary') || 'Gallery', path: '/admin/media', icon: <ImageIcon size={18} /> },
+        { name: t('ads'), path: '/admin/ads', icon: <DollarSign size={18} /> },
         { name: t('settings'), path: '/admin/settings', icon: <Settings size={18} /> },
-        { name: 'Donations', path: '/admin/donations', icon: <HeartIcon size={18} /> },
+        { name: t('donations'), path: '/admin/donations', icon: <HeartIcon size={18} /> },
+        { name: t('pageManager') || 'Page Manager', path: '/admin/pages', icon: <Layout size={18} /> },
     ];
 
     const activeClass = "bg-red-50 dark:bg-red-900/10 text-red-600 border-r-4 border-red-600 shadow-[inset_-4px_0_0_0_#ef4444]";
@@ -97,7 +113,7 @@ const AdminSidebar = ({ isSidebarOpen, setIsSidebarOpen, handleLogout, theme, to
                     {/* Logo Area */}
                     <div className="p-6 border-b border-slate-100 dark:border-white/5 flex-shrink-0">
                         <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-gradient-to-br from-red-600 to-red-400 rounded-xl flex items-center justify-center text-white font-black text-xl shadow-lg shadow-red-600/20">M</div>
+                            <img src={logo} alt="Mitaan Logo" className="w-10 h-10 object-contain" />
                             <div>
                                 <h1 className="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tighter">Mitaan<span className="text-red-600">.</span></h1>
                                 <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] -mt-1">Admin Portal</p>

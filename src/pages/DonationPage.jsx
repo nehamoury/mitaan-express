@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useSettings } from '../hooks/useQueries';
-import { Heart, Coffee, CreditCard, QrCode, CheckCircle2, IndianRupee, Landmark, User, Mail, MessageSquare, FileText } from 'lucide-react';
+import { Heart, Coffee, CreditCard, QrCode, CheckCircle2, IndianRupee, Landmark, User, Mail, MessageSquare, FileText, Globe } from 'lucide-react';
 
-const DonationPage = ({ language }) => {
+const DonationPage = ({ language, toggleLanguage }) => {
     const { data: settings } = useSettings();
     const [method, setMethod] = useState('qr'); // 'qr', 'bank', 'manual'
     const [isAnonymous, setIsAnonymous] = useState(false);
     const [formData, setFormData] = useState({
         name: '',
         email: '',
-        amount: '',
+        amount: '0',
         message: '',
         details: '' // UTR or Bank Ref
     });
@@ -47,7 +47,7 @@ const DonationPage = ({ language }) => {
 
             if (response.ok) {
                 setSubmitted(true);
-                setFormData({ name: '', email: '', amount: '', message: '', details: '' });
+                setFormData({ name: '', email: '', message: '', details: '' });
                 setIsAnonymous(false);
             }
         } catch (error) {
@@ -58,7 +58,18 @@ const DonationPage = ({ language }) => {
     };
 
     return (
-        <div className="min-h-screen pt-32 pb-20 px-4 sm:px-6 lg:px-8 bg-slate-50 dark:bg-[#030712] transition-colors duration-300">
+        <div className="min-h-screen pt-32 pb-20 px-4 sm:px-6 lg:px-8 bg-slate-50 dark:bg-[#030712] transition-colors duration-300 relative">
+            {/* Language Toggle */}
+            <div className="absolute top-24 right-4 sm:right-8 lg:right-12">
+                <button
+                    onClick={toggleLanguage}
+                    className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-white/10 border border-slate-200 dark:border-white/10 rounded-full text-xs font-black uppercase tracking-widest hover:scale-105 transition-transform"
+                >
+                    <Globe size={16} className="text-red-600" />
+                    {language === 'hi' ? 'Switch to English' : 'हिंदी में देखें'}
+                </button>
+            </div>
+
             <div className="max-w-4xl mx-auto">
                 {/* Header */}
                 <div className="text-center space-y-6 mb-12">
@@ -74,7 +85,7 @@ const DonationPage = ({ language }) => {
                     </h1>
                     <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
                         {language === 'hi'
-                            ? 'मिथुन एक्सप्रेस को स्वतंत्र रखने में हमारी मदद करें। आपकी छोटी सी मदद हमें बेहतर पत्रकारिता करने की शक्ति देती है।'
+                            ? 'मिटान एक्सप्रेस को स्वतंत्र रखने में हमारी मदद करें। आपकी छोटी सी मदद हमें बेहतर पत्रकारिता करने की शक्ति देती है।'
                             : 'Help us keep Mitaan Express independent. Your contribution empowers us to continue delivering high-quality, unbiased journalism.'}
                     </p>
                 </div>
@@ -88,7 +99,7 @@ const DonationPage = ({ language }) => {
                             className={`flex-1 py-6 flex items-center justify-center gap-3 text-sm font-black uppercase tracking-widest transition-all ${method === 'qr' ? 'bg-red-600 text-white' : 'text-slate-500 hover:bg-slate-50 dark:hover:bg-white/5'}`}
                         >
                             <QrCode size={18} />
-                            {language === 'hi' ? 'QR / UPI' : 'QR / UPI'}
+                            {language === 'hi' ? 'क्यूआर / यूपीआई' : 'QR / UPI'}
                         </button>
                         <button
                             onClick={() => setMethod('bank')}
@@ -136,7 +147,9 @@ const DonationPage = ({ language }) => {
                                                 />
                                             </div>
                                             <div className="text-center">
-                                                <p className="font-bold text-slate-900 dark:text-white mb-2">Scan with any UPI App</p>
+                                                <p className="font-bold text-slate-900 dark:text-white mb-2">
+                                                    {language === 'hi' ? 'किसी भी यूपीआई ऐप से स्कैन करें' : 'Scan with any UPI App'}
+                                                </p>
                                                 <p className="text-xs text-slate-500">Google Pay, PhonePe, Paytm, BHIM</p>
                                                 <div className="mt-4 px-4 py-2 bg-white dark:bg-slate-900 rounded-full border border-slate-200 dark:border-slate-800 text-xs font-mono text-slate-600 dark:text-slate-400">
                                                     {settings?.donation_upi_id || 'mitaanexpress@upi'}
@@ -147,23 +160,33 @@ const DonationPage = ({ language }) => {
 
                                     {method === 'bank' && (
                                         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6 p-8 bg-slate-50 dark:bg-white/5 rounded-3xl border border-slate-100 dark:border-white/10">
-                                            <h3 className="font-black text-xl text-slate-900 dark:text-white mb-4">Bank Details</h3>
+                                            <h3 className="font-black text-xl text-slate-900 dark:text-white mb-4">
+                                                {language === 'hi' ? 'बैंक विवरण' : 'Bank Details'}
+                                            </h3>
                                             <div className="space-y-4">
                                                 <div>
-                                                    <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Account Holder</p>
+                                                    <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">
+                                                        {language === 'hi' ? 'खाता धारक' : 'Account Holder'}
+                                                    </p>
                                                     <p className="font-serif text-lg text-slate-900 dark:text-white">{settings?.donation_account_holder || 'Mitaan Express Media Pvt Ltd'}</p>
                                                 </div>
                                                 <div>
-                                                    <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Account Number</p>
+                                                    <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">
+                                                        {language === 'hi' ? 'खाता संख्या' : 'Account Number'}
+                                                    </p>
                                                     <p className="font-mono text-lg text-slate-900 dark:text-white">{settings?.donation_account_number || '1234 5678 9012 3456'}</p>
                                                 </div>
                                                 <div className="grid grid-cols-2 gap-4">
                                                     <div>
-                                                        <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">IFSC Code</p>
+                                                        <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">
+                                                            {language === 'hi' ? 'आईएफएससी कोड' : 'IFSC Code'}
+                                                        </p>
                                                         <p className="font-mono text-slate-900 dark:text-white">{settings?.donation_ifsc || 'SBIN0001234'}</p>
                                                     </div>
                                                     <div>
-                                                        <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Bank</p>
+                                                        <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">
+                                                            {language === 'hi' ? 'बैंक' : 'Bank'}
+                                                        </p>
                                                         <p className="text-slate-900 dark:text-white">{settings?.donation_bank_name || 'State Bank of India'}</p>
                                                     </div>
                                                 </div>
@@ -174,26 +197,12 @@ const DonationPage = ({ language }) => {
 
                                 {/* Right Column: Donation Form */}
                                 <form onSubmit={handleSubmit} className="space-y-6">
-                                    <div className="space-y-3">
-                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Amount (INR) <span className="text-red-500">*</span></label>
-                                        <div className="relative">
-                                            <IndianRupee size={16} className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-400" />
-                                            <input
-                                                type="number"
-                                                name="amount"
-                                                required
-                                                value={formData.amount}
-                                                onChange={handleInputChange}
-                                                placeholder="500"
-                                                className="w-full pl-14 pr-6 py-4 bg-slate-50 dark:bg-white/5 border border-slate-100 dark:border-white/10 rounded-2xl focus:ring-2 focus:ring-red-600 outline-none transition-all dark:text-white font-bold"
-                                            />
-                                        </div>
-                                    </div>
-
                                     {/* Sender Details */}
                                     <div className="pt-4 border-t border-slate-100 dark:border-white/10">
                                         <div className="mb-4">
-                                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Your Details</label>
+                                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">
+                                                {language === 'hi' ? 'आपका विवरण' : 'Your Details'}
+                                            </label>
                                         </div>
 
                                         <div className="grid grid-cols-1 gap-4">
@@ -205,7 +214,7 @@ const DonationPage = ({ language }) => {
                                                     required
                                                     value={formData.name}
                                                     onChange={handleInputChange}
-                                                    placeholder="Full Name"
+                                                    placeholder={language === 'hi' ? 'पूरा नाम' : 'Full Name'}
                                                     className="w-full pl-14 pr-6 py-4 bg-slate-50 dark:bg-white/5 border border-slate-100 dark:border-white/10 rounded-2xl focus:ring-2 focus:ring-red-600 outline-none transition-all dark:text-white"
                                                 />
                                             </div>
@@ -217,7 +226,7 @@ const DonationPage = ({ language }) => {
                                                     required
                                                     value={formData.email}
                                                     onChange={handleInputChange}
-                                                    placeholder="Email Address"
+                                                    placeholder={language === 'hi' ? 'ईमेल पता' : 'Email Address'}
                                                     className="w-full pl-14 pr-6 py-4 bg-slate-50 dark:bg-white/5 border border-slate-100 dark:border-white/10 rounded-2xl focus:ring-2 focus:ring-red-600 outline-none transition-all dark:text-white"
                                                 />
                                             </div>
@@ -226,7 +235,7 @@ const DonationPage = ({ language }) => {
 
                                     <div className="space-y-3">
                                         <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">
-                                            Transaction ID <span className="text-red-500">*</span>
+                                            {language === 'hi' ? 'लेनदेन आईडी' : 'Transaction ID'} <span className="text-red-500">*</span>
                                         </label>
                                         <div className="relative">
                                             <FileText size={16} className="absolute left-6 top-6 text-slate-400" />
@@ -236,7 +245,7 @@ const DonationPage = ({ language }) => {
                                                 required
                                                 value={formData.details}
                                                 onChange={handleInputChange}
-                                                placeholder="Enter UPI / Bank Transaction ID"
+                                                placeholder={language === 'hi' ? 'यूपीआई / बैंक लेनदेन आईडी दर्ज करें' : 'Enter UPI / Bank Transaction ID'}
                                                 className="w-full pl-14 pr-6 py-4 bg-slate-50 dark:bg-white/5 border border-slate-100 dark:border-white/10 rounded-2xl focus:ring-2 focus:ring-red-600 outline-none transition-all dark:text-white resize-none"
                                             ></textarea>
                                         </div>
@@ -247,7 +256,7 @@ const DonationPage = ({ language }) => {
                                         disabled={loading}
                                         className="w-full py-6 bg-red-600 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-red-700 transition-all shadow-xl shadow-red-600/30 disabled:opacity-50"
                                     >
-                                        {loading ? 'PROCESSING...' : (language === 'hi' ? 'पुष्टि करें' : 'CONFIRM DONATION')}
+                                        {loading ? (language === 'hi' ? 'प्रक्रिया चल रही है...' : 'PROCESSING...') : (language === 'hi' ? 'पुष्टि करें' : 'CONFIRM DONATION')}
                                     </button>
                                 </form>
                             </div>
@@ -259,22 +268,34 @@ const DonationPage = ({ language }) => {
                 <div className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-8">
                     <div className="p-8 bg-white dark:bg-white/5 border border-slate-100 dark:border-white/10 rounded-3xl space-y-4">
                         <div className="text-red-600 bg-red-600/10 w-fit p-3 rounded-xl"><Coffee size={24} /></div>
-                        <h4 className="font-bold dark:text-white">Transparent</h4>
-                        <p className="text-sm text-slate-500">Every rupee is used to fund deep investigative reports and field journalism.</p>
+                        <h4 className="font-bold dark:text-white">
+                            {language === 'hi' ? 'पारदर्शी' : 'Transparent'}
+                        </h4>
+                        <p className="text-sm text-slate-500">
+                            {language === 'hi' ? 'हर रुपया पत्रकारिता और रिपोर्टिंग के लिए उपयोग किया जाता है।' : 'Every rupee is used to fund deep investigative reports and field journalism.'}
+                        </p>
                     </div>
                     <div className="p-8 bg-white dark:bg-white/5 border border-slate-100 dark:border-white/10 rounded-3xl space-y-4">
                         <div className="text-red-600 bg-red-600/10 w-fit p-3 rounded-xl"><CreditCard size={24} /></div>
-                        <h4 className="font-bold dark:text-white">Secure</h4>
-                        <p className="text-sm text-slate-500">Your details are safe with us. We use industry-standard encryption for all transactions.</p>
+                        <h4 className="font-bold dark:text-white">
+                            {language === 'hi' ? 'सुरक्षित' : 'Secure'}
+                        </h4>
+                        <p className="text-sm text-slate-500">
+                            {language === 'hi' ? 'आपकी जानकारी सुरक्षित है। हम सभी लेनदेन के लिए एन्क्रिप्शन का उपयोग करते हैं।' : 'Your details are safe with us. We use industry-standard encryption for all transactions.'}
+                        </p>
                     </div>
                     <div className="p-8 bg-white dark:bg-white/5 border border-slate-100 dark:border-white/10 rounded-3xl space-y-4">
                         <div className="text-red-600 bg-red-600/10 w-fit p-3 rounded-xl"><CheckCircle2 size={24} /></div>
-                        <h4 className="font-bold dark:text-white">Impactful</h4>
-                        <p className="text-sm text-slate-500">Join a community of 10,000+ supporters who believe in truth and integrity.</p>
+                        <h4 className="font-bold dark:text-white">
+                            {language === 'hi' ? 'प्रभावशाली' : 'Impactful'}
+                        </h4>
+                        <p className="text-sm text-slate-500">
+                            {language === 'hi' ? '10,000+ समर्थकों के समुदाय में शामिल हों जो सच्चाई में विश्वास करते हैं।' : 'Join a community of 10,000+ supporters who believe in truth and integrity.'}
+                        </p>
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     );
 };
 

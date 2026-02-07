@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Facebook, Twitter, Instagram, MapPin, Phone, Send, Youtube, MessageCircle, ArrowRight, Mail } from 'lucide-react';
+import { useSettings } from '../hooks/useQueries';
+import logo from '../assets/logo.png';
 
 const Footer = ({ language, onCategoryChange }) => {
+    const { data: settings } = useSettings();
     const footerNews = [
         {
             id: 'fn1',
@@ -27,23 +30,27 @@ const Footer = ({ language, onCategoryChange }) => {
         { icon: <Youtube size={18} />, bg: 'hover:bg-[#ff0000]', color: 'text-[#ff0000]' }
     ];
 
-    const quickLinks = language === 'hi'
-        ? [
-            { name: 'होम', id: 'home' },
-            { name: 'गैलरी', id: 'gallery' },
-            { name: 'वीडियो', id: 'video' },
-            { name: 'काव्य', id: 'poetry' },
-            { name: 'ब्लॉग', id: 'blogs' },
-            { name: 'संपर्क', id: 'contact' }
-        ]
-        : [
-            { name: 'Home', id: 'home' },
-            { name: 'Gallery', id: 'gallery' },
-            { name: 'Videos', id: 'video' },
-            { name: 'Poetry', id: 'poetry' },
-            { name: 'Blogs', id: 'blogs' },
-            { name: 'Contact', id: 'contact' }
-        ];
+    const quickLinks = useMemo(() => {
+        const links = language === 'hi'
+            ? [
+                { name: 'होम', id: 'home' },
+                { name: 'गैलरी', id: 'gallery', key: 'page_gallery_enabled' },
+                { name: 'वीडियो', id: 'video', key: 'page_live_enabled' },
+                { name: 'काव्य', id: 'poetry', key: 'page_poetry_enabled' },
+                { name: 'ब्लॉग', id: 'blogs', key: 'page_blogs_enabled' },
+                { name: 'संपर्क', id: 'contact' }
+            ]
+            : [
+                { name: 'Home', id: 'home' },
+                { name: 'Gallery', id: 'gallery', key: 'page_gallery_enabled' },
+                { name: 'Videos', id: 'video', key: 'page_live_enabled' },
+                { name: 'Poetry', id: 'poetry', key: 'page_poetry_enabled' },
+                { name: 'Blogs', id: 'blogs', key: 'page_blogs_enabled' },
+                { name: 'Contact', id: 'contact' }
+            ];
+
+        return links.filter(l => !l.key || !settings || settings[l.key] !== 'false');
+    }, [language, settings]);
 
     return (
         <footer className="relative bg-slate-200 dark:bg-[#0f172a] text-slate-900 dark:text-white pt-24 pb-12 overflow-hidden border-t border-slate-300 dark:border-white/10">
@@ -56,7 +63,7 @@ const Footer = ({ language, onCategoryChange }) => {
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 mb-20 pb-20 border-b border-slate-200 dark:border-white/5">
                     <div className="lg:col-span-5 space-y-8">
                         <div onClick={() => onCategoryChange('home')} className="flex items-center gap-4 cursor-pointer group">
-                            <div className="w-12 h-12 bg-red-600 rounded-xl flex items-center justify-center text-white font-black text-2xl shadow-lg shadow-red-600/20 group-hover:scale-110 transition-transform">M</div>
+                            <img src={logo} alt="Mitaan Logo" className="w-12 h-12 object-contain shadow-lg shadow-red-600/20 rounded-xl bg-white group-hover:scale-110 transition-transform" />
                             <h2 className="text-3xl font-black font-serif tracking-tighter">
                                 MITAAN <span className="text-red-600">EXPRESS.</span>
                             </h2>
@@ -251,9 +258,12 @@ const Footer = ({ language, onCategoryChange }) => {
                             : `© 2026 Mitaan Express. All Rights Reserved.`}
                     </p>
                     <div className="flex gap-8">
-                        {['Terms', 'Privacy', 'Cookies'].map(p => (
-                            <button key={p} className="text-xs font-bold text-slate-500 hover:text-red-600 transition-colors uppercase tracking-widest">{p}</button>
-                        ))}
+                        <button onClick={() => window.location.href = '/terms'} className="text-xs font-bold text-slate-500 hover:text-red-600 transition-colors uppercase tracking-widest">
+                            {language === 'hi' ? 'शर्तें' : 'Terms'}
+                        </button>
+                        <button onClick={() => window.location.href = '/privacy'} className="text-xs font-bold text-slate-500 hover:text-red-600 transition-colors uppercase tracking-widest">
+                            {language === 'hi' ? 'गोपनीयता' : 'Privacy'}
+                        </button>
                     </div>
                 </div>
             </div>
@@ -262,4 +272,3 @@ const Footer = ({ language, onCategoryChange }) => {
 };
 
 export default Footer;
-

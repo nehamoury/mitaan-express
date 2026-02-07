@@ -7,15 +7,55 @@ import {
     Facebook, Twitter, Linkedin, Copy, Check
 } from 'lucide-react';
 import { useArticles } from '../context/ArticlesContext';
+import { useSettings } from '../hooks/useQueries';
 import AdSpace from '../components/AdSpace';
 
 const ArticleDetailPage = ({ language }) => {
     const { id } = useParams();
     const navigate = useNavigate();
     const { articles, loading } = useArticles();
+    const { data: settings } = useSettings();
     const [article, setArticle] = useState(null);
     const [copied, setCopied] = useState(false);
     const [relatedArticles, setRelatedArticles] = useState([]);
+
+    // Inject Ad into Content
+    const injectedContent = React.useMemo(() => {
+        if (!article?.content) return '';
+
+        // If ad is disabled or no image, return original content
+        if (settings?.ad_in_article_enabled !== 'true' || !settings?.ad_in_article_image_url) {
+            return article.content;
+        }
+
+        const adHtml = `
+            <div class="my-8 w-full flex justify-center clear-both">
+                <a href="${settings.ad_in_article_link_url || '#'}" target="_blank" rel="noopener noreferrer" class="block w-full max-w-4xl group relative overflow-hidden rounded-xl shadow-sm border border-slate-100 dark:border-white/10">
+                    <div class="absolute top-2 right-2 px-2 py-0.5 bg-black/50 text-[10px] text-white uppercase tracking-widest rounded backdrop-blur-sm">Advertisement</div>
+                    <img src="${settings.ad_in_article_image_url}" alt="Advertisement" class="w-full h-auto transform group-hover:scale-[1.01] transition-transform duration-500" />
+                </a>
+            </div>
+        `;
+
+        // Inject after 3rd paragraph
+        let count = 0;
+        const modified = article.content.replace(/<\/p>/g, (match) => {
+            count++;
+            if (count === 3) {
+                return match + adHtml;
+            }
+            return match;
+        });
+
+        // If less than 3 paragraphs, append at end
+        if (count < 3) {
+            return article.content + adHtml;
+        }
+
+        return modified;
+    }, [article, settings]);
+
+
 
     useEffect(() => {
         // Find article by ID or slug
@@ -86,7 +126,7 @@ const ArticleDetailPage = ({ language }) => {
 
     return (
         <div className="min-h-screen bg-white dark:bg-black overflow-x-hidden">
-            <AdSpace position="article_top" />
+
             {/* Back Button */}
             <div className="max-w-4xl mx-auto px-4 py-6">
                 <button
@@ -196,7 +236,7 @@ const ArticleDetailPage = ({ language }) => {
                         {/* Article Content */}
                         <div
                             className="prose prose-lg md:prose-xl dark:prose-invert max-w-none prose-headings:font-serif prose-a:text-red-600 prose-img:rounded-2xl"
-                            dangerouslySetInnerHTML={{ __html: article.content }}
+                            dangerouslySetInnerHTML={{ __html: injectedContent }}
                         />
 
                         {/* Video if exists */}

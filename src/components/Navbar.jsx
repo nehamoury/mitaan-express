@@ -9,6 +9,8 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence, useScroll, useSpring } from 'framer-motion';
 import { fetchCategories } from '../services/api';
+import { useSettings } from '../hooks/useQueries';
+import logo from '../assets/logo.png';
 
 const Navbar = ({
     activeCategory,
@@ -22,6 +24,7 @@ const Navbar = ({
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [categories, setCategories] = useState([]);
     const [email, setEmail] = useState('');
+    const { data: settings } = useSettings();
 
     const handleSubscribe = () => {
         if (!email) return alert('Please enter your email address');
@@ -116,14 +119,20 @@ const Navbar = ({
         setIsMenuOpen(false);
     };
 
-    const mainPages = [
-        { id: 'home', name: language === 'hi' ? 'मुख्य पृष्ठ' : 'Home', icon: <Home size={17} /> },
-        { id: 'about', name: language === 'hi' ? 'हमारे बारे में' : 'About Us', icon: <Info size={20} /> },
-        { id: 'gallery', name: language === 'hi' ? 'गैलरी' : 'Gallery', icon: <ImageIcon size={20} /> },
-        { id: 'video', name: language === 'hi' ? 'वीडियो' : 'Videos', icon: <Video size={20} /> },
-        { id: 'contact', name: language === 'hi' ? 'संपर्क करें' : 'Contact Us', icon: <Mail size={20} /> },
-        { id: 'blogs', name: language === 'hi' ? 'ब्लॉग' : 'Blog', icon: <FileText size={20} /> },
-    ];
+    const mainPages = useMemo(() => {
+        const pages = [
+            { id: 'home', name: language === 'hi' ? 'मुख्य पृष्ठ' : 'Home', icon: <Home size={17} /> },
+            { id: 'about', name: language === 'hi' ? 'हमारे बारे में' : 'About Us', icon: <Info size={20} /> },
+            { id: 'gallery', name: language === 'hi' ? 'गैलरी' : 'Gallery', icon: <ImageIcon size={20} />, key: 'page_gallery_enabled' },
+            { id: 'video', name: language === 'hi' ? 'वीडियो' : 'Videos', icon: <Video size={20} />, key: 'page_live_enabled' },
+            { id: 'contact', name: language === 'hi' ? 'संपर्क करें' : 'Contact Us', icon: <Mail size={20} /> },
+            { id: 'blogs', name: language === 'hi' ? 'ब्लॉग' : 'Blog', icon: <FileText size={20} />, key: 'page_blogs_enabled' },
+        ];
+
+        return pages.filter(p => !p.key || !settings || settings[p.key] !== 'false');
+    }, [language, settings]);
+
+    const isDonationEnabled = !settings || settings.page_donation_enabled !== 'false';
 
     const socialLinks = [
         { name: 'Twitter', icon: <Twitter size={18} />, href: '#' },
@@ -164,7 +173,7 @@ const Navbar = ({
                 {/* Center Section: Logo/Title */}
                 <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex justify-center w-full max-w-fit pointer-events-auto">
                     <button onClick={() => handleLinkClick('home')} className="group flex items-center gap-2.5 lg:gap-3">
-                        <div className="w-8 h-8 lg:w-10 lg:h-10 bg-red-600 rounded lg:rounded-lg flex items-center justify-center text-white font-black text-sm lg:text-xl shadow-lg shadow-red-600/30 shrink-0">M</div>
+                        <img src={logo} alt="Mitaan Logo" className="w-8 h-8 lg:w-10 lg:h-10 object-contain shadow-lg shadow-red-600/30 rounded-lg bg-white" />
                         <div className="flex flex-col items-start leading-none">
                             <h1 className={`text-lg sm:text-xl lg:text-3xl font-black tracking-tighter font-serif transition-all duration-300 drop-shadow-sm whitespace-nowrap ${isNavbarSolid ? 'text-slate-900 dark:text-white' : 'text-white'
                                 }`}>
@@ -185,15 +194,17 @@ const Navbar = ({
                         </button>
                     </div>
 
-                    <button
-                        onClick={() => window.location.href = '/donate'}
-                        className={`hidden md:flex items-center gap-2 px-3 lg:px-6 py-2 rounded-full font-black text-[10px] lg:text-xs uppercase tracking-widest transition-all ${isNavbarSolid ? 'bg-red-50 text-red-600 hover:bg-red-100' : 'bg-white/10 text-white hover:bg-white/20 backdrop-blur-md border border-white/20'} shadow-sm shrink-0`}
-                    >
-                        <HeartIcon size={14} className="fill-current" />
-                        <span className={language === 'hi' ? '' : 'hidden lg:inline'}>
-                            {language === 'hi' ? 'सहयोग' : 'Donate'}
-                        </span>
-                    </button>
+                    {isDonationEnabled && (
+                        <button
+                            onClick={() => window.location.href = '/donate'}
+                            className={`hidden md:flex items-center gap-2 px-3 lg:px-6 py-2 rounded-full font-black text-[10px] lg:text-xs uppercase tracking-widest transition-all ${isNavbarSolid ? 'bg-red-50 text-red-600 hover:bg-red-100' : 'bg-white/10 text-white hover:bg-white/20 backdrop-blur-md border border-white/20'} shadow-sm shrink-0`}
+                        >
+                            <HeartIcon size={14} className="fill-current" />
+                            <span className={language === 'hi' ? '' : 'hidden lg:inline'}>
+                                {language === 'hi' ? 'सहयोग' : 'Donate'}
+                            </span>
+                        </button>
+                    )}
                 </div>
             </nav>
 
@@ -238,16 +249,18 @@ const Navbar = ({
                                                 </div>
                                             </button>
 
-                                            <button
-                                                onClick={() => window.location.href = '/donate'}
-                                                className="flex items-center justify-between p-3 bg-red-600 text-white rounded-xl transition-all active:scale-[0.98] shadow-lg shadow-red-600/20"
-                                            >
-                                                <div className="flex items-center gap-3">
-                                                    <HeartIcon size={18} className="fill-current text-white" />
-                                                    <span className="text-[11px] font-black uppercase tracking-tight">{language === 'hi' ? 'सहयोग करें' : 'DONATE'}</span>
-                                                </div>
-                                                <ArrowRight size={14} />
-                                            </button>
+                                            {isDonationEnabled && (
+                                                <button
+                                                    onClick={() => window.location.href = '/donate'}
+                                                    className="flex items-center justify-between p-3 bg-red-600 text-white rounded-xl transition-all active:scale-[0.98] shadow-lg shadow-red-600/20"
+                                                >
+                                                    <div className="flex items-center gap-3">
+                                                        <HeartIcon size={18} className="fill-current text-white" />
+                                                        <span className="text-[11px] font-black uppercase tracking-tight">{language === 'hi' ? 'सहयोग करें' : 'DONATE'}</span>
+                                                    </div>
+                                                    <ArrowRight size={14} />
+                                                </button>
+                                            )}
                                         </div>
 
                                         <div className="space-y-6">

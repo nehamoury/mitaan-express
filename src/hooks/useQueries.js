@@ -97,7 +97,8 @@ export const useSettings = () => {
     return useQuery({
         queryKey: queryKeys.settings,
         queryFn: fetchSettings,
-        staleTime: 30 * 60 * 1000, // Settings change rarely - 30 min
+        staleTime: 0, // Always fetch fresh settings
+        refetchOnWindowFocus: true,
     });
 };
 

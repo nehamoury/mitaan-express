@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
+import { Routes, Route, useLocation, useNavigate, Navigate } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -7,6 +7,7 @@ import Footer from './components/Footer';
 import CursorTracker from './components/CursorTracker';
 import BackToTop from './components/BackToTop';
 import { ArticlesProvider } from './context/ArticlesContext';
+import { useSettings } from './hooks/useQueries';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import './styles/quill-custom.css';
@@ -29,12 +30,23 @@ const LoginPage = React.lazy(() => import('./pages/LoginPage'));
 const SignupPage = React.lazy(() => import('./pages/SignupPage'));
 const DonationPage = React.lazy(() => import('./pages/DonationPage'));
 
+// Static Pages
+import TermsPage from './pages/TermsPage';
+import PrivacyPage from './pages/PrivacyPage';
+
 const App = () => {
     const [language, setLanguage] = useState(() => localStorage.getItem('lang') || 'hi');
     const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'light');
 
     const location = useLocation();
     const navigate = useNavigate();
+    const { data: settings } = useSettings();
+
+    // Page visibility helper
+    const isPageEnabled = (pageKey) => {
+        if (!settings) return true; // Default to enabled while loading
+        return settings[pageKey] !== 'false';
+    };
 
     // Determine active category based on URL for Navbar highlighting
     const activeCategory = useMemo(() => {
@@ -72,7 +84,9 @@ const App = () => {
             '/gallery': 'Gallery',
             '/video': 'Videos',
             '/poetry': 'Poetry',
-            '/blogs': 'Blog'
+            '/blogs': 'Blog',
+            '/terms': 'Terms and Conditions',
+            '/privacy': 'Privacy Policy'
         };
 
         // This logic can be refined, but basic title update
@@ -134,18 +148,21 @@ const App = () => {
                         <AnimatePresence mode="wait">
                             <Routes location={location} key={location.pathname}>
                                 <Route path="/" element={<HomePage language={language} />} />
+                                {/* Static Pages */}
                                 <Route path="/about" element={<AboutPage language={language} />} />
                                 <Route path="/contact" element={<ContactPage language={language} />} />
-                                <Route path="/gallery" element={<GalleryPage language={language} />} />
-                                <Route path="/video" element={<VideoPage language={language} />} />
-                                <Route path="/poetry" element={<PoetryPage language={language} />} />
-                                <Route path="/blogs" element={<BlogsPage language={language} />} />
+                                <Route path="/terms" element={<TermsPage language={language} />} />
+                                <Route path="/privacy" element={<PrivacyPage language={language} />} />
+                                <Route path="/gallery" element={isPageEnabled('page_gallery_enabled') ? <GalleryPage language={language} /> : <Navigate to="/" replace />} />
+                                <Route path="/video" element={isPageEnabled('page_live_enabled') ? <VideoPage language={language} /> : <Navigate to="/" replace />} />
+                                <Route path="/poetry" element={isPageEnabled('page_poetry_enabled') ? <PoetryPage language={language} /> : <Navigate to="/" replace />} />
+                                <Route path="/blogs" element={isPageEnabled('page_blogs_enabled') ? <BlogsPage language={language} /> : <Navigate to="/" replace />} />
                                 <Route path="/category/:categoryId" element={<CategoryPage language={language} />} />
                                 <Route path="/article/:id" element={<ArticleDetailPage language={language} />} />
-                                <Route path="/blog/:slug" element={<BlogDetailPage language={language} />} />
+                                <Route path="/blog/:slug" element={isPageEnabled('page_blogs_enabled') ? <BlogDetailPage language={language} /> : <Navigate to="/" replace />} />
                                 <Route path="/login" element={<LoginPage />} />
                                 <Route path="/signup" element={<SignupPage />} />
-                                <Route path="/donate" element={<DonationPage language={language} />} />
+                                <Route path="/donate" element={isPageEnabled('page_donation_enabled') ? <DonationPage language={language} toggleLanguage={toggleLanguage} /> : <Navigate to="/" replace />} />
                                 <Route path="/admin/*" element={<AdminPage />} />
                             </Routes>
                         </AnimatePresence>
