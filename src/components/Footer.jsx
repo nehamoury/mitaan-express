@@ -203,21 +203,22 @@ const Footer = ({ language, onCategoryChange }) => {
                                 { id: 'economic', name: language === 'hi' ? 'आर्थिक' : 'Economy' },
                                 { id: 'sports', name: language === 'hi' ? 'खेल' : 'Sports' },
                                 { id: 'technical', name: language === 'hi' ? 'तकनीकी' : 'Tech' },
-                                { id: 'poetry', name: language === 'hi' ? 'काव्य' : 'Poetry' },
+                                { id: 'poetry', name: language === 'hi' ? 'काव्य' : 'Poetry', key: 'page_poetry_enabled' },
                                 { id: 'political', name: language === 'hi' ? 'राजनीति' : 'Politics' },
                                 { id: 'social', name: language === 'hi' ? 'सामाजिक' : 'Social' },
                                 { id: 'film', name: language === 'hi' ? 'सिनेमा' : 'Film' },
                                 { id: 'history', name: language === 'hi' ? 'इतिहास' : 'History' }
-                            ].map((cat) => (
-                                <button
-                                    key={cat.id}
-                                    onClick={() => onCategoryChange(cat.id)}
-                                    className="text-sm font-bold text-slate-600 dark:text-slate-400 hover:text-red-600 dark:hover:text-white transition-colors flex items-center gap-2 group text-left"
-                                >
-                                    <ArrowRight size={12} className="opacity-0 group-hover:opacity-100 -ml-4 group-hover:ml-0 transition-all text-red-600" />
-                                    {cat.name}
-                                </button>
-                            ))}
+                            ].filter(cat => !cat.key || !settings || settings[cat.key] !== 'false')
+                                .map((cat) => (
+                                    <button
+                                        key={cat.id}
+                                        onClick={() => onCategoryChange(cat.id)}
+                                        className="text-sm font-bold text-slate-600 dark:text-slate-400 hover:text-red-600 dark:hover:text-white transition-colors flex items-center gap-2 group text-left"
+                                    >
+                                        <ArrowRight size={12} className="opacity-0 group-hover:opacity-100 -ml-4 group-hover:ml-0 transition-all text-red-600" />
+                                        {cat.name}
+                                    </button>
+                                ))}
                         </div>
                     </div>
 

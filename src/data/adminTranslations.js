@@ -87,7 +87,9 @@ export const adminTranslations = {
         publishDate: "Publish Date",
         lockedCategory: "Locked to current category",
         createArticle: "Create New Article",
+        createBlog: "Write New Blog",
         editArticle: "Edit Article",
+        editBlog: "Edit Blog",
 
         // Ads
         enable_popup: "Enable Homepage Popup",
@@ -110,7 +112,13 @@ export const adminTranslations = {
         save_changes: "Save Changes",
         saving: "Saving...",
         enabled: "Enabled",
-        disabled: "Disabled"
+        disabled: "Disabled",
+        allStatus: "All Status",
+        published: "Published",
+        draft: "Draft",
+        quickStats: "Quick Stats",
+        articleStatus: "Article Status",
+        todaysNews: "Today's News"
     },
 
     // Hindi
@@ -201,7 +209,9 @@ export const adminTranslations = {
         publishDate: "प्रकाशन की तारीख",
         lockedCategory: "वर्तमान श्रेणी के लिए लॉक किया गया",
         createArticle: "नया लेख बनाएँ",
+        createBlog: "नया ब्लॉग लिखें",
         editArticle: "लेख संपादित करें",
+        editBlog: "ब्लॉग संपादित करें",
 
         // Ads
         enable_popup: "होमपेज पॉपअप सक्षम करें",
@@ -224,6 +234,12 @@ export const adminTranslations = {
         save_changes: "परिवर्तन सहेजें",
         saving: "सहेज रहा है...",
         enabled: "सक्षम",
-        disabled: "अक्षम"
+        disabled: "अक्षम",
+        allStatus: "सभी स्थिति",
+        published: "प्रकाशित",
+        draft: "ड्राफ्ट",
+        quickStats: "त्वरित आंकड़े",
+        articleStatus: "लेख की स्थिति",
+        todaysNews: "आज की खबरें"
     }
 };

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Heart, CreditCard, Landmark, QrCode } from 'lucide-react';
 import { useAdminTranslation } from '../../../context/AdminTranslationContext';
+import TransliteratedInput from '../TransliteratedInput';
 
 const DonationSettings = ({ settings, handleChange, onSave, loading }) => {
     const { t } = useAdminTranslation();
@@ -49,25 +50,47 @@ const DonationSettings = ({ settings, handleChange, onSave, loading }) => {
                     <Landmark size={16} /> {t('bankDetails')}
                 </h4>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label className="block text-xs font-bold uppercase text-slate-500 mb-2">{t('accHolder')}</label>
+                        <label className="block text-xs font-bold uppercase text-slate-500 mb-2">{t('accHolder')} (English)</label>
                         <input
                             name="donation_account_holder"
                             value={settings.donation_account_holder || ''}
                             onChange={handleChange}
                             className="w-full p-3 bg-slate-50 dark:bg-slate-900/50 rounded-xl outline-none focus:ring-2 focus:ring-red-500/20"
-                            placeholder="Mitaan Express Media Pvt Ltd"
+                            placeholder="Mitaan Express Media Trust"
                         />
                     </div>
                     <div>
-                        <label className="block text-xs font-bold uppercase text-slate-500 mb-2">{t('bankName')}</label>
+                        <label className="block text-xs font-bold uppercase text-slate-500 mb-2">{t('accHolder')} (हिंदी)</label>
+                        <TransliteratedInput
+                            name="donation_account_holder_hi"
+                            value={settings.donation_account_holder_hi || ''}
+                            onChange={handleChange}
+                            enabled={true}
+                            className="w-full p-3 bg-slate-50 dark:bg-slate-900/50 rounded-xl outline-none focus:ring-2 focus:ring-red-500/20"
+                            placeholder="मिटान एक्सप्रेस मीडिया ट्रस्ट"
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-xs font-bold uppercase text-slate-500 mb-2">{t('bankName')} (English)</label>
                         <input
                             name="donation_bank_name"
                             value={settings.donation_bank_name || ''}
                             onChange={handleChange}
                             className="w-full p-3 bg-slate-50 dark:bg-slate-900/50 rounded-xl outline-none focus:ring-2 focus:ring-red-500/20"
                             placeholder="State Bank of India"
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-xs font-bold uppercase text-slate-500 mb-2">{t('bankName')} (हिंदी)</label>
+                        <TransliteratedInput
+                            name="donation_bank_name_hi"
+                            value={settings.donation_bank_name_hi || ''}
+                            onChange={handleChange}
+                            enabled={true}
+                            className="w-full p-3 bg-slate-50 dark:bg-slate-900/50 rounded-xl outline-none focus:ring-2 focus:ring-red-500/20"
+                            placeholder="स्टेट बैंक ऑफ इंडिया"
                         />
                     </div>
                     <div>

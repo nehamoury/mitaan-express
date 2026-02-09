@@ -66,24 +66,46 @@ exports.getAllArticles = async (req, res) => {
 exports.getArticleBySlug = async (req, res) => {
     const { slug } = req.params;
     try {
-        const article = await prisma.article.findUnique({
-            where: { slug },
-            include: {
-                category: {
-                    include: { parent: true }
+        let article;
+
+        // Check if slug is a numeric ID
+        const isNumeric = /^\d+$/.test(slug);
+
+        if (isNumeric) {
+            // Fetch by ID
+            article = await prisma.article.findUnique({
+                where: { id: parseInt(slug) },
+                include: {
+                    category: {
+                        include: { parent: true }
+                    },
+                    author: { select: { name: true, image: true, bio: true } },
+                    tags: true,
                 },
-                author: { select: { name: true, image: true, bio: true } },
-                tags: true,
-            },
-        });
+            });
+        } else {
+            // Fetch by slug
+            article = await prisma.article.findUnique({
+                where: { slug },
+                include: {
+                    category: {
+                        include: { parent: true }
+                    },
+                    author: { select: { name: true, image: true, bio: true } },
+                    tags: true,
+                },
+            });
+        }
 
         if (!article) return res.status(404).json({ error: 'Article not found' });
 
-        // Increment views
-        await prisma.article.update({
-            where: { id: article.id },
-            data: { views: { increment: 1 } }
-        });
+        // Increment views only for frontend (not admin)
+        if (!req.headers.authorization) {
+            await prisma.article.update({
+                where: { id: article.id },
+                data: { views: { increment: 1 } }
+            });
+        }
 
         res.json(article);
     } catch (error) {

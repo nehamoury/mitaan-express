@@ -142,6 +142,7 @@ const Users = () => {
                             <tr>
                                 <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider">User</th>
                                 <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider">Email</th>
+                                <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider">Articles</th>
                                 <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider">Role</th>
                                 <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider">Joined</th>
                                 <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-wider">Actions</th>
@@ -150,7 +151,7 @@ const Users = () => {
                         <tbody className="divide-y divide-slate-100 dark:divide-white/5">
                             {filteredUsers.length === 0 ? (
                                 <tr>
-                                    <td colSpan="5" className="px-6 py-12 text-center text-slate-500">
+                                    <td colSpan="6" className="px-6 py-12 text-center text-slate-500">
                                         <UsersIcon size={48} className="mx-auto mb-4 opacity-20" />
                                         <p>No users found</p>
                                     </td>
@@ -160,13 +161,26 @@ const Users = () => {
                                     <tr key={user.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 bg-gradient-to-br from-red-600 to-orange-500 rounded-full flex items-center justify-center text-white font-black">
-                                                    {user.name.charAt(0).toUpperCase()}
-                                                </div>
+                                                {user.image ? (
+                                                    <img
+                                                        src={user.image}
+                                                        alt={user.name}
+                                                        className="w-10 h-10 rounded-full object-cover"
+                                                    />
+                                                ) : (
+                                                    <div className="w-10 h-10 bg-gradient-to-br from-red-600 to-orange-500 rounded-full flex items-center justify-center text-white font-black">
+                                                        {user.name.charAt(0).toUpperCase()}
+                                                    </div>
+                                                )}
                                                 <div className="font-bold text-slate-900 dark:text-white">{user.name}</div>
                                             </div>
                                         </td>
                                         <td className="px-6 py-4 text-slate-600 dark:text-slate-400">{user.email}</td>
+                                        <td className="px-6 py-4 text-center">
+                                            <span className="text-sm font-bold text-slate-900 dark:text-white">
+                                                {user._count?.articles || 0}
+                                            </span>
+                                        </td>
                                         <td className="px-6 py-4">
                                             <select
                                                 value={user.role}

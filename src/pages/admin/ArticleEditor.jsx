@@ -4,7 +4,7 @@ import { ArrowLeft, Save, Type, Globe, Tag, Zap, TrendingUp, Eye, Calendar, Imag
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { useCategories, useArticle } from '../../hooks/useQueries';
-import { createArticle, updateArticle } from '../../services/api';
+import { useCreateArticle, useUpdateArticle } from '../../hooks/useMutations';
 import { useAdminTranslation } from '../../context/AdminTranslationContext';
 import TransliteratedInput from '../../components/admin/TransliteratedInput';
 
@@ -123,12 +123,15 @@ const ArticleEditor = () => {
         alert('SEO metadata generated from content!');
     };
 
+    // Mutation hooks for cache invalidation
+    const createArticleMutation = useCreateArticle();
+    const updateArticleMutation = useUpdateArticle();
+
     const handleSubmit = async (e, statusOverride) => {
         e.preventDefault();
         setLoading(true);
 
         try {
-            const token = localStorage.getItem('token');
             const submitData = {
                 ...formData,
                 shortDescription: formData.excerpt,
@@ -143,11 +146,12 @@ const ArticleEditor = () => {
             };
 
             if (articleId) {
-                // Use numeric articleId for update
-                await updateArticle(token, articleId, submitData);
+                // Use mutation hook for update with cache invalidation
+                await updateArticleMutation.mutateAsync({ id: articleId, formData: submitData });
                 alert('Article updated successfully!');
             } else {
-                await createArticle(token, submitData);
+                // Use mutation hook for create with cache invalidation
+                await createArticleMutation.mutateAsync(submitData);
                 alert('Article created successfully!');
             }
             navigate('/admin/articles');
@@ -360,15 +364,37 @@ const ArticleEditor = () => {
                             <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-4">
                                 {t('article_content')} *
                             </label>
+
+                            {isHindiTypingEnabled && (
+                                <div className="mb-4 p-3 bg-orange-50 dark:bg-orange-900/10 border border-orange-200 dark:border-orange-900/20 rounded-xl flex items-center gap-2">
+                                    <span className="text-orange-600 dark:text-orange-400 text-sm font-bold">
+                                        ⚠️ Hindi Mode: Rich text formatting disabled. Type in English for Hindi transliteration.
+                                    </span>
+                                </div>
+                            )}
+
                             <div className="prose-editor">
-                                <ReactQuill
-                                    theme="snow"
-                                    value={formData.content}
-                                    onChange={handleContentChange}
-                                    modules={modules}
-                                    className="bg-white dark:bg-slate-900 rounded-xl"
-                                    style={{ minHeight: '400px' }}
-                                />
+                                {isHindiTypingEnabled ? (
+                                    <TransliteratedInput
+                                        value={formData.content}
+                                        name="content"
+                                        onChange={(e) => handleContentChange(e.target.value)}
+                                        enabled={true}
+                                        isTextArea={true}
+                                        rows={15}
+                                        placeholder="Type in English for Hindi transliteration... (e.g., 'namaste' → 'नमस्ते')"
+                                        className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-white/10 rounded-xl outline-none focus:ring-2 ring-red-600 text-slate-900 dark:text-white resize-none font-medium leading-relaxed"
+                                    />
+                                ) : (
+                                    <ReactQuill
+                                        theme="snow"
+                                        value={formData.content}
+                                        onChange={handleContentChange}
+                                        modules={modules}
+                                        className="bg-white dark:bg-slate-900 rounded-xl"
+                                        style={{ minHeight: '400px' }}
+                                    />
+                                )}
                             </div>
                         </div>
 

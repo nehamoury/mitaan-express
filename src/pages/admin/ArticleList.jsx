@@ -332,7 +332,7 @@ const ArticleList = () => {
                                     <tr
                                         key={article.id}
                                         className="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors cursor-pointer group"
-                                        onClick={() => navigate(`/admin/articles/edit/${article.slug}`)}
+                                        onClick={() => navigate(`/admin/articles/edit/${article.id}`)}
                                     >
                                         <td className="px-6 py-4" onClick={(e) => e.stopPropagation()}>
                                             <button
@@ -398,7 +398,7 @@ const ArticleList = () => {
                                         <td className="px-6 py-4" onClick={(e) => e.stopPropagation()}>
                                             <div className="flex items-center gap-2">
                                                 <button
-                                                    onClick={() => navigate(`/admin/articles/edit/${article.slug}`)}
+                                                    onClick={() => navigate(`/admin/articles/edit/${article.id}`)}
                                                     className="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-all"
                                                     title="Edit"
                                                 >

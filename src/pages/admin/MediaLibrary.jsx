@@ -271,8 +271,11 @@ const MediaLibrary = () => {
                             </div>
                             <div className="p-4 bg-white dark:bg-slate-900/50">
                                 <h4 className="text-sm font-bold text-slate-900 dark:text-white truncate mb-1">{item.title}</h4>
+                                {item.category && (
+                                    <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">{item.category}</p>
+                                )}
                                 <div className="flex justify-between items-center text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest">
-                                    <span>{item.type}</span>
+                                    <span>{item.type} • {item.views || 0} views</span>
                                     <span>{new Date(item.createdAt).toLocaleDateString()}</span>
                                 </div>
                             </div>
@@ -286,7 +289,10 @@ const MediaLibrary = () => {
                             <tr>
                                 <th className="px-8 py-4 text-left text-[10px] font-black uppercase tracking-widest text-slate-500">Preview</th>
                                 <th className="px-8 py-4 text-left text-[10px] font-black uppercase tracking-widest text-slate-500">Asset Title</th>
+                                <th className="px-8 py-4 text-left text-[10px] font-black uppercase tracking-widest text-slate-500">Category</th>
                                 <th className="px-8 py-4 text-left text-[10px] font-black uppercase tracking-widest text-slate-500">Type</th>
+                                <th className="px-8 py-4 text-left text-[10px] font-black uppercase tracking-widest text-slate-500">Views</th>
+                                <th className="px-8 py-4 text-left text-[10px] font-black uppercase tracking-widest text-slate-500">Size</th>
                                 <th className="px-8 py-4 text-left text-[10px] font-black uppercase tracking-widest text-slate-500">Status</th>
                                 <th className="px-8 py-4 text-right text-[10px] font-black uppercase tracking-widest text-slate-500">Actions</th>
                             </tr>

@@ -4,18 +4,7 @@ body {
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-@media (hover: hover) and (pointer: fine) {
-
-    body.custom-cursor-enabled,
-    body.custom-cursor-enabled a,
-    body.custom-cursor-enabled button,
-    body.custom-cursor-enabled [role="button"],
-    body.custom-cursor-enabled input,
-    body.custom-cursor-enabled select,
-    body.custom-cursor-enabled textarea {
-        cursor: none !important;
-    }
-}
+/* Custom cursor styles removed */
 
 .dark body {
     background-color: #000000;

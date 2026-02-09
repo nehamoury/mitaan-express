@@ -19,7 +19,9 @@ const AdminDonations = () => {
     const [settingsState, setSettingsState] = useState({
         donation_upi_id: '',
         donation_account_holder: '',
+        donation_account_holder_hi: '',
         donation_bank_name: '',
+        donation_bank_name_hi: '',
         donation_account_number: '',
         donation_ifsc: '',
     });
@@ -34,7 +36,9 @@ const AdminDonations = () => {
                 ...prev,
                 donation_upi_id: settingsData.donation_upi_id || '',
                 donation_account_holder: settingsData.donation_account_holder || '',
+                donation_account_holder_hi: settingsData.donation_account_holder_hi || '',
                 donation_bank_name: settingsData.donation_bank_name || '',
+                donation_bank_name_hi: settingsData.donation_bank_name_hi || '',
                 donation_account_number: settingsData.donation_account_number || '',
                 donation_ifsc: settingsData.donation_ifsc || '',
             }));

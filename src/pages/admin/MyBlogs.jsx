@@ -64,7 +64,7 @@ const MyBlogs = () => {
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                     <input
                         type="text"
-                        placeholder="Search your blogs..."
+                        placeholder={adminLanguage === 'hi' ? 'अपने ब्लॉग खोजें...' : 'Search your blogs...'}
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         className="w-full pl-12 pr-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/10 rounded-xl outline-none focus:ring-2 ring-red-600 text-slate-900 dark:text-white"
@@ -75,9 +75,9 @@ const MyBlogs = () => {
                     onChange={(e) => setStatusFilter(e.target.value)}
                     className="px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/10 rounded-xl outline-none focus:ring-2 ring-red-600 text-slate-900 dark:text-white font-bold text-sm"
                 >
-                    <option value="ALL">All Status</option>
-                    <option value="PUBLISHED">Published</option>
-                    <option value="DRAFT">Draft</option>
+                    <option value="ALL">{t('allStatus')}</option>
+                    <option value="PUBLISHED">{t('published')}</option>
+                    <option value="DRAFT">{t('draft')}</option>
                 </select>
             </div>
 
@@ -124,7 +124,7 @@ const MyBlogs = () => {
                                                 ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400'
                                                 : 'bg-orange-100 text-orange-800 dark:bg-orange-900/20 dark:text-orange-400'
                                                 }`}>
-                                                {article.status}
+                                                {article.status === 'PUBLISHED' ? t('published') : t('draft')}
                                             </span>
                                         </td>
                                         <td className="px-6 py-4 text-slate-600 dark:text-slate-400">

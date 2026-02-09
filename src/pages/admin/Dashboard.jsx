@@ -121,7 +121,7 @@ const Dashboard = () => {
     };
 
     const statusData = {
-        labels: ['Published', 'Draft', 'Trending'],
+        labels: [t('published'), t('draft'), t('trending')],
         datasets: [
             {
                 data: [stats.publishedArticles, stats.draftArticles, stats.trendingCount],
@@ -178,7 +178,7 @@ const Dashboard = () => {
         <div className="space-y-8 animate-fade-in-up">
             <div className="flex items-center justify-between">
                 <div>
-                    <h2 className="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight">{t('dashboard')} Overview</h2>
+                    <h2 className="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight">{t('dashboard')} {adminLanguage === 'hi' ? 'पूर्वावलोकन' : 'Overview'}</h2>
                     <p className="text-sm text-slate-500 dark:text-slate-400">{t('welcomeBack')}, Mitaan Express</p>
                 </div>
                 <div></div>
@@ -212,7 +212,7 @@ const Dashboard = () => {
                     <div className="flex items-center justify-between mb-6">
                         <h3 className="font-black text-slate-900 dark:text-white text-lg flex items-center gap-2">
                             <BarChart3 className="text-red-600" size={20} />
-                            Top Categories
+                            {adminLanguage === 'hi' ? 'शीर्ष श्रेणियाँ' : 'Top Categories'}
                         </h3>
                     </div>
                     <div className="h-64">
@@ -227,7 +227,7 @@ const Dashboard = () => {
                 <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-white/5 shadow-sm">
                     <h3 className="font-black text-slate-900 dark:text-white text-lg mb-6 flex items-center gap-2">
                         <Activity className="text-red-600" size={20} />
-                        Article Status
+                        {t('articleStatus')}
                     </h3>
                     <div className="h-48">
                         <Doughnut data={statusData} options={doughnutOptions} />
@@ -236,22 +236,22 @@ const Dashboard = () => {
 
                 {/* Quick Stats */}
                 <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-white/5 shadow-sm">
-                    <h3 className="font-black text-slate-900 dark:text-white text-lg mb-6">Quick Stats</h3>
+                    <h3 className="font-black text-slate-900 dark:text-white text-lg mb-6">{t('quickStats')}</h3>
                     <div className="space-y-4">
                         <div className="flex justify-between items-center p-3 bg-slate-50 dark:bg-slate-900/50 rounded-xl">
-                            <span className="text-slate-600 dark:text-slate-400 text-sm">Published</span>
+                            <span className="text-slate-600 dark:text-slate-400 text-sm">{t('published')}</span>
                             <span className="font-black text-slate-900 dark:text-white">{stats.publishedArticles}</span>
                         </div>
                         <div className="flex justify-between items-center p-3 bg-slate-50 dark:bg-slate-900/50 rounded-xl">
-                            <span className="text-slate-600 dark:text-slate-400 text-sm">Drafts</span>
+                            <span className="text-slate-600 dark:text-slate-400 text-sm">{t('draft')}</span>
                             <span className="font-black text-slate-900 dark:text-white">{stats.draftArticles}</span>
                         </div>
                         <div className="flex justify-between items-center p-3 bg-slate-50 dark:bg-slate-900/50 rounded-xl">
-                            <span className="text-slate-600 dark:text-slate-400 text-sm">Trending</span>
+                            <span className="text-slate-600 dark:text-slate-400 text-sm">{t('trending')}</span>
                             <span className="font-black text-slate-900 dark:text-white">{stats.trendingCount}</span>
                         </div>
                         <div className="flex justify-between items-center p-3 bg-slate-50 dark:bg-slate-900/50 rounded-xl">
-                            <span className="text-slate-600 dark:text-slate-400 text-sm">Today's News</span>
+                            <span className="text-slate-600 dark:text-slate-400 text-sm">{t('todaysNews')}</span>
                             <span className="font-black text-slate-900 dark:text-white">{stats.todayArticles}</span>
                         </div>
                     </div>

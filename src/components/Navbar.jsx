@@ -126,6 +126,7 @@ const Navbar = ({
             { id: 'gallery', name: language === 'hi' ? 'गैलरी' : 'Gallery', icon: <ImageIcon size={20} />, key: 'page_gallery_enabled' },
             { id: 'video', name: language === 'hi' ? 'वीडियो' : 'Videos', icon: <Video size={20} />, key: 'page_live_enabled' },
             { id: 'contact', name: language === 'hi' ? 'संपर्क करें' : 'Contact Us', icon: <Mail size={20} /> },
+            { id: 'poetry', name: language === 'hi' ? 'काव्य' : 'Poetry', icon: <Feather size={20} />, key: 'page_poetry_enabled' },
             { id: 'blogs', name: language === 'hi' ? 'ब्लॉग' : 'Blog', icon: <FileText size={20} />, key: 'page_blogs_enabled' },
         ];
 

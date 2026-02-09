@@ -4,7 +4,6 @@ import { AnimatePresence } from 'framer-motion';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 
-import CursorTracker from './components/CursorTracker';
 import BackToTop from './components/BackToTop';
 import { ArticlesProvider } from './context/ArticlesContext';
 import { useSettings } from './hooks/useQueries';
@@ -131,7 +130,6 @@ const App = () => {
     return (
         <ArticlesProvider>
             <div className={`min-h-screen ${theme} bg-white dark:bg-[#030712] text-slate-900 dark:text-white transition-colors duration-300 font-sans selection:bg-red-600 selection:text-white`}>
-                {!isAdminRoute && <CursorTracker />}
                 {!isAdminRoute && (
                     <Navbar
                         activeCategory={activeCategory}

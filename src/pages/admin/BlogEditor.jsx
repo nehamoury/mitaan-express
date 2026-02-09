@@ -141,7 +141,7 @@ const BlogEditorContent = () => {
                     </button>
                     <div>
                         <h2 className="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight">
-                            {id ? (t('editArticle') || 'Edit Blog') : (t('createArticle') || 'Write New Blog')}
+                            {id ? (t('editBlog') || 'Edit Blog') : (t('createBlog') || 'Write New Blog')}
                         </h2>
                     </div>
                 </div>
