@@ -9,11 +9,20 @@ const Analytics = () => {
     const {
         data: stats,
         isLoading: loading,
+        isError: error,
+        error: errorMessage,
         refetch: loadAnalytics
     } = useAnalytics(period);
 
     if (loading) return <div className="p-8 text-center text-slate-500">Loading analytics...</div>;
-    if (!stats) return <div className="p-8 text-center text-slate-500">No data available</div>;
+    if (error) return (
+        <div className="p-8 text-center">
+            <div className="text-red-600 mb-3">Error loading analytics</div>
+            <div className="text-sm text-slate-500 mb-4">{errorMessage?.message || 'Unknown error'}</div>
+            <button onClick={() => loadAnalytics()} className="px-4 py-2 bg-red-600 text-white rounded-lg">Retry</button>
+        </div>
+    );
+    if (!stats || !stats.overview) return <div className="p-8 text-center text-slate-500">No data available</div>;
 
     return (
         <div className="p-4 lg:p-8 space-y-8">
@@ -40,7 +49,7 @@ const Analytics = () => {
             </div>
 
             {/* Overview Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-6 rounded-2xl text-white shadow-lg">
                     <div className="flex items-center justify-between mb-2">
                         <FileText size={24} className="opacity-80" />
@@ -66,15 +75,6 @@ const Analytics = () => {
                     </div>
                     <div className="text-3xl font-black mb-1">{stats.overview.totalViews.toLocaleString()}</div>
                     <div className="text-sm opacity-90 uppercase tracking-wide">Total Views</div>
-                </div>
-
-                <div className="bg-gradient-to-br from-orange-500 to-orange-600 p-6 rounded-2xl text-white shadow-lg">
-                    <div className="flex items-center justify-between mb-2">
-                        <MessageSquare size={24} className="opacity-80" />
-                        <Activity size={20} className="opacity-60" />
-                    </div>
-                    <div className="text-3xl font-black mb-1">{stats.overview.totalComments}</div>
-                    <div className="text-sm opacity-90 uppercase tracking-wide">Comments</div>
                 </div>
 
                 <div className="bg-gradient-to-br from-yellow-500 to-yellow-600 p-6 rounded-2xl text-white shadow-lg">

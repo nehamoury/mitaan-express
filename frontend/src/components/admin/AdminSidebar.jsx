@@ -90,6 +90,7 @@ const AdminSidebar = ({ isSidebarOpen, setIsSidebarOpen, handleLogout, theme, to
         { name: t('users'), path: '/admin/users', icon: <Users size={18} /> },
         { name: t('mediaLibrary') || 'Gallery', path: '/admin/media', icon: <ImageIcon size={18} /> },
         { name: t('ads'), path: '/admin/ads', icon: <DollarSign size={18} /> },
+        { name: t('contacts') || 'Contacts', path: '/admin/contacts', icon: <MessageSquare size={18} /> },
         { name: t('settings'), path: '/admin/settings', icon: <Settings size={18} /> },
         { name: t('donations'), path: '/admin/donations', icon: <HeartIcon size={18} /> },
         { name: t('pageManager') || 'Page Manager', path: '/admin/pages', icon: <Layout size={18} /> },

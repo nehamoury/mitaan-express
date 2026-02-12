@@ -34,27 +34,29 @@ Mitaan Express is a state-of-the-art, high-performance news portal built for mod
    cd mitaan-express
    ```
 
-2. **Setup Frontend**:
+2. **Install Dependencies**:
    ```bash
-   npm install
+   npm run install:all
    ```
+   (This installs dependencies for both frontend and backend)
 
-3. **Setup Backend**:
-   ```bash
-   cd server
-   npm install
-   ```
+   Alternatively:
+   - Frontend: `cd frontend && npm install`
+   - Backend: `cd backend && npm install`
 
-4. **Environment Configuration**:
-   Create a `.env` file in the `server` directory and add:
+3. **Environment Configuration**:
+   Create a `.env` file in the `backend` directory and add:
    ```env
    DATABASE_URL="your_postgresql_connection_string"
    JWT_SECRET="your_secret_key"
    ```
 
-5. **Run the Application**:
-   - In root directory: `npm run dev`
-   - In server directory: `node server.js`
+4. **Run the Application**:
+   - In root directory: `npm run dev` (Runs both frontend and backend concurrently)
+   
+   Alternatively:
+   - Frontend: `cd frontend && npm run dev`
+   - Backend: `cd backend && npm run dev`
 
 ## 📸 Screenshots
 

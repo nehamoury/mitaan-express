@@ -33,7 +33,11 @@ exports.getDashboardStats = async (req, res) => {
         });
         const totalViews = viewsResult._sum.views || 0;
 
+        // Total comments (placeholder - no Comment model yet)
+        const totalComments = 0;
 
+        // Pending comments (placeholder - no Comment model yet)
+        const pendingComments = 0;
 
         // Most viewed articles (Top 10)
         const mostViewedArticles = await prisma.article.findMany({
@@ -79,11 +83,18 @@ exports.getDashboardStats = async (req, res) => {
             }
         });
 
-        const recentComments = await prisma.comment.count({
-            where: {
-                createdAt: {
-                    gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
-                }
+        console.log('Analytics Data:', {
+            overview: {
+                totalArticles,
+                publishedArticles,
+                totalViews,
+                totalComments,
+                pendingComments
+            },
+            mostViewedArticles: mostViewedArticles.length,
+            categoryStats: categoryStats.length,
+            recentActivity: {
+                articles: recentArticles
             }
         });
 
@@ -91,7 +102,9 @@ exports.getDashboardStats = async (req, res) => {
             overview: {
                 totalArticles,
                 publishedArticles,
-                totalViews
+                totalViews,
+                totalComments,
+                pendingComments
             },
             mostViewedArticles,
             categoryStats: categoryStats.map(cat => ({
@@ -100,12 +113,20 @@ exports.getDashboardStats = async (req, res) => {
                 count: cat._count.articles
             })),
             recentActivity: {
-                articles: recentArticles
+                articles: recentArticles,
+                comments: 0 // Placeholder for comments
             }
         });
     } catch (error) {
-        console.error('Analytics error:', error);
-        res.status(500).json({ error: 'Failed to fetch analytics' });
+        console.error('Analytics error details:', {
+            message: error.message,
+            stack: error.stack,
+            code: error.code
+        });
+        res.status(500).json({ 
+            error: 'Failed to fetch analytics',
+            details: error.message 
+        });
     }
 };
 

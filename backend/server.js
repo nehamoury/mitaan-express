@@ -27,6 +27,8 @@ const activityRoutes = require('./routes/activity.routes');
 const blogRoutes = require('./routes/blog.routes');
 const mediaRoutes = require('./routes/media.routes');
 const donationRoutes = require('./routes/donation.routes');
+const contactRoutes = require('./routes/contact.routes');
+
 
 app.use('/api/auth', authRoutes);
 app.use('/api/articles', articleRoutes);
@@ -38,6 +40,7 @@ app.use('/api/activity', activityRoutes);
 app.use('/api/blogs', blogRoutes);
 app.use('/api/media', mediaRoutes);
 app.use('/api/donations', donationRoutes);
+app.use('/api/contacts', contactRoutes);
 
 app.get('/', (req, res) => {
     res.send('Mitaan Express API is running');

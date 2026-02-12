@@ -3,6 +3,35 @@ import { motion } from 'framer-motion';
 import { Mail, Phone, MapPin, Send, MessageSquare, Clock, Globe, ArrowRight } from 'lucide-react';
 
 const ContactPage = ({ language }) => {
+    const [formData, setFormData] = React.useState({
+        name: '',
+        email: '',
+        subject: 'General Inquiry',
+        phone: '',
+        message: ''
+    });
+    const [loading, setLoading] = React.useState(false);
+
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        try {
+            const { createContact } = await import('../services/api');
+            await createContact(formData);
+            setLoading(false);
+            alert(language === 'hi' ? 'संदेश सफलतापूर्वक भेजा गया!' : 'Message sent successfully!');
+            setFormData({ name: '', email: '', subject: 'General Inquiry', phone: '', message: '' });
+        } catch (error) {
+            console.error('Contact submit error:', error);
+            setLoading(false);
+            alert(language === 'hi' ? 'त्रुटि: संदेश भेजने में विफल' : 'Error: Failed to send message');
+        }
+    };
+
     return (
         <div className="min-h-screen bg-white dark:bg-[#030712] transition-colors pb-32">
             {/* Hero Section */}
@@ -94,14 +123,19 @@ const ContactPage = ({ language }) => {
                         </div>
                     </div>
 
+
                     {/* Contact Form */}
                     <div className="lg:col-span-8 p-12 lg:p-20 space-y-12 transition-colors">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div className="space-y-2">
                                 <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">{language === 'hi' ? 'पूरा नाम' : 'FULL NAME'}</label>
                                 <input
                                     type="text"
+                                    name="name"
+                                    value={formData.name}
+                                    onChange={handleChange}
                                     placeholder="John Doe"
+                                    required
                                     className="w-full bg-slate-50 dark:bg-white/5 border border-slate-100 dark:border-white/5 rounded-2xl px-6 py-4 outline-none focus:border-red-600 dark:focus:border-red-600 transition-colors"
                                 />
                             </div>
@@ -109,22 +143,34 @@ const ContactPage = ({ language }) => {
                                 <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">{language === 'hi' ? 'ईमेल एड्रेस' : 'EMAIL ADDRESS'}</label>
                                 <input
                                     type="email"
+                                    name="email"
+                                    value={formData.email}
+                                    onChange={handleChange}
                                     placeholder="john@example.com"
+                                    required
                                     className="w-full bg-slate-50 dark:bg-white/5 border border-slate-100 dark:border-white/5 rounded-2xl px-6 py-4 outline-none focus:border-red-600 dark:focus:border-red-600 transition-colors"
                                 />
                             </div>
                             <div className="space-y-2">
                                 <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">{language === 'hi' ? 'विषय' : 'SUBJECT'}</label>
-                                <select className="w-full bg-slate-50 dark:bg-white/5 border border-slate-100 dark:border-white/5 rounded-2xl px-6 py-4 outline-none focus:border-red-600 dark:focus:border-red-600 transition-colors appearance-none">
-                                    <option>{language === 'hi' ? 'सामान्य पूछताछ' : 'General Inquiry'}</option>
-                                    <option>{language === 'hi' ? 'एडवरटाइजिंग' : 'Advertising'}</option>
-                                    <option>{language === 'hi' ? 'कहानी सबमिट करें' : 'Submit a Story'}</option>
+                                <select
+                                    name="subject"
+                                    value={formData.subject}
+                                    onChange={handleChange}
+                                    className="w-full bg-slate-50 dark:bg-white/5 border border-slate-100 dark:border-white/5 rounded-2xl px-6 py-4 outline-none focus:border-red-600 dark:focus:border-red-600 transition-colors appearance-none"
+                                >
+                                    <option value="General Inquiry">{language === 'hi' ? 'सामान्य पूछताछ' : 'General Inquiry'}</option>
+                                    <option value="Advertising">{language === 'hi' ? 'एडवरटाइजिंग' : 'Advertising'}</option>
+                                    <option value="Submit a Story">{language === 'hi' ? 'कहानी सबमिट करें' : 'Submit a Story'}</option>
                                 </select>
                             </div>
                             <div className="space-y-2">
                                 <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">{language === 'hi' ? 'फोन नंबर' : 'PHONE NUMBER'}</label>
                                 <input
                                     type="text"
+                                    name="phone"
+                                    value={formData.phone}
+                                    onChange={handleChange}
                                     placeholder="+91 00000 00000"
                                     className="w-full bg-slate-50 dark:bg-white/5 border border-slate-100 dark:border-white/5 rounded-2xl px-6 py-4 outline-none focus:border-red-600 dark:focus:border-red-600 transition-colors"
                                 />
@@ -132,17 +178,27 @@ const ContactPage = ({ language }) => {
                             <div className="md:col-span-2 space-y-2">
                                 <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">{language === 'hi' ? 'आपका संदेश' : 'YOUR MESSAGE'}</label>
                                 <textarea
+                                    name="message"
+                                    value={formData.message}
+                                    onChange={handleChange}
                                     rows="6"
                                     placeholder={language === 'hi' ? 'हम आपकी कैसे मदद कर सकते हैं?' : 'How can we help you?'}
+                                    required
                                     className="w-full bg-slate-50 dark:bg-white/5 border border-slate-100 dark:border-white/5 rounded-3xl px-6 py-5 outline-none focus:border-red-600 dark:focus:border-red-600 transition-colors resize-none"
                                 />
                             </div>
-                        </div>
 
-                        <button className="bg-red-600 hover:bg-red-700 text-white px-12 py-6 rounded-2xl font-black text-xs uppercase tracking-widest transition-all shadow-xl shadow-red-600/20 flex items-center gap-3 group/btn">
-                            {language === 'hi' ? 'संदेश भेजें' : 'SEND MESSAGE'}
-                            <ArrowRight size={18} className="group-hover/btn:translate-x-1 transition-transform" />
-                        </button>
+                            <div className="md:col-span-2">
+                                <button
+                                    type="submit"
+                                    disabled={loading}
+                                    className="bg-red-600 hover:bg-red-700 text-white px-12 py-6 rounded-2xl font-black text-xs uppercase tracking-widest transition-all shadow-xl shadow-red-600/20 flex items-center gap-3 group/btn disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    {loading ? (language === 'hi' ? 'भेज रहा है...' : 'SENDING...') : (language === 'hi' ? 'संदेश भेजें' : 'SEND MESSAGE')}
+                                    {!loading && <ArrowRight size={18} className="group-hover/btn:translate-x-1 transition-transform" />}
+                                </button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </section>

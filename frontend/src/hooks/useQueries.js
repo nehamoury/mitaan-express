@@ -251,12 +251,22 @@ export const useAnalytics = (period = 'daily') => {
         queryKey: [...queryKeys.admin.analytics, period],
         queryFn: async () => {
             const token = getToken();
+            console.log('Analytics: Token exists?', !!token);
             if (!token) throw new Error('No auth token');
-            const response = await fetch(`http://localhost:3000/api/analytics/dashboard?period=${period}`, {
+            const url = `http://localhost:3000/api/analytics/dashboard?period=${period}`;
+            console.log('Analytics: Fetching from', url);
+            const response = await fetch(url, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
-            if (!response.ok) throw new Error('Failed to fetch analytics');
-            return response.json();
+            console.log('Analytics: Response status', response.status);
+            if (!response.ok) {
+                const error = await response.text();
+                console.log('Analytics: Error response', error);
+                throw new Error('Failed to fetch analytics');
+            }
+            const data = await response.json();
+            console.log('Analytics: Data received', data);
+            return data;
         },
         enabled: !!getToken(),
         staleTime: 5 * 60 * 1000,

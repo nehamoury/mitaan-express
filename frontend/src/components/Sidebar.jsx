@@ -50,7 +50,7 @@ const Sidebar = ({ language, showWeather = true }) => {
                             className="group flex gap-8 cursor-pointer items-start"
                             onClick={() => window.location.href = `/article/${article.slug}`} // Assuming basic navigation
                         >
-                            <span className="text-4xl font-black text-slate-300 dark:text-slate-700 font-serif leading-none group-hover:text-red-600 transition-colors">
+                            <span className="text-4xl font-black text-slate-600 dark:text-slate-700 font-serif leading-none group-hover:text-red-600 transition-colors">
                                 0{index + 1}
                             </span>
                             <div className="space-y-3">

@@ -16,11 +16,12 @@ import MediaLibrary from './admin/MediaLibrary';
 import Analytics from './admin/Analytics';
 import ActivityLogs from './admin/ActivityLogs';
 import Users from './admin/Users';
+import AdminAds from './admin/AdminAds';
+import PageManager from './admin/PageManager';
+import AdminContacts from './admin/Contacts';
 import MyBlogs from './admin/MyBlogs';
 import FeaturedContent from './admin/FeaturedContent';
 import AdminDonations from './admin/AdminDonations';
-import AdminAds from './admin/AdminAds';
-import PageManager from './admin/PageManager';
 
 // Placeholders
 
@@ -184,6 +185,7 @@ const AdminContent = () => {
                         <Route path="/featured" element={<FeaturedContent />} />
                         <Route path="/media" element={<MediaLibrary />} />
                         <Route path="/settings" element={<Settings />} />
+                        <Route path="/contacts" element={<AdminContacts />} />
                         <Route path="/donations" element={<AdminDonations />} />
                         <Route path="/ads" element={<AdminAds />} />
                         <Route path="/pages" element={<PageManager />} />

@@ -43,16 +43,36 @@ const Settings = () => {
     const handleSaveSection = async (keys) => {
         try {
             const updateData = {};
-            keys.forEach(key => updateData[key] = settings[key]);
+            let hasData = false;
+
+            // Only collect fields that have content
+            keys.forEach(key => {
+                const value = settings[key];
+                if (value && String(value).trim() !== '') {
+                    updateData[key] = value;
+                    hasData = true;
+                }
+            });
+
+            // Prevent saving if no data filled
+            if (!hasData) {
+                alert('⚠️ Please fill at least one field before saving!');
+                return;
+            }
 
             await updateMutation.mutateAsync(updateData);
-            alert('Section saved successfully!');
+            alert('✅ Section saved successfully!');
         } catch (error) {
-            alert('Failed to save section: ' + error.message);
+            alert('❌ Failed to save section: ' + error.message);
         }
     };
 
     const loading = updateMutation.isPending;
+
+    // Helper: Check if section has any data
+    const hasSectionData = (keys) => {
+        return keys.some(key => settings[key] && String(settings[key]).trim() !== '');
+    };
 
     if (initialLoading) return <div className="p-8 text-center text-slate-500">Loading settings...</div>;
 
@@ -75,8 +95,13 @@ const Settings = () => {
                             </h3>
                             <button
                                 onClick={() => handleSaveSection(['site_title', 'site_description', 'logo_url', 'footer_text'])}
-                                disabled={loading}
-                                className="px-4 py-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold rounded-lg text-xs uppercase tracking-wider hover:scale-105 transition-transform disabled:opacity-50"
+                                disabled={loading || !hasSectionData(['site_title', 'site_description', 'logo_url', 'footer_text'])}
+                                className={`px-4 py-2 font-bold rounded-lg text-xs uppercase tracking-wider transition-all ${
+                                    hasSectionData(['site_title', 'site_description', 'logo_url', 'footer_text'])
+                                        ? 'bg-red-600 text-white hover:scale-105 hover:shadow-lg'
+                                        : 'bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-slate-400 cursor-not-allowed'
+                                } disabled:opacity-50`}
+                                title={hasSectionData(['site_title', 'site_description', 'logo_url', 'footer_text']) ? 'Save Section' : 'Fill at least one field'}
                             >
                                 {loading ? 'Saving...' : 'Save General'}
                             </button>
@@ -141,8 +166,13 @@ const Settings = () => {
                             </h3>
                             <button
                                 onClick={() => handleSaveSection(['contact_email', 'contact_phone', 'contact_address'])}
-                                disabled={loading}
-                                className="px-4 py-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold rounded-lg text-xs uppercase tracking-wider hover:scale-105 transition-transform disabled:opacity-50"
+                                disabled={loading || !hasSectionData(['contact_email', 'contact_phone', 'contact_address'])}
+                                className={`px-4 py-2 font-bold rounded-lg text-xs uppercase tracking-wider transition-all ${
+                                    hasSectionData(['contact_email', 'contact_phone', 'contact_address'])
+                                        ? 'bg-green-600 text-white hover:scale-105 hover:shadow-lg'
+                                        : 'bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-slate-400 cursor-not-allowed'
+                                } disabled:opacity-50`}
+                                title={hasSectionData(['contact_email', 'contact_phone', 'contact_address']) ? 'Save Section' : 'Fill at least one field'}
                             >
                                 {loading ? 'Saving...' : 'Save Contact'}
                             </button>
@@ -202,8 +232,13 @@ const Settings = () => {
                             </h3>
                             <button
                                 onClick={() => handleSaveSection(['social_facebook', 'social_twitter', 'social_instagram', 'social_youtube'])}
-                                disabled={loading}
-                                className="px-4 py-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold rounded-lg text-xs uppercase tracking-wider hover:scale-105 transition-transform disabled:opacity-50"
+                                disabled={loading || !hasSectionData(['social_facebook', 'social_twitter', 'social_instagram', 'social_youtube'])}
+                                className={`px-4 py-2 font-bold rounded-lg text-xs uppercase tracking-wider transition-all ${
+                                    hasSectionData(['social_facebook', 'social_twitter', 'social_instagram', 'social_youtube'])
+                                        ? 'bg-blue-600 text-white hover:scale-105 hover:shadow-lg'
+                                        : 'bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-slate-400 cursor-not-allowed'
+                                } disabled:opacity-50`}
+                                title={hasSectionData(['social_facebook', 'social_twitter', 'social_instagram', 'social_youtube']) ? 'Save Section' : 'Fill at least one field'}
                             >
                                 {loading ? 'Saving...' : 'Save Social'}
                             </button>

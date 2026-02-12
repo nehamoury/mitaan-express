@@ -267,4 +267,36 @@ export const fetchActivityLogs = async (token, page = 1) => {
     }
 };
 
+// Contact API
+export const createContact = async (formData) => {
+    try {
+        const response = await fetch(`${API_URL}/contacts`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(formData),
+        });
+        if (!response.ok) {
+            const err = await response.json().catch(() => ({}));
+            throw new Error(err.error || 'Failed to submit contact');
+        }
+        return await response.json();
+    } catch (error) {
+        console.error('Create contact error:', error);
+        throw error;
+    }
+};
+
+export const fetchContacts = async (token) => {
+    try {
+        const response = await fetch(`${API_URL}/contacts`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!response.ok) throw new Error('Failed to fetch contacts');
+        return await response.json();
+    } catch (error) {
+        console.error('Fetch contacts error:', error);
+        return [];
+    }
+};
+
 
