@@ -1,27 +1,29 @@
 import React, { useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Facebook, Twitter, Instagram, MapPin, Phone, Send, Youtube, MessageCircle, ArrowRight, Mail } from 'lucide-react';
 import { useSettings } from '../hooks/useQueries';
+import { useArticles } from '../context/ArticlesContext';
 import logo from '../assets/logo.png';
 
 const Footer = ({ language, onCategoryChange }) => {
+    const navigate = useNavigate();
     const { data: settings } = useSettings();
-    const footerNews = [
-        {
-            id: 'fn1',
-            image: 'https://images.unsplash.com/photo-1585829365294-bb8c6f045b88?auto=format&fit=crop&q=80&w=300',
-            title: language === 'hi' ? 'एआई और पत्रकारिता का भविष्य' : 'The Future of AI and Journalism in 2026',
-            date: 'Jan. 26, 2026',
-            category: 'Tech'
-        },
-        {
-            id: 'fn3',
-            image: 'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?auto=format&fit=crop&q=80&w=300',
-            title: language === 'hi' ? 'सांस्कृतिक उत्सवों की धूम' : 'Cultural Festivals Light Up Cities Worldwide',
-            date: 'Jan. 22, 2026',
-            category: 'Culture'
-        }
-    ];
+    const { published } = useArticles();
+
+    const footerNews = useMemo(() => {
+        if (!published || published.length === 0) return [];
+        // Sort by date desc just in case, though published is usually sorted
+        const sorted = [...published].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        return sorted.slice(0, 2).map(article => ({
+            id: article.id,
+            image: article.image || 'https://images.unsplash.com/photo-1585829365294-bb8c6f045b88?auto=format&fit=crop&q=80&w=300',
+            title: article.title,
+            date: new Date(article.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+            category: article.category?.name || 'News',
+            slug: article.slug
+        }));
+    }, [published]);
 
     const socialLinks = [
         { icon: <Twitter size={18} />, bg: 'hover:bg-[#1da1f2]', color: 'text-[#1da1f2]' },
@@ -152,7 +154,7 @@ const Footer = ({ language, onCategoryChange }) => {
                                 <motion.div
                                     key={news.id}
                                     whileHover={{ y: -5 }}
-                                    onClick={() => onCategoryChange('home')}
+                                    onClick={() => navigate(`/article/${news.id}`)}
                                     className="flex gap-4 group cursor-pointer"
                                 >
                                     <div className="w-24 h-24 shrink-0 overflow-hidden rounded-xl border border-slate-200 dark:border-white/5">
