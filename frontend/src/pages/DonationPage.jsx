@@ -170,7 +170,7 @@ const DonationPage = ({ language, toggleLanguage }) => {
                                                     </p>
                                                     <p className="font-serif text-lg text-slate-900 dark:text-white">
                                                         {language === 'hi'
-                                                            ? (settings?.donation_account_holder_hi || settings?.donation_account_holder || 'मिटान एक्सप्रेस मीडिया ट्रस्ट')
+                                                            ? (settings?.donation_account_holder_hi || 'मिटान एक्सप्रेस मीडिया ट्रस्ट')
                                                             : (settings?.donation_account_holder || 'Mitaan Express Media Trust')}
                                                     </p>
                                                 </div>
@@ -193,7 +193,7 @@ const DonationPage = ({ language, toggleLanguage }) => {
                                                         </p>
                                                         <p className="text-slate-900 dark:text-white">
                                                             {language === 'hi'
-                                                                ? (settings?.donation_bank_name_hi || settings?.donation_bank_name || 'स्टेट बैंक ऑफ इंडिया')
+                                                                ? (settings?.donation_bank_name_hi || 'स्टेट बैंक ऑफ इंडिया')
                                                                 : (settings?.donation_bank_name || 'State Bank of India')}
                                                         </p>
                                                     </div>

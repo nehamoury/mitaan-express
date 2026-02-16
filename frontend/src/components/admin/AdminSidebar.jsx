@@ -116,7 +116,7 @@ const AdminSidebar = ({ isSidebarOpen, setIsSidebarOpen, handleLogout, theme, to
                         <div className="flex items-center gap-3">
                             <img src={logo} alt="Mitaan Logo" className="w-10 h-10 object-contain" />
                             <div>
-                                <h1 className="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tighter">Mitaan<span className="text-red-600">.</span></h1>
+                                <h1 className="text-xl gap-2 font-black text-slate-900 dark:text-white uppercase tracking-tighter">Mitaan Express</h1>
                                 <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] -mt-1">Admin Portal</p>
                             </div>
                         </div>

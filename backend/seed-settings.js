@@ -39,8 +39,16 @@ async function main() {
             value: 'Mitaan Express Media Trust'
         },
         {
+            key: 'donation_account_holder_hi',
+            value: 'मिटान एक्सप्रेस मीडिया ट्रस्ट'
+        },
+        {
             key: 'donation_bank_name',
             value: 'State Bank of India'
+        },
+        {
+            key: 'donation_bank_name_hi',
+            value: 'स्टेट बैंक ऑफ इंडिया'
         },
         {
             key: 'donation_account_number',

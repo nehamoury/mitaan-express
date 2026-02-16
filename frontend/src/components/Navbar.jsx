@@ -10,6 +10,7 @@ import {
 import { motion, AnimatePresence, useScroll, useSpring } from 'framer-motion';
 import { fetchCategories } from '../services/api';
 import { useSettings } from '../hooks/useQueries';
+import LiveCounter from './LiveCounter';
 import logo from '../assets/logo.png';
 
 const Navbar = ({
@@ -143,12 +144,12 @@ const Navbar = ({
 
     return (
         <header className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-500 ease-in-out ${isNavbarSolid
-            ? 'bg-white/95 dark:bg-black backdrop-blur-2xl shadow-xl py-2'
+            ? 'bg-red-600/95 backdrop-blur-md shadow-xl py-2'
             : 'bg-transparent py-4'
             }`}>
             <div className="absolute top-0 left-0 w-full h-[2px] bg-slate-100 dark:bg-white/5 overflow-hidden">
                 <motion.div
-                    className="h-full bg-red-600 origin-left"
+                    className={`h-full origin-left ${isNavbarSolid ? 'bg-white' : 'bg-red-600'}`}
                     style={{ scaleX }}
                 />
             </div>
@@ -158,14 +159,14 @@ const Navbar = ({
                 <div className="flex items-center justify-start z-10">
                     <button
                         onClick={() => setIsMenuOpen(!isMenuOpen)}
-                        className={`flex items-center gap-3 lg:gap-4 group transition-colors shrink-0 ${isNavbarSolid ? 'text-slate-900 dark:text-white' : 'text-white'}`}
+                        className={`flex items-center gap-3 lg:gap-4 group transition-colors shrink-0 text-white`}
                     >
                         <div className="relative overflow-hidden w-6 h-6 flex flex-col justify-center gap-1.5 shrink-0">
                             <span className={`h-0.5 w-6 bg-current transition-transform duration-500 ${isMenuOpen ? 'rotate-45 translate-y-2' : ''}`} />
                             <span className={`h-0.5 w-4 bg-current transition-opacity duration-300 ${isMenuOpen ? 'opacity-0' : ''}`} />
                             <span className={`h-0.5 w-6 bg-current transition-transform duration-500 ${isMenuOpen ? '-rotate-45 -translate-y-2' : ''}`} />
                         </div>
-                        <span className="hidden lg:block text-[10px] font-black uppercase tracking-[0.3em] group-hover:text-red-600 transition-colors">
+                        <span className="hidden lg:block text-[10px] font-black uppercase tracking-[0.3em] group-hover:text-white/80 transition-colors">
                             {language === 'hi' ? (isMenuOpen ? 'बंद करें' : 'एक्सप्लोर') : (isMenuOpen ? 'Close' : 'Explore')}
                         </span>
                     </button>
@@ -174,11 +175,10 @@ const Navbar = ({
                 {/* Center Section: Logo/Title */}
                 <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex justify-center w-full max-w-fit pointer-events-auto">
                     <button onClick={() => handleLinkClick('home')} className="group flex items-center gap-2.5 lg:gap-3">
-                        <img src={logo} alt="Mitaan Logo" className="w-8 h-8 lg:w-10 lg:h-10 object-contain shadow-lg shadow-red-600/30 rounded-lg bg-white" />
+                        <img src={logo} alt="Mitaan Logo" className="w-8 h-8 lg:w-10 lg:h-10 object-contain shadow-lg shadow-black/10 rounded-lg bg-white" />
                         <div className="flex flex-col items-start leading-none">
-                            <h1 className={`text-lg sm:text-xl lg:text-3xl font-black tracking-tighter font-serif transition-all duration-300 drop-shadow-sm whitespace-nowrap ${isNavbarSolid ? 'text-slate-900 dark:text-white' : 'text-white'
-                                }`}>
-                                MITAAN EXPRESS<span className="text-red-600">.</span>
+                            <h1 className={`text-lg sm:text-xl lg:text-3xl font-black tracking-tighter font-serif transition-all duration-300 drop-shadow-sm whitespace-nowrap ${isNavbarSolid ? 'text-white' : 'text-red-600'}`}>
+                                MITAAN EXPRESS
                             </h1>
                         </div>
                     </button>
@@ -187,10 +187,11 @@ const Navbar = ({
                 {/* Right Section: Toggles & Donate */}
                 <div className="flex items-center justify-end gap-3 lg:gap-8 z-10">
                     <div className="hidden lg:flex items-center gap-6">
-                        <button onClick={toggleLanguage} className={`text-[10px] font-black uppercase tracking-widest px-3 py-1 border rounded-full transition-all ${isNavbarSolid ? 'text-slate-400 border-slate-200 hover:border-red-600 hover:text-red-600' : 'text-white border-white/20 hover:bg-white hover:text-black'}`}>
+                        <LiveCounter />
+                        <button onClick={toggleLanguage} className="text-[10px] font-black uppercase tracking-widest px-3 py-1 border rounded-full transition-all text-white border-white/20 hover:bg-white hover:text-red-600">
                             {language === 'hi' ? 'Hindi' : 'English'}
                         </button>
-                        <button onClick={toggleTheme} className={`transition-all hover:scale-110 ${isNavbarSolid ? 'text-slate-400 hover:text-red-600' : 'text-white/80'}`}>
+                        <button onClick={toggleTheme} className="transition-all hover:scale-110 text-white hover:text-white/80">
                             {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
                         </button>
                     </div>
@@ -198,7 +199,7 @@ const Navbar = ({
                     {isDonationEnabled && (
                         <button
                             onClick={() => window.location.href = '/donate'}
-                            className={`hidden md:flex items-center gap-2 px-3 lg:px-6 py-2 rounded-full font-black text-[10px] lg:text-xs uppercase tracking-widest transition-all ${isNavbarSolid ? 'bg-red-50 text-red-600 hover:bg-red-100' : 'bg-white/10 text-white hover:bg-white/20 backdrop-blur-md border border-white/20'} shadow-sm shrink-0`}
+                            className={`hidden md:flex items-center gap-2 px-3 lg:px-6 py-2 rounded-full font-black text-[10px] lg:text-xs uppercase tracking-widest transition-all ${isNavbarSolid ? 'bg-white text-red-600 hover:bg-white/90' : 'bg-red-600 text-white hover:bg-red-700 shadow-lg shadow-red-600/20'} shadow-sm shrink-0`}
                         >
                             <HeartIcon size={14} className="fill-current" />
                             <span className={language === 'hi' ? '' : 'hidden lg:inline'}>

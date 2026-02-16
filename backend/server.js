@@ -42,10 +42,41 @@ app.use('/api/media', mediaRoutes);
 app.use('/api/donations', donationRoutes);
 app.use('/api/contacts', contactRoutes);
 
+const { Server } = require("socket.io");
+const http = require('http').createServer(app);
+const io = new Server(http, {
+    cors: {
+        origin: [
+            "http://localhost:5173",
+            "http://127.0.0.1:5173",
+            "https://mitaanexpress.com",
+            "https://www.mitaanexpress.com"
+        ],
+        methods: ["GET", "POST"],
+        credentials: true
+    }
+});
+
+let activeUsers = 0;
+
+io.on('connection', (socket) => {
+    activeUsers++;
+    io.emit('activeUsers', activeUsers);
+
+    socket.on('disconnect', () => {
+        activeUsers--;
+        io.emit('activeUsers', activeUsers);
+    });
+});
+
+io.engine.on("connection_error", (err) => {
+    console.error("Socket.io Connection Error:", err);
+});
+
 app.get('/', (req, res) => {
     res.send('Mitaan Express API is running');
 });
 
-app.listen(PORT, () => {
+http.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
 });
