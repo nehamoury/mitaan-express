@@ -141,7 +141,7 @@ export const useAdminArticles = (filters = {}) => {
             filters.lang,
             filters.status
         ),
-        staleTime: 1 * 60 * 1000, // Admin needs fresher data - 1 min
+        staleTime: 0, // Admin needs fresh data immediately
     });
 };
 
@@ -157,7 +157,7 @@ export const useAdminBlogs = (filters = {}) => {
             filters.lang,
             filters.status
         ),
-        staleTime: 1 * 60 * 1000,
+        staleTime: 0, // Admin needs fresh data immediately
     });
 };
 

@@ -99,7 +99,7 @@ export const adminTranslations = {
         saveDraft: "Save Draft",
 
         // Article Editor
-        article_title: "Article Title",
+        article_title: "Article Headline",
         article_content: "Content",
         excerpt: "Excerpt / Short Description",
         featured_image: "Featured Image",
@@ -107,8 +107,8 @@ export const adminTranslations = {
         language: "Language",
         typing_language: "Typing Language",
         enable_hindi_typing: "Enable Hindi Typing",
-        title: "Title",
-        summary: "Summary",
+        title: "Headline",
+        summary: "Title",
         video_url: "Video URL",
         videoUrl: "Video URL",
         seo: "SEO & Meta",
@@ -253,7 +253,7 @@ export const adminTranslations = {
         saveDraft: "ड्राफ्ट सेव करें",
 
         // Article Editor
-        article_title: "लेख का शीर्षक",
+        article_title: "लेख की हेडलाइन",
         article_content: "सामग्री (Content)",
         excerpt: "संक्षिप्त विवरण (Excerpt)",
         featured_image: "मुख्य तस्वीर",
@@ -261,8 +261,8 @@ export const adminTranslations = {
         language: "भाषा",
         typing_language: "टाइपिंग भाषा",
         enable_hindi_typing: "हिंदी टाइपिंग चालू करें",
-        title: "शीर्षक",
-        summary: "सारांश",
+        title: "Headline",
+        summary: "शीर्षक",
         video_url: "वीडियो URL",
         videoUrl: "वीडियो URL",
         seo: "SEO और मेटा",

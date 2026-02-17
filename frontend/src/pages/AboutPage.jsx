@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import { Target, Users, Award, Shield, CheckCircle2, Heart, Globe, Zap, BookOpen, TrendingUp, Trophy } from 'lucide-react';
 
 const AboutPage = ({ language }) => {
@@ -334,12 +335,18 @@ const AboutPage = ({ language }) => {
                         </p>
 
                         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4">
-                            <button className="bg-white text-red-600 px-10 py-5 rounded-2xl font-black text-sm uppercase tracking-widest hover:scale-105 hover:shadow-2xl transition-all">
+                            <Link
+                                to="/contact"
+                                className="bg-white text-red-600 px-10 py-5 rounded-2xl font-black text-sm uppercase tracking-widest hover:scale-105 hover:shadow-2xl transition-all inline-block"
+                            >
                                 {language === 'hi' ? 'हमसे जुड़ें' : 'Join Our Mission'}
-                            </button>
-                            <button className="border-2 border-white text-white px-10 py-5 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-white hover:text-red-600 transition-all">
+                            </Link>
+                            <Link
+                                to="/blogs"
+                                className="border-2 border-white text-white px-10 py-5 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-white hover:text-red-600 transition-all inline-block"
+                            >
                                 {language === 'hi' ? 'और जानें' : 'Learn More'}
-                            </button>
+                            </Link>
                         </div>
                     </div>
                 </motion.div>

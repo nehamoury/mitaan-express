@@ -113,7 +113,7 @@ const Navbar = ({
         return tree.sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
     }, [categories]);
 
-    const isNavbarSolid = isScrolled || activeCategory !== 'home';
+    const isNavbarSolid = isScrolled || activeCategory !== 'home' || isMenuOpen;
 
     const handleLinkClick = (id) => {
         onCategoryChange(id);

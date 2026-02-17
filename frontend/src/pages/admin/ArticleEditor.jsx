@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
-import { ArrowLeft, Save, Type, Globe, Tag, Zap, TrendingUp, Eye, Calendar, Image as ImageIcon, Upload } from 'lucide-react';
+import { ArrowLeft, Save, Type, Globe, Tag, Zap, TrendingUp, Eye, Calendar, Image as ImageIcon, Upload, X } from 'lucide-react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { useCategories, useArticle } from '../../hooks/useQueries';
 import { useCreateArticle, useUpdateArticle } from '../../hooks/useMutations';
+import { useCreateMedia } from '../../hooks/useMedia';
 import { useAdminTranslation } from '../../context/AdminTranslationContext';
 import TransliteratedInput from '../../components/admin/TransliteratedInput';
 
@@ -26,9 +27,15 @@ const ArticleEditor = () => {
     const [activeTab, setActiveTab] = useState('content'); // content, seo, settings
     const [isHindiTypingEnabled, setIsHindiTypingEnabled] = useState(false);
 
+    // Ref for file input
+    const quillRef = useRef(null);
+    const fileInputRef = useRef(null); // For editor content images
+    const featuredImageInputRef = useRef(null); // For featured image
+
     // TanStack Query Hooks
     const { data: categories = [] } = useCategories();
     const { data: article, isLoading: articleLoading } = useArticle(id);
+    const createMediaMutation = useCreateMedia();
 
     const [formData, setFormData] = useState({
         title: '',
@@ -163,26 +170,119 @@ const ArticleEditor = () => {
         }
     };
 
-    const modules = {
-        toolbar: [
-            [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-            [{ 'font': [] }],
-            [{ 'size': ['small', false, 'large', 'huge'] }],
-            ['bold', 'italic', 'underline', 'strike'],
-            [{ 'color': [] }, { 'background': [] }],
-            [{ 'script': 'sub' }, { 'script': 'super' }],
-            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-            [{ 'indent': '-1' }, { 'indent': '+1' }],
-            [{ 'direction': 'rtl' }],
-            [{ 'align': [] }],
-            ['blockquote', 'code-block'],
-            ['link', 'image', 'video'],
-            ['clean']
-        ],
+    // Custom Image Handler for Quill
+    const imageHandler = useCallback(() => {
+        console.log('Image handler triggered');
+        if (fileInputRef.current) {
+            fileInputRef.current.click();
+        } else {
+            console.error('File input ref is null');
+        }
+    }, []);
+
+    const handleImageUpload = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        try {
+            // Read file as base64
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = async () => {
+                const base64Image = reader.result;
+
+                // Upload using useCreateMedia
+                const response = await createMediaMutation.mutateAsync({
+                    type: 'IMAGE',
+                    title: file.name,
+                    url: base64Image,
+                    size: `${(file.size / 1024).toFixed(0)} KB`
+                });
+
+                // Insert image into editor
+                const quill = quillRef.current.getEditor();
+                const range = quill.getSelection(true);
+
+                quill.insertEmbed(range.index, 'image', response.url || base64Image);
+                quill.setSelection(range.index + 1);
+            };
+        } catch (error) {
+            console.error('Image upload failed:', error);
+            alert('Failed to upload image. Please try again.');
+        } finally {
+            // Reset input
+            e.target.value = '';
+        }
     };
+
+    const handleFeaturedImageUpload = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        try {
+            // Read file as base64
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = async () => {
+                const base64Image = reader.result;
+
+                // Upload using useCreateMedia
+                const response = await createMediaMutation.mutateAsync({
+                    type: 'IMAGE',
+                    title: file.name,
+                    url: base64Image,
+                    size: `${(file.size / 1024).toFixed(0)} KB`
+                });
+
+                // Update form data with the image URL
+                setFormData(prev => ({
+                    ...prev,
+                    image: response.url || base64Image
+                }));
+            };
+        } catch (error) {
+            console.error('Featured image upload failed:', error);
+            alert('Failed to upload featured image. Please try again.');
+        } finally {
+            // Reset input
+            e.target.value = '';
+        }
+    };
+
+    const modules = useMemo(() => ({
+        toolbar: {
+            container: [
+                [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+                [{ 'font': [] }],
+                [{ 'size': ['small', false, 'large', 'huge'] }],
+                ['bold', 'italic', 'underline', 'strike'],
+                [{ 'color': [] }, { 'background': [] }],
+                [{ 'script': 'sub' }, { 'script': 'super' }],
+                [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                [{ 'indent': '-1' }, { 'indent': '+1' }],
+                [{ 'direction': 'rtl' }],
+                [{ 'align': [] }],
+                ['blockquote', 'code-block'],
+                ['link', 'image', 'video'],
+                ['clean']
+            ],
+            handlers: {
+                image: imageHandler
+            }
+        },
+    }), [imageHandler]);
 
     return (
         <div className="max-w-7xl mx-auto p-4 lg:p-8 space-y-6">
+            {/* Hidden File Input for Quill Image Upload */}
+            <input
+                type="file"
+                accept="image/*"
+                ref={fileInputRef}
+                style={{ display: 'none' }}
+                onChange={handleImageUpload}
+            />
+
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
@@ -267,8 +367,25 @@ const ArticleEditor = () => {
                                 name="title"
                                 onChange={handleChange}
                                 enabled={isHindiTypingEnabled}
-                                placeholder="Enter article title..."
+                                placeholder="Enter article headline..."
                                 className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-white/10 rounded-xl outline-none focus:ring-2 ring-red-600 text-slate-900 dark:text-white text-lg font-bold"
+                            />
+                        </div>
+
+                        {/* Excerpt (now labeled Title) */}
+                        <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-white/5">
+                            <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">
+                                {t('summary')}
+                            </label>
+                            <TransliteratedInput
+                                value={formData.excerpt}
+                                name="excerpt"
+                                onChange={handleChange}
+                                enabled={isHindiTypingEnabled}
+                                isTextArea={true}
+                                rows={3}
+                                placeholder="Short article title for preview..."
+                                className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-white/10 rounded-xl outline-none focus:ring-2 ring-red-600 text-slate-900 dark:text-white resize-none"
                             />
                         </div>
 
@@ -328,17 +445,50 @@ const ArticleEditor = () => {
                                 <ImageIcon size={16} />
                                 {t('featured_image')}
                             </label>
+
+                            {/* Hidden File Input for Featured Image */}
                             <input
-                                type="url"
-                                name="image"
-                                value={formData.image}
-                                onChange={handleChange}
-                                placeholder="https://example.com/image.jpg"
-                                className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-white/10 rounded-xl outline-none focus:ring-2 ring-red-600 text-slate-900 dark:text-white"
+                                type="file"
+                                accept="image/*"
+                                ref={featuredImageInputRef}
+                                style={{ display: 'none' }}
+                                onChange={handleFeaturedImageUpload}
                             />
+
+                            <div className="flex gap-2">
+                                <input
+                                    type="url"
+                                    name="image"
+                                    value={formData.image}
+                                    onChange={handleChange}
+                                    placeholder="https://example.com/image.jpg"
+                                    className="flex-1 px-4 py-3 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-white/10 rounded-xl outline-none focus:ring-2 ring-red-600 text-slate-900 dark:text-white"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => featuredImageInputRef.current?.click()}
+                                    className="px-4 py-3 bg-slate-100 dark:bg-slate-700 rounded-xl hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors flex items-center justify-center min-w-[3rem]"
+                                    title="Upload Image"
+                                >
+                                    <Upload size={20} className="text-slate-600 dark:text-slate-300" />
+                                </button>
+                            </div>
+
                             {formData.image && (
-                                <div className="mt-4">
-                                    <img src={formData.image} alt="Preview" className="w-full max-w-md h-48 object-cover rounded-xl" />
+                                <div className="mt-4 relative group w-full max-w-md">
+                                    <img
+                                        src={formData.image}
+                                        alt="Preview"
+                                        className="w-full h-48 object-cover rounded-xl border border-slate-200 dark:border-white/10"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => setFormData(p => ({ ...p, image: '' }))}
+                                        className="absolute top-2 right-2 p-1 bg-red-600 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-700"
+                                        title="Remove Image"
+                                    >
+                                        <X size={16} />
+                                    </button>
                                 </div>
                             )}
                         </div>
@@ -387,6 +537,7 @@ const ArticleEditor = () => {
                                     />
                                 ) : (
                                     <ReactQuill
+                                        ref={quillRef}
                                         theme="snow"
                                         value={formData.content}
                                         onChange={handleContentChange}
@@ -398,22 +549,7 @@ const ArticleEditor = () => {
                             </div>
                         </div>
 
-                        {/* Excerpt */}
-                        <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-white/5">
-                            <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">
-                                {t('summary')}
-                            </label>
-                            <TransliteratedInput
-                                value={formData.excerpt}
-                                name="excerpt"
-                                onChange={handleChange}
-                                enabled={isHindiTypingEnabled}
-                                isTextArea={true}
-                                rows={3}
-                                placeholder="Brief summary of the article..."
-                                className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-white/10 rounded-xl outline-none focus:ring-2 ring-red-600 text-slate-900 dark:text-white resize-none"
-                            />
-                        </div>
+
                     </div>
                 )}
 
