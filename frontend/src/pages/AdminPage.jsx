@@ -10,7 +10,7 @@ import ArticleEditor from './admin/ArticleEditor';
 import BlogEditor from './admin/BlogEditor';
 import Settings from './admin/Settings';
 import Categories from './admin/Categories';
-import { Menu, Moon, Sun, LogOut, Globe, ChevronDown } from 'lucide-react';
+import { Menu, Moon, Sun, LogOut, Globe, ChevronDown, RefreshCcw } from 'lucide-react';
 
 import MediaLibrary from './admin/MediaLibrary';
 import Analytics from './admin/Analytics';
@@ -102,9 +102,18 @@ const AdminContent = () => {
                         <div className="w-8 h-8 bg-red-600 rounded-lg flex items-center justify-center text-white font-black text-sm">M</div>
                         <span className="font-bold text-slate-900 dark:text-white">Admin</span>
                     </div>
-                    <button onClick={() => setIsSidebarOpen(true)} className="p-2 text-slate-600 dark:text-slate-400">
-                        <Menu size={24} />
-                    </button>
+                    <div className="flex items-center gap-2">
+                        <button
+                            onClick={() => window.location.reload()}
+                            className="p-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/10 rounded-lg transition-all"
+                            title="Refresh"
+                        >
+                            <RefreshCcw size={20} />
+                        </button>
+                        <button onClick={() => setIsSidebarOpen(true)} className="p-2 text-slate-600 dark:text-slate-400">
+                            <Menu size={24} />
+                        </button>
+                    </div>
                 </div>
 
                 {/* Desktop Top Bar */}
@@ -116,6 +125,15 @@ const AdminContent = () => {
                         title="Switch Language"
                     >
                         <Globe size={18} />
+                    </button>
+
+                    {/* Refresh Button */}
+                    <button
+                        onClick={() => window.location.reload()}
+                        className="flex items-center justify-center w-10 h-10 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-all cursor-pointer group"
+                        title="Refresh Page"
+                    >
+                        <RefreshCcw size={18} className="group-hover:rotate-180 transition-transform duration-500" />
                     </button>
 
                     {/* Theme Toggle */}

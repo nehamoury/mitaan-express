@@ -3,11 +3,16 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 const API_URL = 'http://localhost:3000/api/media';
 
 // Fetch published media for frontend (public)
-export const usePublicMedia = (type) => {
+export const usePublicMedia = (type, category) => {
     return useQuery({
-        queryKey: ['media', 'public', type],
+        queryKey: ['media', 'public', type, category],
         queryFn: async () => {
-            const url = type ? `${API_URL}?type=${type}` : API_URL;
+            let url = API_URL;
+            const params = new URLSearchParams();
+            if (type) params.append('type', type);
+            if (category) params.append('category', category);
+            if (params.toString()) url += `?${params.toString()}`;
+
             const response = await fetch(url);
             if (!response.ok) throw new Error('Failed to fetch media');
             return response.json();
@@ -16,12 +21,17 @@ export const usePublicMedia = (type) => {
 };
 
 // Fetch all media for admin
-export const useAdminMedia = (type) => {
+export const useAdminMedia = (type, category) => {
     return useQuery({
-        queryKey: ['media', 'admin', type],
+        queryKey: ['media', 'admin', type, category],
         queryFn: async () => {
             const token = localStorage.getItem('token');
-            const url = type ? `${API_URL}/admin?type=${type}` : `${API_URL}/admin`;
+            let url = `${API_URL}/admin`;
+            const params = new URLSearchParams();
+            if (type) params.append('type', type);
+            if (category) params.append('category', category);
+            if (params.toString()) url += `?${params.toString()}`;
+
             const response = await fetch(url, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });

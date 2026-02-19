@@ -4,7 +4,7 @@ import {
     LayoutDashboard, FileText, Image as ImageIcon, Settings, Users,
     LogOut, Globe, FolderTree, MessageSquare, BarChart3, Moon,
     Sun, Star, ChevronDown, ChevronRight, Activity, Newspaper,
-    PenTool, Film, Heart as HeartIcon, DollarSign, Layout
+    PenTool, Film, Heart as HeartIcon, DollarSign, Layout, RefreshCcw
 } from 'lucide-react';
 import { fetchCategories } from '../../services/api';
 import logo from '../../assets/logo.png';
@@ -261,20 +261,20 @@ const AdminSidebar = ({ isSidebarOpen, setIsSidebarOpen, handleLogout, theme, to
 
                         <div className="grid grid-cols-3 gap-2">
                             <button
+                                onClick={() => window.location.reload()}
+                                className="flex flex-col items-center justify-center p-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/10 hover:bg-slate-100 dark:hover:bg-slate-700/50 transition-all group"
+                                title="Refresh Page"
+                            >
+                                <RefreshCcw size={18} className="text-slate-600 group-hover:rotate-180 transition-transform duration-500" />
+                                <span className="text-[9px] font-bold text-slate-500 mt-1">Refresh</span>
+                            </button>
+
+                            <button
                                 onClick={toggleAdminLang}
                                 className="flex flex-col items-center justify-center p-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/10 hover:bg-slate-100 dark:hover:bg-slate-700/50 transition-all group"
                                 title={t('changeLanguage')}
                             >
                                 <Globe size={18} className="text-blue-500 group-hover:scale-110 transition-transform" />
-                            </button>
-
-                            <button
-                                onClick={toggleTheme}
-                                className="flex flex-col items-center justify-center p-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/10 hover:bg-slate-100 dark:hover:bg-slate-700/50 transition-all group"
-                                title={theme === 'light' ? 'Switch to Dark' : 'Switch to Light'}
-                            >
-                                {theme === 'light' ? <Moon size={18} className="text-slate-600 group-hover:text-red-600" /> : <Sun size={18} className="text-yellow-500 group-hover:text-yellow-400" />}
-                                <span className="text-[9px] font-bold text-slate-500 mt-1">{theme === 'light' ? 'Dark' : 'Light'}</span>
                             </button>
 
                             <button

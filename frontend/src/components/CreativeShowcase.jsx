@@ -26,7 +26,7 @@ const CreativeShowcase = ({ language, setActiveCategory }) => {
     ];
 
     return (
-        <section className="py-24 relative overflow-hidden">
+        <section className="py-12 relative overflow-hidden">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
 
                 {/* Header Section with Staggered Animation */}
@@ -45,7 +45,7 @@ const CreativeShowcase = ({ language, setActiveCategory }) => {
                         >
                             {language === 'hi' ? 'संस्कृति और कला' : 'Culture & Arts'}
                         </motion.span>
-                        <h2 className="text-5xl md:text-6xl font-black font-serif tracking-tighter text-slate-900 dark:text-white">
+                        <h2 className="text-4xl md:text-5xl font-black font-serif tracking-tighter text-slate-900 dark:text-white">
                             {language === 'hi' ? 'रचनात्मकता का कोना' : 'Creative Pulse'}
                         </h2>
                     </div>
@@ -107,7 +107,7 @@ const CreativeShowcase = ({ language, setActiveCategory }) => {
 
                                 {/* Bottom Content */}
                                 <div className="space-y-4 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
-                                    <h3 className="text-3xl md:text-4xl font-black text-white font-serif tracking-tight leading-none group-hover:text-red-50 transition-colors">
+                                    <h3 className="text-2xl md:text-3xl font-black text-white font-serif tracking-tight leading-none group-hover:text-red-50 transition-colors">
                                         {card.title}
                                     </h3>
 

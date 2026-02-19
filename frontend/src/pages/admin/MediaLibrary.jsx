@@ -28,11 +28,17 @@ const MediaLibrary = () => {
         e.preventDefault();
         createMediaMutation.mutate({
             ...videoData,
-            type: 'VIDEO'
+            type: 'VIDEO',
+            category: videoData.category || 'GALLERY'
         }, {
             onSuccess: () => {
                 setShowVideoForm(false);
                 setVideoData({ title: '', url: '', category: '', description: '', thumbnail: '' });
+                alert('Video saved successfully!');
+            },
+            onError: (error) => {
+                console.error('Video save error:', error);
+                alert('Failed to save video: ' + (error.message || 'Unknown error'));
             }
         });
     };
@@ -98,6 +104,7 @@ const MediaLibrary = () => {
                                                 type: 'IMAGE',
                                                 title: file.name,
                                                 url: re.target.result,
+                                                category: 'GALLERY',
                                                 size: `${(file.size / 1024).toFixed(0)} KB`
                                             });
                                         };

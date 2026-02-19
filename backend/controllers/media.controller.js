@@ -3,10 +3,17 @@ const prisma = require('../prisma');
 // Get all published media for frontend
 exports.getPublicMedia = async (req, res) => {
     try {
-        const { type } = req.query; // 'IMAGE' or 'VIDEO'
+        const { type, category } = req.query; // 'IMAGE' or 'VIDEO', 'GALLERY' or 'SYSTEM'
 
         const where = { isPublished: true };
         if (type) where.type = type;
+
+        if (category) {
+            where.category = category;
+        } else {
+            // Default to showing everything EXCEPT system/article images
+            where.category = { not: 'SYSTEM' };
+        }
 
         const media = await prisma.media.findMany({
             where,
@@ -23,10 +30,17 @@ exports.getPublicMedia = async (req, res) => {
 // Get all media for admin
 exports.getAdminMedia = async (req, res) => {
     try {
-        const { type } = req.query;
+        const { type, category } = req.query;
 
         const where = {};
         if (type) where.type = type;
+
+        if (category) {
+            where.category = category;
+        } else {
+            // Default to showing everything EXCEPT system/article images for admin too
+            where.category = { not: 'SYSTEM' };
+        }
 
         const media = await prisma.media.findMany({
             where,
@@ -44,8 +58,10 @@ exports.getAdminMedia = async (req, res) => {
 exports.createMedia = async (req, res) => {
     try {
         const { type, title, description, url, thumbnail, category, size, duration } = req.body;
+        console.log('📦 Create Media Request:', { type, title, url, category });
 
         if (!type || !title || !url) {
+            console.error('❌ Missing required fields:', { type, title, url });
             return res.status(400).json({ error: 'Type, title, and URL are required' });
         }
 
@@ -62,10 +78,11 @@ exports.createMedia = async (req, res) => {
             }
         });
 
+        console.log('✅ Media Created:', media.id);
         res.status(201).json(media);
     } catch (error) {
-        console.error('Create media error:', error);
-        res.status(500).json({ error: 'Failed to create media' });
+        console.error('🔥 Create media error:', error);
+        res.status(500).json({ error: 'Failed to create media: ' + error.message });
     }
 };
 

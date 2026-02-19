@@ -22,7 +22,7 @@ const GalleryStrip = ({ language }) => {
     if (isLoading || displayImages.length === 0) return null;
 
     return (
-        <section className="py-20 bg-slate-50 dark:bg-black overflow-hidden relative">
+        <section className="py-12 bg-slate-50 dark:bg-black overflow-hidden relative">
             {/* Background Accents */}
             <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
                 <div className="absolute top-[-10%] right-[-5%] w-96 h-96 bg-red-500/5 rounded-full blur-3xl"></div>
@@ -44,7 +44,7 @@ const GalleryStrip = ({ language }) => {
                             initial={{ opacity: 0, y: 10 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.1 }}
-                            className="text-4xl md:text-6xl font-black font-serif tracking-tighter text-slate-900 dark:text-white leading-none"
+                            className="text-3xl md:text-5xl font-black font-serif tracking-tighter text-slate-900 dark:text-white leading-none"
                         >
                             {language === 'hi' ? 'गैलरी हाइलाइट्स' : 'Gallery Highlights'}
                         </motion.h2>

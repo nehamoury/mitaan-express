@@ -11,14 +11,14 @@ export const useArticles = () => {
     return context;
 };
 
-export const ArticlesProvider = ({ children }) => {
+export const ArticlesProvider = ({ children, language }) => {
     // TanStack Query Hooks (renamed to avoid collision)
     const {
         data: articles = [],
         isLoading: articlesLoading,
         error: articlesError,
         refetch: refetchArticles
-    } = useArticlesQuery();
+    } = useArticlesQuery(); // Fetch all articles, no language filter
 
     const {
         data: categories = [],

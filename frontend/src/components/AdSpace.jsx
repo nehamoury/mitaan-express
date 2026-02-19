@@ -49,7 +49,7 @@ const AdSpace = ({ position = 'homepage_top', className = '' }) => {
     // If ads are disabled or no image, show a premium House Ad
     if (!isEnabled || !imageUrl) {
         return (
-            <div className={`relative overflow-hidden ${ad.bg} rounded-xl shadow-lg my-12 w-full min-h-[200px] h-auto flex flex-col md:flex-row items-center justify-between p-8 md:p-12 group cursor-pointer hover:shadow-2xl transition-all duration-500 ${className}`}>
+            <div className={`relative overflow-hidden ${ad.bg} rounded-xl shadow-lg w-full min-h-[200px] h-auto flex flex-col md:flex-row items-center justify-between p-8 md:p-12 group cursor-pointer hover:shadow-2xl transition-all duration-500 ${className}`}>
                 {/* Background Pattern */}
                 <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
 
@@ -74,7 +74,7 @@ const AdSpace = ({ position = 'homepage_top', className = '' }) => {
 
     // Render image-based ad using AdBanner
     return (
-        <div className={`my-8 ${className}`}>
+        <div className={`${className}`}>
             <AdBanner
                 imageUrl={imageUrl}
                 linkUrl={linkUrl}

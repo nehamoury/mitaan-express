@@ -25,21 +25,26 @@ const Sidebar = ({ language, showWeather = true }) => {
         }];
 
     return (
-        <aside className="sticky top-32 space-y-12">
-            <div className="space-y-6">
+        <aside className="sticky top-32 space-y-8">
+            <div className="space-y-4">
                 {showWeather && <WeatherWidget language={language} />}
-                <div className="pt-4">
+                <div className="pt-2">
                     <AdSpace position="sidebar" className="my-0" />
                 </div>
             </div>
 
-            <section>
+            <section className="bg-white dark:bg-white/5 p-6 rounded-[2rem] border border-slate-100 dark:border-white/10 shadow-xl shadow-slate-200/50 dark:shadow-none relative overflow-hidden group/sidebar">
+                {/* Accent Background */}
+                <div className="absolute top-0 right-0 w-32 h-32 bg-red-600/5 blur-3xl -z-10 rounded-full"></div>
+
                 <h3 className="text-[10px] font-black text-slate-900 dark:text-white uppercase tracking-[0.4em] mb-10 flex items-center justify-between">
-                    <span>{language === 'hi' ? 'ट्रेंडिंग नाउ' : 'Trending Now'}</span>
-                    <div className="h-[1px] flex-1 bg-slate-100 dark:bg-gray-800 ml-6"></div>
+                    <span className="flex items-center gap-2">
+                        <span className="w-1.5 h-1.5 bg-red-600 rounded-full animate-pulse"></span>
+                        {language === 'hi' ? 'ट्रेंडिंग नाउ' : 'Trending Now'}
+                    </span>
                 </h3>
 
-                <div className="space-y-12">
+                <div className="space-y-8">
                     {sidebarArticles.map((article, index) => (
                         <motion.div
                             key={article.id}
@@ -47,15 +52,15 @@ const Sidebar = ({ language, showWeather = true }) => {
                             whileInView={{ opacity: 1, x: 0 }}
                             viewport={{ once: true }}
                             transition={{ delay: index * 0.1 }}
-                            className="group flex gap-8 cursor-pointer items-start"
-                            onClick={() => window.location.href = `/article/${article.slug}`} // Assuming basic navigation
+                            className="group flex gap-4 cursor-pointer items-start border-b border-slate-50 dark:border-white/5 pb-6 last:border-0 last:pb-0"
+                            onClick={() => window.location.href = `/article/${article.slug}`}
                         >
-                            <span className="text-4xl font-black text-slate-600 dark:text-slate-700 font-serif leading-none group-hover:text-red-600 transition-colors">
+                            <span className="text-3xl font-black text-slate-200 dark:text-white/10 group-hover:text-red-600/30 transition-colors font-serif leading-none mt-1">
                                 0{index + 1}
                             </span>
-                            <div className="space-y-3">
+                            <div className="space-y-1.5">
                                 <span className="text-[9px] font-black text-red-600 uppercase tracking-widest">{article.category}</span>
-                                <h4 className="text-lg font-bold text-slate-800 dark:text-gray-200 leading-tight group-hover:text-red-600 transition-colors line-clamp-3 font-serif">
+                                <h4 className="text-sm font-bold text-slate-800 dark:text-gray-200 leading-snug group-hover:text-red-600 transition-colors line-clamp-2 font-serif">
                                     {article.title}
                                 </h4>
                             </div>

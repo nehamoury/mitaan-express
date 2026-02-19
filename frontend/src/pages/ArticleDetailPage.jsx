@@ -154,7 +154,7 @@ const ArticleDetailPage = ({ language }) => {
                     </Link>
 
                     {/* Title */}
-                    <h1 className="text-2xl md:text-6xl lg:text-7xl font-black text-slate-900 dark:text-white leading-[1.1] mb-8 font-serif tracking-tight max-w-5xl">
+                    <h1 className="text-2xl md:text-2xl lg:text-4xl font-normal text-slate-800 dark:text-white leading-[1.1] mb-8 font-serif tracking-tight max-w-5xl">
                         <span className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-600 dark:from-white dark:via-slate-200 dark:to-slate-400 bg-clip-text text-transparent">
                             {article.title}
                         </span>
@@ -228,14 +228,14 @@ const ArticleDetailPage = ({ language }) => {
 
                         {/* Short Description */}
                         {article.shortDescription && (
-                            <p className="text-2xl text-slate-700 dark:text-slate-300 leading-relaxed mb-10 font-bold font-serif border-l-4 border-red-600 pl-6">
+                            <p className="text-xl text-slate-700 dark:text-slate-300 leading-relaxed mb-10 font-bold font-serif border-l-4 border-red-600 pl-6">
                                 {article.shortDescription}
                             </p>
                         )}
 
                         {/* Article Content */}
                         <div
-                            className="prose prose-lg md:prose-xl dark:prose-invert max-w-none prose-headings:font-serif prose-a:text-red-600 prose-img:rounded-2xl"
+                            className="prose prose-base md:prose-lg dark:prose-invert max-w-none prose-headings:font-serif prose-a:text-red-600 prose-img:rounded-2xl"
                             dangerouslySetInnerHTML={{ __html: injectedContent }}
                         />
 
@@ -286,10 +286,13 @@ const ArticleDetailPage = ({ language }) => {
                             <AdSpace position="sidebar" />
 
                             {/* Trending / Related News Box */}
-                            <div className="bg-white dark:bg-white/5 p-8 rounded-[2rem] border border-slate-100 dark:border-white/10 shadow-xl shadow-slate-200/50 dark:shadow-none">
+                            <div className="bg-white dark:bg-white/5 p-8 rounded-[2rem] border border-slate-100 dark:border-white/10 shadow-xl shadow-slate-200/50 dark:shadow-none relative overflow-hidden group">
+                                {/* Accent Background */}
+                                <div className="absolute top-0 right-0 w-32 h-32 bg-red-600/5 blur-3xl -z-10 rounded-full"></div>
+
                                 <div className="flex items-center gap-3 mb-8">
-                                    <span className="w-1 h-8 bg-red-600 rounded-full"></span>
-                                    <h3 className="text-xl font-black text-slate-900 dark:text-white uppercase tracking-wider">
+                                    <span className="w-1.5 h-1.5 bg-red-600 rounded-full animate-pulse"></span>
+                                    <h3 className="text-[10px] font-black text-slate-900 dark:text-white uppercase tracking-[0.4em]">
                                         {language === 'hi' ? 'ट्रेंडिंग न्यूज़' : 'Trending Now'}
                                     </h3>
                                 </div>

@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Video as VideoIcon, Play, Clock, Eye, X } from 'lucide-react';
 import { usePublicMedia, useIncrementViews } from '../hooks/useMedia';
+import { getVideoEmbedUrl, getVideoThumbnail } from '../utils/videoUtils';
 
 const VideoPage = ({ language }) => {
     const [filter, setFilter] = useState('All');
@@ -32,23 +33,6 @@ const VideoPage = ({ language }) => {
     };
 
     // Extract video ID from URL (YouTube/Vimeo)
-    const getVideoEmbedUrl = (url) => {
-        if (!url) return null;
-
-        // YouTube
-        const youtubeMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/);
-        if (youtubeMatch) {
-            return `https://www.youtube.com/embed/${youtubeMatch[1]}`;
-        }
-
-        // Vimeo
-        const vimeoMatch = url.match(/vimeo\.com\/(\d+)/);
-        if (vimeoMatch) {
-            return `https://player.vimeo.com/video/${vimeoMatch[1]}`;
-        }
-
-        return url; // Return as-is if not recognized
-    };
 
     if (isLoading) {
         return (
@@ -124,7 +108,7 @@ const VideoPage = ({ language }) => {
                                 {/* Thumbnail */}
                                 <div className="relative aspect-video rounded-2xl overflow-hidden mb-4 shadow-xl hover:shadow-2xl transition-all">
                                     <img
-                                        src={video.thumbnail || 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&q=80&w=800'}
+                                        src={getVideoThumbnail(video.url, video.thumbnail)}
                                         alt={video.title}
                                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                                     />

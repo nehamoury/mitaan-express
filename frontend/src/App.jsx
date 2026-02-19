@@ -128,7 +128,7 @@ const App = () => {
 
 
     return (
-        <ArticlesProvider>
+        <ArticlesProvider language={language}>
             <div className={`min-h-screen ${theme} bg-white dark:bg-[#030712] text-slate-900 dark:text-white transition-colors duration-300 font-sans selection:bg-red-600 selection:text-white`}>
                 {!isAdminRoute && (
                     <Navbar
@@ -141,7 +141,7 @@ const App = () => {
                     />
                 )}
 
-                <main className="relative">
+                <main className={`relative ${!isAdminRoute && activeCategory !== 'home' ? 'pt-14 lg:pt-20' : ''}`}>
                     <React.Suspense fallback={<LoadingSkeletons type="page" />}>
                         <AnimatePresence mode="wait">
                             <Routes location={location} key={location.pathname}>

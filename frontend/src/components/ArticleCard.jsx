@@ -91,7 +91,7 @@ const ArticleCard = ({ article, language }) => {
                     </div>
                 </div>
 
-                <h3 className="text-2xl lg:text-3xl font-black text-slate-900 dark:text-white leading-tight font-serif group-hover:text-red-600 transition-colors">
+                <h3 className="text-xl lg:text-2xl font-black text-slate-900 dark:text-white leading-tight font-serif group-hover:text-red-600 transition-colors">
                     {article.title}
                 </h3>
 

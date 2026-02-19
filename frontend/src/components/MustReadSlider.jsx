@@ -78,7 +78,7 @@ const MustReadSlider = ({ language, onArticleClick }) => {
     };
 
     return (
-        <section className="bg-white dark:bg-gradient-to-br dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 py-24 relative overflow-hidden transition-colors">
+        <section className="bg-white dark:bg-gradient-to-br dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 py-16 relative overflow-hidden transition-colors">
             <div className="max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
 
                 {/* Header */}
@@ -87,7 +87,7 @@ const MustReadSlider = ({ language, onArticleClick }) => {
                         <span className="text-red-500 font-bold tracking-[0.3em] text-[10px] uppercase pl-1">
                             {language === 'hi' ? 'संपादकीय चयन' : 'Editorial Picks'}
                         </span>
-                        <h2 className="text-5xl md:text-7xl font-black text-slate-900 dark:text-white font-serif tracking-tighter">
+                        <h2 className="text-4xl md:text-6xl font-black text-slate-900 dark:text-white font-serif tracking-tighter">
                             MUST READ
                         </h2>
                     </div>
@@ -157,7 +157,7 @@ const MustReadSlider = ({ language, onArticleClick }) => {
                                         {article.category}
                                     </motion.span>
 
-                                    <h3 className="text-2xl md:text-4xl font-black text-white font-serif leading-[0.95] group-hover:text-red-50 transition-colors">
+                                    <h3 className="text-xl md:text-3xl font-black text-white font-serif leading-[0.95] group-hover:text-red-50 transition-colors">
                                         {article.title}
                                     </h3>
 

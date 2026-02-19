@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Play, Clock, MessageSquare, User, ChevronUp, ChevronDown, X } from 'lucide-react';
 import { usePublicMedia } from '../hooks/useMedia';
 import { useArticles } from '../context/ArticlesContext';
+import { getVideoEmbedUrl, getVideoThumbnail } from '../utils/videoUtils';
 
 const VideoGalleryHero = ({ language }) => {
     const [activeIndex, setActiveIndex] = useState(0);
@@ -22,8 +23,8 @@ const VideoGalleryHero = ({ language }) => {
             title: v.title,
             author: 'Mitaan Express',
             time: new Date(v.createdAt).toLocaleDateString(),
-            comments: 0, // Media items don't have comments yet
-            image: v.thumbnail || 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&q=80&w=800',
+            comments: 0,
+            image: getVideoThumbnail(v.url, v.thumbnail),
             duration: v.duration || "00:00",
             url: v.url
         }))
@@ -67,17 +68,12 @@ const VideoGalleryHero = ({ language }) => {
         }
     };
 
-    const getVideoEmbedUrl = (url) => {
-        if (!url) return null;
-        const youtubeMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/);
-        if (youtubeMatch) return `https://www.youtube.com/embed/${youtubeMatch[1]}?autoplay=1`;
-        const vimeoMatch = url.match(/vimeo\.com\/(\d+)/);
-        if (vimeoMatch) return `https://player.vimeo.com/video/${vimeoMatch[1]}?autoplay=1`;
-        return url;
+    const getEmbedUrl = (url) => {
+        return getVideoEmbedUrl(url) + (url.includes('?') ? '&autoplay=1' : '?autoplay=1');
     };
 
     return (
-        <section className="bg-white dark:bg-[#030712] text-slate-900 dark:text-white py-16 px-4 md:px-8 lg:px-12 rounded-3xl overflow-hidden shadow-2xl my-12 border border-slate-200 dark:border-white/10">
+        <section className="bg-white dark:bg-[#030712] text-slate-900 dark:text-white py-12 px-4 md:px-8 lg:px-12 rounded-3xl overflow-hidden shadow-2xl border border-slate-200 dark:border-white/10">
             {/* Header */}
             <div className="flex items-center gap-4 mb-8">
                 <div className="flex items-center gap-2">
@@ -98,7 +94,7 @@ const VideoGalleryHero = ({ language }) => {
                     {isPlaying ? (
                         <div className="w-full h-full relative">
                             <iframe
-                                src={getVideoEmbedUrl(activeVideo.url)}
+                                src={getEmbedUrl(activeVideo.url)}
                                 title={activeVideo.title}
                                 className="w-full h-full"
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -132,7 +128,7 @@ const VideoGalleryHero = ({ language }) => {
 
                             {/* Content Overlay */}
                             <div className="absolute bottom-0 left-0 p-8 w-full">
-                                <h1 className="text-3xl md:text-4xl lg:text-5xl font-black font-serif leading-tight mb-4 line-clamp-2 text-white">
+                                <h1 className="text-2xl md:text-3xl lg:text-4xl font-black font-serif leading-tight mb-4 line-clamp-2 text-white">
                                     {activeVideo.title}
                                 </h1>
                                 <div className="flex items-center gap-6 text-sm font-medium text-white/70">

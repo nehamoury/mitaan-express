@@ -140,7 +140,7 @@ const HeroSlider = ({ language }) => {
 
                         <motion.h1
                             variants={itemVariants}
-                            className="text-2xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white leading-[1.1] md:leading-[1.05] font-serif tracking-tighter max-w-4xl mb-12"
+                            className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white leading-[1.1] md:leading-[1.05] font-serif tracking-tighter max-w-4xl mb-12"
                         >
                             {currentSlide.title}
                         </motion.h1>

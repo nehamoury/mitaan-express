@@ -196,6 +196,7 @@ const ArticleEditor = () => {
                     type: 'IMAGE',
                     title: file.name,
                     url: base64Image,
+                    category: 'SYSTEM',
                     size: `${(file.size / 1024).toFixed(0)} KB`
                 });
 
@@ -231,6 +232,7 @@ const ArticleEditor = () => {
                     type: 'IMAGE',
                     title: file.name,
                     url: base64Image,
+                    category: 'SYSTEM',
                     size: `${(file.size / 1024).toFixed(0)} KB`
                 });
 

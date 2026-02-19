@@ -1,6 +1,6 @@
 import React from 'react';
-import { motion } from 'framer-motion';
-import { Mail, Phone, MapPin, Send, MessageSquare, Clock, Globe, ArrowRight } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Mail, Phone, MapPin, Send, MessageSquare, Clock, Globe, ArrowRight, CheckCircle2 } from 'lucide-react';
 
 const ContactPage = ({ language }) => {
     const [formData, setFormData] = React.useState({
@@ -11,6 +11,7 @@ const ContactPage = ({ language }) => {
         message: ''
     });
     const [loading, setLoading] = React.useState(false);
+    const [showSuccess, setShowSuccess] = React.useState(false);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -23,8 +24,9 @@ const ContactPage = ({ language }) => {
             const { createContact } = await import('../services/api');
             await createContact(formData);
             setLoading(false);
-            alert(language === 'hi' ? 'संदेश सफलतापूर्वक भेजा गया!' : 'Message sent successfully!');
+            setShowSuccess(true);
             setFormData({ name: '', email: '', subject: 'General Inquiry', phone: '', message: '' });
+            setTimeout(() => setShowSuccess(false), 3000);
         } catch (error) {
             console.error('Contact submit error:', error);
             setLoading(false);
@@ -224,6 +226,36 @@ const ContactPage = ({ language }) => {
                     </div>
                 ))}
             </section>
+            {/* Success Overlay */}
+            <AnimatePresence>
+                {showSuccess && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-md"
+                    >
+                        <motion.div
+                            initial={{ scale: 0.8, y: 20 }}
+                            animate={{ scale: 1, y: 0 }}
+                            exit={{ scale: 0.8, y: 20 }}
+                            className="bg-white dark:bg-slate-900 p-12 rounded-[3rem] text-center space-y-6 shadow-2xl border border-white/10"
+                        >
+                            <div className="w-24 h-24 bg-green-100 dark:bg-green-600/20 rounded-full flex items-center justify-center mx-auto">
+                                <CheckCircle2 className="text-green-600" size={48} />
+                            </div>
+                            <div className="space-y-2">
+                                <h3 className="text-3xl font-black font-serif italic text-slate-900 dark:text-white">
+                                    {language === 'hi' ? 'संदेश भेजा गया!' : 'Message Sent!'}
+                                </h3>
+                                <p className="text-slate-500 font-medium">
+                                    {language === 'hi' ? 'जल्द ही हमारी टीम आपसे संपर्क करेगी।' : 'Our team will get back to you shortly.'}
+                                </p>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 };

@@ -28,7 +28,7 @@ const InDepthSection = ({ language, onCategoryChange, sportsArticles = [], econo
     };
 
     return (
-        <section className="max-w-7xl mx-auto px-4 py-16 bg-white dark:bg-transparent">
+        <section className="max-w-7xl mx-auto px-4 py-8 bg-white dark:bg-transparent">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16">
 
                 {/* LEFT COLUMN: Main Feature + Headlines */}
@@ -46,12 +46,12 @@ const InDepthSection = ({ language, onCategoryChange, sportsArticles = [], econo
 
                                 <h2
                                     onClick={() => onArticleClick(mainSports)}
-                                    className="text-3xl lg:text-5xl font-black text-slate-900 dark:text-white leading-[1.1] font-serif cursor-pointer hover:text-red-600 transition-colors"
+                                    className="text-2xl lg:text-4xl font-black text-slate-900 dark:text-white leading-[1.1] font-serif cursor-pointer hover:text-red-600 transition-colors"
                                 >
                                     {getTitle(mainSports)}
                                 </h2>
 
-                                <p className="text-slate-500 dark:text-gray-400 text-lg leading-relaxed line-clamp-3">
+                                <p className="text-slate-500 dark:text-gray-400 text-base leading-relaxed line-clamp-3">
                                     {getDescription(mainSports)}
                                 </p>
 

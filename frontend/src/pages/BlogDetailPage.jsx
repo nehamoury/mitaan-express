@@ -107,7 +107,7 @@ const BlogDetailPage = ({ language }) => {
                         {blog.category?.name || 'BLOG'}
                     </div>
 
-                    <h1 className="text-3xl md:text-5xl lg:text-5xl font-black text-slate-900 dark:text-white leading-tight mb-6 font-serif">
+                    <h1 className="text-2xl md:text-3xl lg:text-4xl font-black text-slate-900 dark:text-white leading-tight mb-6 font-serif">
                         {blog.title}
                     </h1>
 
@@ -153,7 +153,7 @@ const BlogDetailPage = ({ language }) => {
                     )}
 
                     <div
-                        className="prose prose-lg dark:prose-invert max-w-none prose-headings:font-serif prose-a:text-red-600 prose-img:rounded-xl"
+                        className="prose prose-base dark:prose-invert max-w-none prose-headings:font-serif prose-a:text-red-600 prose-img:rounded-xl"
                         dangerouslySetInnerHTML={{ __html: blog.content }}
                     />
 
@@ -193,9 +193,15 @@ const BlogDetailPage = ({ language }) => {
 
                 {/* Sidebar */}
                 <aside className="lg:col-span-4 space-y-8">
-                    <div className="bg-slate-50 dark:bg-white/5 p-6 rounded-2xl border border-slate-200 dark:border-white/5 sticky top-24">
-                        <h3 className="font-bold font-serif text-xl border-b border-slate-200 dark:border-white/10 pb-3 mb-6">
-                            {language === 'hi' ? 'ताज़ा ख़बरें' : 'Latest News'}
+                    <div className="bg-white dark:bg-white/5 p-8 rounded-[2rem] border border-slate-100 dark:border-white/10 shadow-xl shadow-slate-200/50 dark:shadow-none relative overflow-hidden group sticky top-24">
+                        {/* Accent Background */}
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-red-600/5 blur-3xl -z-10 rounded-full"></div>
+
+                        <h3 className="text-[10px] font-black text-slate-900 dark:text-white uppercase tracking-[0.4em] mb-8 flex items-center justify-between border-b pb-4 border-slate-100 dark:border-white/5">
+                            <span className="flex items-center gap-2">
+                                <span className="w-1.5 h-1.5 bg-red-600 rounded-full animate-pulse"></span>
+                                {language === 'hi' ? 'ताज़ा ख़बरें' : 'Latest News'}
+                            </span>
                         </h3>
                         <div className="space-y-6">
                             {latestNews.map(news => (
