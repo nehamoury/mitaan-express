@@ -193,7 +193,7 @@ const BlogDetailPage = ({ language }) => {
 
                 {/* Sidebar */}
                 <aside className="lg:col-span-4 space-y-8">
-                    <div className="bg-white dark:bg-white/5 p-8 rounded-[2rem] border border-slate-100 dark:border-white/10 shadow-xl shadow-slate-200/50 dark:shadow-none relative overflow-hidden group sticky top-24">
+                    <div className="bg-white dark:bg-white/5 p-8 rounded-[2rem] border border-slate-100 dark:border-white/10 shadow-xl shadow-slate-200/50 dark:shadow-none relative overflow-hidden sticky top-24">
                         {/* Accent Background */}
                         <div className="absolute top-0 right-0 w-32 h-32 bg-red-600/5 blur-3xl -z-10 rounded-full"></div>
 

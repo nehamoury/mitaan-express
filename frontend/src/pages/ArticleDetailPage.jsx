@@ -286,7 +286,7 @@ const ArticleDetailPage = ({ language }) => {
                             <AdSpace position="sidebar" />
 
                             {/* Trending / Related News Box */}
-                            <div className="bg-white dark:bg-white/5 p-8 rounded-[2rem] border border-slate-100 dark:border-white/10 shadow-xl shadow-slate-200/50 dark:shadow-none relative overflow-hidden group">
+                            <div className="bg-white dark:bg-white/5 p-8 rounded-[2rem] border border-slate-100 dark:border-white/10 shadow-xl shadow-slate-200/50 dark:shadow-none relative overflow-hidden">
                                 {/* Accent Background */}
                                 <div className="absolute top-0 right-0 w-32 h-32 bg-red-600/5 blur-3xl -z-10 rounded-full"></div>
 
@@ -304,16 +304,17 @@ const ArticleDetailPage = ({ language }) => {
                                             to={`/article/${item.id}`}
                                             className="group flex gap-5 items-start"
                                         >
-                                            <span className="text-4xl font-black text-slate-200 dark:text-white/10 group-hover:text-red-600/20 transition-colors font-serif -mt-2">
-                                                0{index + 1}
+                                            <span className="text-4xl font-black text-slate-600 dark:text-white/10 group-hover:text-red-600/20 transition-colors font-serif -mt-2">
+                                                {index + 1}.
                                             </span>
                                             <div>
-                                                <h4 className="font-bold text-slate-800 dark:text-white group-hover:text-red-600 transition-colors line-clamp-3 leading-snug mb-2">
-                                                    {item.title}
-                                                </h4>
                                                 <span className="text-xs font-bold text-red-600 uppercase tracking-wider">
                                                     {item.category?.name || 'News'}
                                                 </span>
+                                                <h4 className="font-bold text-slate-800 dark:text-white group-hover:text-red-600 transition-colors line-clamp-3 leading-snug mb-2">
+                                                    {item.title}
+                                                </h4>
+
                                             </div>
                                         </Link>
                                     ))}

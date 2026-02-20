@@ -48,23 +48,25 @@ const AdSpace = ({ position = 'homepage_top', className = '' }) => {
 
     // If ads are disabled or no image, show a premium House Ad
     if (!isEnabled || !imageUrl) {
+        const isSkyscraper = position === 'skyscraper';
+
         return (
-            <div className={`relative overflow-hidden ${ad.bg} rounded-xl shadow-lg w-full min-h-[200px] h-auto flex flex-col md:flex-row items-center justify-between p-8 md:p-12 group cursor-pointer hover:shadow-2xl transition-all duration-500 ${className}`}>
+            <div className={`relative overflow-hidden ${ad.bg} rounded-xl shadow-lg w-full ${isSkyscraper ? 'min-h-[400px] flex-col' : 'min-h-[200px] flex-col md:flex-row'} items-center justify-between p-8 md:p-12 group cursor-pointer hover:shadow-2xl transition-all duration-500 ${className}`}>
                 {/* Background Pattern */}
                 <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
 
                 {/* Shine Effect */}
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-[200%] group-hover:translate-x-[200%] transition-transform duration-1000 ease-in-out"></div>
 
-                <div className="relative z-10 flex flex-col justify-center w-full md:w-auto text-center md:text-left mb-6 md:mb-0">
+                <div className={`relative z-10 flex flex-col justify-center w-full ${isSkyscraper ? 'text-center mb-8' : 'md:w-auto text-center md:text-left mb-6 md:mb-0'}`}>
                     <span className="text-[10px] font-black text-white/40 uppercase tracking-[0.3em] mb-3">Sponsored</span>
-                    <h3 className="text-2xl md:text-4xl font-black text-white font-serif italic mb-2 w-full">{ad.title}</h3>
-                    <p className="text-white/80 text-base font-medium w-full max-w-md">{ad.subtitle}</p>
+                    <h3 className={`${isSkyscraper ? 'text-xl' : 'text-2xl md:text-4xl'} font-black text-white font-serif italic mb-2 w-full`}>{ad.title}</h3>
+                    <p className="text-white/80 text-sm font-medium w-full max-w-md">{ad.subtitle}</p>
                 </div>
 
                 <div className="relative z-10 flex flex-col items-center gap-4 shrink-0">
-                    <span className="text-5xl filter drop-shadow-lg">{ad.icon}</span>
-                    <button className="px-8 py-3 bg-white text-slate-900 text-xs font-black uppercase tracking-widest rounded-full hover:bg-slate-100 transition-colors shadow-lg whitespace-nowrap">
+                    <span className={`${isSkyscraper ? 'text-4xl' : 'text-5xl'} filter drop-shadow-lg`}>{ad.icon}</span>
+                    <button className="px-6 py-2 bg-white text-slate-900 text-[10px] font-black uppercase tracking-widest rounded-full hover:bg-slate-100 transition-colors shadow-lg whitespace-nowrap">
                         {ad.cta}
                     </button>
                 </div>

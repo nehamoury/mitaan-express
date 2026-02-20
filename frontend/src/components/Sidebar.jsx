@@ -33,7 +33,7 @@ const Sidebar = ({ language, showWeather = true }) => {
                 </div>
             </div>
 
-            <section className="bg-white dark:bg-white/5 p-6 rounded-[2rem] border border-slate-100 dark:border-white/10 shadow-xl shadow-slate-200/50 dark:shadow-none relative overflow-hidden group/sidebar">
+            <section className="bg-white dark:bg-white/5 p-6 rounded-[2rem] border border-slate-100 dark:border-white/10 shadow-xl shadow-slate-200/50 dark:shadow-none relative overflow-hidden">
                 {/* Accent Background */}
                 <div className="absolute top-0 right-0 w-32 h-32 bg-red-600/5 blur-3xl -z-10 rounded-full"></div>
 
@@ -68,6 +68,11 @@ const Sidebar = ({ language, showWeather = true }) => {
                     ))}
                 </div>
             </section>
+
+            {/* Skyscraper Banner */}
+            <div className="pt-4">
+                <AdSpace position="skyscraper" className="w-full" />
+            </div>
 
             {/* Subscription Section Removed */}
         </aside>

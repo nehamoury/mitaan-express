@@ -96,11 +96,10 @@ const Settings = () => {
                             <button
                                 onClick={() => handleSaveSection(['site_title', 'site_description', 'logo_url', 'footer_text'])}
                                 disabled={loading || !hasSectionData(['site_title', 'site_description', 'logo_url', 'footer_text'])}
-                                className={`px-4 py-2 font-bold rounded-lg text-xs uppercase tracking-wider transition-all ${
-                                    hasSectionData(['site_title', 'site_description', 'logo_url', 'footer_text'])
-                                        ? 'bg-red-600 text-white hover:scale-105 hover:shadow-lg'
-                                        : 'bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-slate-400 cursor-not-allowed'
-                                } disabled:opacity-50`}
+                                className={`px-4 py-2 font-bold rounded-lg text-xs uppercase tracking-wider transition-all ${hasSectionData(['site_title', 'site_description', 'logo_url', 'footer_text'])
+                                    ? 'bg-red-600 text-white hover:scale-105 hover:shadow-lg'
+                                    : 'bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-slate-400 cursor-not-allowed'
+                                    } disabled:opacity-50`}
                                 title={hasSectionData(['site_title', 'site_description', 'logo_url', 'footer_text']) ? 'Save Section' : 'Fill at least one field'}
                             >
                                 {loading ? 'Saving...' : 'Save General'}
@@ -167,11 +166,10 @@ const Settings = () => {
                             <button
                                 onClick={() => handleSaveSection(['contact_email', 'contact_phone', 'contact_address'])}
                                 disabled={loading || !hasSectionData(['contact_email', 'contact_phone', 'contact_address'])}
-                                className={`px-4 py-2 font-bold rounded-lg text-xs uppercase tracking-wider transition-all ${
-                                    hasSectionData(['contact_email', 'contact_phone', 'contact_address'])
-                                        ? 'bg-green-600 text-white hover:scale-105 hover:shadow-lg'
-                                        : 'bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-slate-400 cursor-not-allowed'
-                                } disabled:opacity-50`}
+                                className={`px-4 py-2 font-bold rounded-lg text-xs uppercase tracking-wider transition-all ${hasSectionData(['contact_email', 'contact_phone', 'contact_address'])
+                                    ? 'bg-green-600 text-white hover:scale-105 hover:shadow-lg'
+                                    : 'bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-slate-400 cursor-not-allowed'
+                                    } disabled:opacity-50`}
                                 title={hasSectionData(['contact_email', 'contact_phone', 'contact_address']) ? 'Save Section' : 'Fill at least one field'}
                             >
                                 {loading ? 'Saving...' : 'Save Contact'}
@@ -233,11 +231,10 @@ const Settings = () => {
                             <button
                                 onClick={() => handleSaveSection(['social_facebook', 'social_twitter', 'social_instagram', 'social_youtube'])}
                                 disabled={loading || !hasSectionData(['social_facebook', 'social_twitter', 'social_instagram', 'social_youtube'])}
-                                className={`px-4 py-2 font-bold rounded-lg text-xs uppercase tracking-wider transition-all ${
-                                    hasSectionData(['social_facebook', 'social_twitter', 'social_instagram', 'social_youtube'])
-                                        ? 'bg-blue-600 text-white hover:scale-105 hover:shadow-lg'
-                                        : 'bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-slate-400 cursor-not-allowed'
-                                } disabled:opacity-50`}
+                                className={`px-4 py-2 font-bold rounded-lg text-xs uppercase tracking-wider transition-all ${hasSectionData(['social_facebook', 'social_twitter', 'social_instagram', 'social_youtube'])
+                                    ? 'bg-blue-600 text-white hover:scale-105 hover:shadow-lg'
+                                    : 'bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-slate-400 cursor-not-allowed'
+                                    } disabled:opacity-50`}
                                 title={hasSectionData(['social_facebook', 'social_twitter', 'social_instagram', 'social_youtube']) ? 'Save Section' : 'Fill at least one field'}
                             >
                                 {loading ? 'Saving...' : 'Save Social'}
@@ -300,6 +297,7 @@ const Settings = () => {
                             </div>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>

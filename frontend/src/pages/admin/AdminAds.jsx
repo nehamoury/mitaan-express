@@ -22,6 +22,9 @@ const AdminAds = () => {
         ad_in_article_image_url: '',
         ad_in_article_link_url: '',
         ad_in_article_enabled: 'false',
+        ad_skyscraper_image_url: '',
+        ad_skyscraper_link_url: '',
+        ad_skyscraper_enabled: 'false',
         ad_popup_enabled: 'true',
         ad_popup_type: 'promo', // 'promo' or 'ad'
         ad_popup_image_url: '',
@@ -44,6 +47,9 @@ const AdminAds = () => {
                 ad_in_article_image_url: initialData.ad_in_article_image_url || '',
                 ad_in_article_link_url: initialData.ad_in_article_link_url || '',
                 ad_in_article_enabled: initialData.ad_in_article_enabled || 'false',
+                ad_skyscraper_image_url: initialData.ad_skyscraper_image_url || '',
+                ad_skyscraper_link_url: initialData.ad_skyscraper_link_url || '',
+                ad_skyscraper_enabled: initialData.ad_skyscraper_enabled || 'false',
                 ad_popup_enabled: initialData.ad_popup_enabled || 'true',
                 ad_popup_type: initialData.ad_popup_type || 'promo',
                 ad_popup_image_url: initialData.ad_popup_image_url || '',
@@ -321,6 +327,13 @@ const AdminAds = () => {
                     imageKey="ad_article_bottom_image_url"
                     linkKey="ad_article_bottom_link_url"
                     enabledKey="ad_article_bottom_enabled"
+                />
+
+                <AdSection
+                    title="Article Sidebar Skyscraper"
+                    imageKey="ad_skyscraper_image_url"
+                    linkKey="ad_skyscraper_link_url"
+                    enabledKey="ad_skyscraper_enabled"
                 />
             </div>
         </div>

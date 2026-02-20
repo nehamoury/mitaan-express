@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: mitaan-db
+    restart: always
+    environment:
+      POSTGRES_USER: mitaan
+      POSTGRES_PASSWORD: mitaan123
+      POSTGRES_DB: mitaanexpress
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: mitaan-backend
+    restart: always
+    environment:
+      - DATABASE_URL=postgresql://mitaan:mitaan123@db:5432/mitaanexpress
+      - JWT_SECRET=your-secret-key-here-change-this-in-production
+      - PORT=3000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+
+volumes:
+  postgres_data:
