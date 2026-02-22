@@ -9,6 +9,8 @@ import {
 import { useArticles } from '../context/ArticlesContext';
 import { useSettings } from '../hooks/useQueries';
 import AdSpace from '../components/AdSpace';
+import RelatedPosts from '../components/RelatedPosts';
+import useIsShort from '../hooks/useIsShort';
 
 const ArticleDetailPage = ({ language }) => {
     const { id } = useParams();
@@ -18,6 +20,7 @@ const ArticleDetailPage = ({ language }) => {
     const [article, setArticle] = useState(null);
     const [copied, setCopied] = useState(false);
     const [relatedArticles, setRelatedArticles] = useState([]);
+    const [contentRef, isShort] = useIsShort(150);
 
     // Inject Ad into Content
     const injectedContent = React.useMemo(() => {
@@ -69,7 +72,8 @@ const ArticleDetailPage = ({ language }) => {
             const related = articles.filter(a =>
                 a.categoryId === foundArticle.categoryId &&
                 a.id !== foundArticle.id &&
-                a.status === 'PUBLISHED'
+                a.status === 'PUBLISHED' &&
+                (a.language === foundArticle.language || !a.language)
             ).slice(0, 3);
             setRelatedArticles(related);
         }
@@ -212,69 +216,74 @@ const ArticleDetailPage = ({ language }) => {
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
                     {/* Left Column: Article Content (8 cols) */}
                     <div className="lg:col-span-8">
-                        {/* Featured Image */}
-                        {article.image && (
-                            <div className="rounded-3xl overflow-hidden mb-12 shadow-2xl">
-                                <img
-                                    src={article.image}
-                                    alt={article.title}
-                                    className="w-full h-auto object-cover"
-                                    onError={(e) => {
-                                        e.target.src = 'https://images.unsplash.com/photo-1476242906366-d8eb64c2f661?auto=format&fit=crop&q=80&w=2000';
-                                    }}
-                                />
-                            </div>
-                        )}
-
-                        {/* Short Description */}
-                        {article.shortDescription && (
-                            <p className="text-xl text-slate-700 dark:text-slate-300 leading-relaxed mb-10 font-bold font-serif border-l-4 border-red-600 pl-6">
-                                {article.shortDescription}
-                            </p>
-                        )}
-
-                        {/* Article Content */}
                         <div
-                            className="prose prose-base md:prose-lg dark:prose-invert max-w-none prose-headings:font-serif prose-a:text-red-600 prose-img:rounded-2xl"
-                            dangerouslySetInnerHTML={{ __html: injectedContent }}
-                        />
-
-                        {/* Video if exists */}
-                        {article.videoUrl && (
-                            <div className="mt-12 rounded-2xl overflow-hidden bg-slate-900 shadow-xl">
-                                <div className="aspect-video">
-                                    <iframe
-                                        src={article.videoUrl.replace('watch?v=', 'embed/')}
-                                        className="w-full h-full"
-                                        allowFullScreen
-                                        title={article.title}
+                            ref={contentRef}
+                            className={`space-y-0 transition-all duration-500 ${isShort ? 'lg:sticky lg:top-32' : ''}`}
+                        >
+                            {/* Featured Image */}
+                            {article.image && (
+                                <div className="rounded-3xl overflow-hidden mb-12 shadow-2xl">
+                                    <img
+                                        src={article.image}
+                                        alt={article.title}
+                                        className="w-full h-auto object-cover"
+                                        onError={(e) => {
+                                            e.target.src = 'https://images.unsplash.com/photo-1476242906366-d8eb64c2f661?auto=format&fit=crop&q=80&w=2000';
+                                        }}
                                     />
                                 </div>
-                            </div>
-                        )}
+                            )}
 
-                        {/* Tags */}
-                        {article.tags && article.tags.length > 0 && (
-                            <div className="flex flex-wrap gap-2 mt-12 pt-10 border-t border-slate-200 dark:border-slate-800">
-                                {article.tags.map(tag => (
-                                    <Link
-                                        key={tag.id}
-                                        to={`/tag/${tag.slug}`}
-                                        className="px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-full text-sm font-medium hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors"
-                                    >
-                                        #{tag.name}
-                                    </Link>
-                                ))}
-                            </div>
-                        )}
+                            {/* Short Description */}
+                            {article.shortDescription && (
+                                <p className="text-xl text-slate-700 dark:text-slate-300 leading-relaxed mb-10 font-bold font-serif border-l-4 border-red-600 pl-6">
+                                    {article.shortDescription}
+                                </p>
+                            )}
 
-                        {/* Share Section (Bottom) */}
-                        <div className="flex items-center gap-4 mt-8">
-                            <span className="font-bold text-slate-700 dark:text-slate-300">Share this story:</span>
-                            <div className="flex gap-2">
-                                <button onClick={() => handleShare('facebook')} className="p-3 bg-[#1877F2] text-white rounded-full hover:opacity-90 transition-opacity"><Facebook size={18} /></button>
-                                <button onClick={() => handleShare('twitter')} className="p-3 bg-[#1DA1F2] text-white rounded-full hover:opacity-90 transition-opacity"><Twitter size={18} /></button>
-                                <button onClick={() => handleShare('linkedin')} className="p-3 bg-[#0A66C2] text-white rounded-full hover:opacity-90 transition-opacity"><Linkedin size={18} /></button>
+                            {/* Article Content */}
+                            <div
+                                className="prose prose-base md:prose-lg dark:prose-invert max-w-none prose-headings:font-serif prose-a:text-red-600 prose-img:rounded-2xl"
+                                dangerouslySetInnerHTML={{ __html: injectedContent }}
+                            />
+
+                            {/* Video if exists */}
+                            {article.videoUrl && (
+                                <div className="mt-12 rounded-2xl overflow-hidden bg-slate-900 shadow-xl">
+                                    <div className="aspect-video">
+                                        <iframe
+                                            src={article.videoUrl.replace('watch?v=', 'embed/')}
+                                            className="w-full h-full"
+                                            allowFullScreen
+                                            title={article.title}
+                                        />
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Tags */}
+                            {article.tags && article.tags.length > 0 && (
+                                <div className="flex flex-wrap gap-2 mt-12 pt-10 border-t border-slate-200 dark:border-slate-800">
+                                    {article.tags.map(tag => (
+                                        <Link
+                                            key={tag.id}
+                                            to={`/tag/${tag.slug}`}
+                                            className="px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-full text-sm font-medium hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors"
+                                        >
+                                            #{tag.name}
+                                        </Link>
+                                    ))}
+                                </div>
+                            )}
+
+                            {/* Share Section (Bottom) */}
+                            <div className="flex items-center gap-4 mt-8">
+                                <span className="font-bold text-slate-700 dark:text-slate-300">Share this story:</span>
+                                <div className="flex gap-2">
+                                    <button onClick={() => handleShare('facebook')} className="p-3 bg-[#1877F2] text-white rounded-full hover:opacity-90 transition-opacity"><Facebook size={18} /></button>
+                                    <button onClick={() => handleShare('twitter')} className="p-3 bg-[#1DA1F2] text-white rounded-full hover:opacity-90 transition-opacity"><Twitter size={18} /></button>
+                                    <button onClick={() => handleShare('linkedin')} className="p-3 bg-[#0A66C2] text-white rounded-full hover:opacity-90 transition-opacity"><Linkedin size={18} /></button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -332,6 +341,9 @@ const ArticleDetailPage = ({ language }) => {
                         </div>
                     </aside>
                 </div>
+
+                {/* Related Posts Section */}
+                <RelatedPosts articles={relatedArticles} language={language} />
             </article>
         </div>
     );

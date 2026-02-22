@@ -159,7 +159,7 @@ const Navbar = ({
                 <div className="flex items-center justify-start z-10">
                     <button
                         onClick={() => setIsMenuOpen(!isMenuOpen)}
-                        className={`flex items-center gap-3 lg:gap-4 group transition-colors shrink-0 text-white`}
+                        className={`flex items-center gap-3 lg:gap-4 group transition-colors shrink-0 ${isNavbarSolid ? 'text-white' : 'text-red-600'}`}
                     >
                         <div className="relative overflow-hidden w-6 h-6 flex flex-col justify-center gap-1.5 shrink-0">
                             <span className={`h-0.5 w-6 bg-current transition-transform duration-500 ${isMenuOpen ? 'rotate-45 translate-y-2' : ''}`} />

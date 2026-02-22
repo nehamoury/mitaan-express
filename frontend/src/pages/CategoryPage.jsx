@@ -5,11 +5,13 @@ import ArticleCard from '../components/ArticleCard';
 import Sidebar from '../components/Sidebar';
 import { useArticles } from '../context/ArticlesContext';
 import LoadingSkeletons from '../components/LoadingSkeletons';
+import useIsShort from '../hooks/useIsShort';
 
 const CategoryPage = ({ language }) => {
     const { categoryId } = useParams();
     const navigate = useNavigate();
     const { published, loading, categories } = useArticles();
+    const [contentRef, isShort] = useIsShort(200);
 
     // Find the current category object from context
     const currentCategory = useMemo(() => {
@@ -143,83 +145,88 @@ const CategoryPage = ({ language }) => {
                 <div className="flex flex-col lg:flex-row gap-20">
                     {/* Main Content Area */}
                     <div className="flex-1">
-                        {filteredArticles.length > 0 ? (
-                            <div className="space-y-16">
-                                {/* Featured Post (if any) */}
-                                {featuredArticle && (
-                                    <motion.div
-                                        initial={{ opacity: 0, scale: 0.98 }}
-                                        animate={{ opacity: 1, scale: 1 }}
-                                        className="relative group cursor-pointer"
-                                        onClick={() => handleArticleClick(featuredArticle.id)}
-                                    >
-                                        <div className="absolute -inset-4 bg-slate-50 dark:bg-white/5 rounded-[3rem] opacity-0 group-hover:opacity-100 transition-opacity duration-500 scale-95 group-hover:scale-100"></div>
-                                        <div className="relative z-10 transition-transform duration-500 group-hover:-translate-y-2">
-                                            <ArticleCard
-                                                article={featuredArticle}
-                                                language={language}
-                                                isFeatured={true}
-                                            />
-                                        </div>
-                                    </motion.div>
-                                )}
-
-                                {/* Article Grid */}
-                                <div className="grid gap-12 pt-12 border-t border-slate-100 dark:border-white/5">
-                                    {remainingArticles.length > 0 ? (
-                                        remainingArticles.map((article, i) => (
-                                            <motion.div
-                                                key={article.id}
-                                                initial={{ opacity: 0, y: 20 }}
-                                                whileInView={{ opacity: 1, y: 0 }}
-                                                viewport={{ once: true }}
-                                                transition={{ delay: i * 0.05 }}
-                                                onClick={() => handleArticleClick(article.id)}
-                                                className="cursor-pointer group relative"
-                                            >
-                                                <div className="absolute -inset-4 bg-slate-50 dark:bg-white/5 rounded-[2.5rem] opacity-0 group-hover:opacity-100 transition-all duration-300 scale-95 group-hover:scale-100"></div>
-                                                <div className="relative z-10">
-                                                    <ArticleCard
-                                                        article={article}
-                                                        language={language}
-                                                    />
-                                                </div>
-                                            </motion.div>
-                                        ))
-                                    ) : featuredArticle ? null : (
-                                        <div className="py-32 text-center bg-slate-50 dark:bg-white/5 rounded-[3rem] border-2 border-dashed border-slate-200 dark:border-white/10">
-                                            <div className="text-7xl mb-6 grayscale opacity-20">📰</div>
-                                            <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-2">
-                                                {language === 'hi' ? 'अभी कोई कहानियां नहीं' : 'No stories found'}
-                                            </h3>
-                                            <p className="text-slate-500 font-medium">
-                                                {language === 'hi'
-                                                    ? 'इस श्रेणी में अभी कोई लेख नहीं है।'
-                                                    : 'We are working on bringing stories to this category.'}
-                                            </p>
-                                        </div>
+                        <div
+                            ref={contentRef}
+                            className={`transition-all duration-500 ${isShort ? 'lg:sticky lg:top-32' : ''}`}
+                        >
+                            {filteredArticles.length > 0 ? (
+                                <div className="space-y-16">
+                                    {/* Featured Post (if any) */}
+                                    {featuredArticle && (
+                                        <motion.div
+                                            initial={{ opacity: 0, scale: 0.98 }}
+                                            animate={{ opacity: 1, scale: 1 }}
+                                            className="relative group cursor-pointer"
+                                            onClick={() => handleArticleClick(featuredArticle.id)}
+                                        >
+                                            <div className="absolute -inset-4 bg-slate-50 dark:bg-white/5 rounded-[3rem] opacity-0 group-hover:opacity-100 transition-opacity duration-500 scale-95 group-hover:scale-100"></div>
+                                            <div className="relative z-10 transition-transform duration-500 group-hover:-translate-y-2">
+                                                <ArticleCard
+                                                    article={featuredArticle}
+                                                    language={language}
+                                                    isFeatured={true}
+                                                />
+                                            </div>
+                                        </motion.div>
                                     )}
+
+                                    {/* Article Grid */}
+                                    <div className="grid gap-12 pt-12 border-t border-slate-100 dark:border-white/5">
+                                        {remainingArticles.length > 0 ? (
+                                            remainingArticles.map((article, i) => (
+                                                <motion.div
+                                                    key={article.id}
+                                                    initial={{ opacity: 0, y: 20 }}
+                                                    whileInView={{ opacity: 1, y: 0 }}
+                                                    viewport={{ once: true }}
+                                                    transition={{ delay: i * 0.05 }}
+                                                    onClick={() => handleArticleClick(article.id)}
+                                                    className="cursor-pointer group relative"
+                                                >
+                                                    <div className="absolute -inset-4 bg-slate-50 dark:bg-white/5 rounded-[2.5rem] opacity-0 group-hover:opacity-100 transition-all duration-300 scale-95 group-hover:scale-100"></div>
+                                                    <div className="relative z-10">
+                                                        <ArticleCard
+                                                            article={article}
+                                                            language={language}
+                                                        />
+                                                    </div>
+                                                </motion.div>
+                                            ))
+                                        ) : featuredArticle ? null : (
+                                            <div className="py-32 text-center bg-slate-50 dark:bg-white/5 rounded-[3rem] border-2 border-dashed border-slate-200 dark:border-white/10">
+                                                <div className="text-7xl mb-6 grayscale opacity-20">📰</div>
+                                                <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-2">
+                                                    {language === 'hi' ? 'अभी कोई कहानियां नहीं' : 'No stories found'}
+                                                </h3>
+                                                <p className="text-slate-500 font-medium">
+                                                    {language === 'hi'
+                                                        ? 'इस श्रेणी में अभी कोई लेख नहीं है।'
+                                                        : 'We are working on bringing stories to this category.'}
+                                                </p>
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
-                            </div>
-                        ) : (
-                            <div className="py-32 text-center bg-slate-50 dark:bg-white/5 rounded-[3rem] border-2 border-dashed border-slate-200 dark:border-white/10">
-                                <div className="text-7xl mb-6 grayscale opacity-20">📰</div>
-                                <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-2">
-                                    {language === 'hi' ? 'अभी कोई कहानियां नहीं' : 'No stories found'}
-                                </h3>
-                                <p className="text-slate-500 font-medium max-w-sm mx-auto">
-                                    {language === 'hi'
-                                        ? 'इस श्रेणी में अभी कोई लेख नहीं है। हम जल्द ही नई अपडेट ला रहे हैं।'
-                                        : 'We are working on bringing relevant stories to this category. Check back soon for updates.'}
-                                </p>
-                                <button
-                                    onClick={() => navigate('/')}
-                                    className="mt-10 px-10 py-4 bg-red-600 text-white rounded-full text-xs font-black uppercase tracking-widest hover:bg-red-700 transition-all shadow-xl shadow-red-600/30 active:scale-95"
-                                >
-                                    {language === 'hi' ? 'होम पर जाएं' : 'Back to Home'}
-                                </button>
-                            </div>
-                        )}
+                            ) : (
+                                <div className="py-32 text-center bg-slate-50 dark:bg-white/5 rounded-[3rem] border-2 border-dashed border-slate-200 dark:border-white/10">
+                                    <div className="text-7xl mb-6 grayscale opacity-20">📰</div>
+                                    <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-2">
+                                        {language === 'hi' ? 'अभी कोई कहानियां नहीं' : 'No stories found'}
+                                    </h3>
+                                    <p className="text-slate-500 font-medium max-w-sm mx-auto">
+                                        {language === 'hi'
+                                            ? 'इस श्रेणी में अभी कोई लेख नहीं है। हम जल्द ही नई अपडेट ला रहे हैं।'
+                                            : 'We are working on bringing relevant stories to this category. Check back soon for updates.'}
+                                    </p>
+                                    <button
+                                        onClick={() => navigate('/')}
+                                        className="mt-10 px-10 py-4 bg-red-600 text-white rounded-full text-xs font-black uppercase tracking-widest hover:bg-red-700 transition-all shadow-xl shadow-red-600/30 active:scale-95"
+                                    >
+                                        {language === 'hi' ? 'होम पर जाएं' : 'Back to Home'}
+                                    </button>
+                                </div>
+                            )}
+                        </div>
                     </div>
 
                     {/* Sidebar Area */}

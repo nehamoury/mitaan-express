@@ -65,7 +65,7 @@ const Categories = () => {
         sortOrder: 0
     });
 
-    const handleOpenModal = (category = null) => {
+    const handleOpenModal = (category = null, initialParentId = null) => {
         if (category) {
             setEditingCategory(category);
             setFormData({
@@ -85,7 +85,7 @@ const Categories = () => {
                 nameHi: '',
                 slug: '',
                 description: '',
-                parentId: '',
+                parentId: initialParentId || '',
                 icon: 'Newspaper',
                 color: '#ef4444',
                 sortOrder: categories.length
@@ -195,10 +195,13 @@ const Categories = () => {
                                     </div>
                                 </div>
                                 <div className="flex gap-2">
-                                    <button onClick={() => handleOpenModal(parent)} className="p-2.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/10 rounded-xl transition-colors">
+                                    <button onClick={() => handleOpenModal(null, parent.id)} className="p-2.5 text-slate-400 hover:text-green-600 hover:bg-green-50 dark:hover:bg-green-900/10 rounded-xl transition-colors" title="Add Sub-category">
+                                        <Plus size={18} />
+                                    </button>
+                                    <button onClick={() => handleOpenModal(parent)} className="p-2.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/10 rounded-xl transition-colors" title="Edit">
                                         <Edit size={18} />
                                     </button>
-                                    <button onClick={() => handleDelete(parent.id)} className="p-2.5 text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-xl transition-colors">
+                                    <button onClick={() => handleDelete(parent.id)} className="p-2.5 text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-xl transition-colors" title="Delete">
                                         <Trash2 size={18} />
                                     </button>
                                 </div>

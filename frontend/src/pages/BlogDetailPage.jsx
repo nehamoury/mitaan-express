@@ -7,6 +7,7 @@ import {
     Facebook, Twitter, Linkedin
 } from 'lucide-react';
 import { fetchBlogBySlug, fetchArticles } from '../services/api';
+import AdSpace from '../components/AdSpace';
 
 const BlogDetailPage = ({ language }) => {
     const { slug } = useParams();
@@ -107,7 +108,7 @@ const BlogDetailPage = ({ language }) => {
                         {blog.category?.name || 'BLOG'}
                     </div>
 
-                    <h1 className="text-2xl md:text-3xl lg:text-4xl font-black text-slate-900 dark:text-white leading-tight mb-6 font-serif">
+                    <h1 className="text-2xl md:text-3xl lg:text-3xl font-black text-slate-900 dark:text-white leading-tight mb-6 font-serif">
                         {blog.title}
                     </h1>
 
@@ -193,37 +194,41 @@ const BlogDetailPage = ({ language }) => {
 
                 {/* Sidebar */}
                 <aside className="lg:col-span-4 space-y-8">
-                    <div className="bg-white dark:bg-white/5 p-8 rounded-[2rem] border border-slate-100 dark:border-white/10 shadow-xl shadow-slate-200/50 dark:shadow-none relative overflow-hidden sticky top-24">
-                        {/* Accent Background */}
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-red-600/5 blur-3xl -z-10 rounded-full"></div>
+                    <div className="sticky top-24 space-y-12">
+                        <AdSpace position="sidebar" />
+                        <div className="bg-white dark:bg-white/5 p-8 rounded-[2rem] border border-slate-100 dark:border-white/10 shadow-xl shadow-slate-200/50 dark:shadow-none relative overflow-hidden">
+                            {/* Accent Background */}
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-red-600/5 blur-3xl -z-10 rounded-full"></div>
 
-                        <h3 className="text-[10px] font-black text-slate-900 dark:text-white uppercase tracking-[0.4em] mb-8 flex items-center justify-between border-b pb-4 border-slate-100 dark:border-white/5">
-                            <span className="flex items-center gap-2">
-                                <span className="w-1.5 h-1.5 bg-red-600 rounded-full animate-pulse"></span>
-                                {language === 'hi' ? 'ताज़ा ख़बरें' : 'Latest News'}
-                            </span>
-                        </h3>
-                        <div className="space-y-6">
-                            {latestNews.map(news => (
-                                <Link to={`/article/${news.slug}`} key={news.id} className="group flex gap-4 items-start">
-                                    <div className="w-20 h-20 rounded-lg overflow-hidden shrink-0 bg-slate-200">
-                                        <img
-                                            src={news.image || 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&q=80&w=200'}
-                                            alt={news.title}
-                                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                                        />
-                                    </div>
-                                    <div>
-                                        <h4 className="font-bold text-sm leading-snug line-clamp-2 group-hover:text-red-600 transition-colors">
-                                            {news.title}
-                                        </h4>
-                                        <span className="text-xs text-slate-400 mt-2 block">
-                                            {new Date(news.createdAt).toLocaleDateString()}
-                                        </span>
-                                    </div>
-                                </Link>
-                            ))}
+                            <h3 className="text-[10px] font-black text-slate-900 dark:text-white uppercase tracking-[0.4em] mb-8 flex items-center justify-between border-b pb-4 border-slate-100 dark:border-white/5">
+                                <span className="flex items-center gap-2">
+                                    <span className="w-1.5 h-1.5 bg-red-600 rounded-full animate-pulse"></span>
+                                    {language === 'hi' ? 'ताज़ा ख़बरें' : 'Latest News'}
+                                </span>
+                            </h3>
+                            <div className="space-y-6">
+                                {latestNews.map(news => (
+                                    <Link to={`/article/${news.slug}`} key={news.id} className="group flex gap-4 items-start">
+                                        <div className="w-20 h-20 rounded-lg overflow-hidden shrink-0 bg-slate-200">
+                                            <img
+                                                src={news.image || 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&q=80&w=200'}
+                                                alt={news.title}
+                                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                            />
+                                        </div>
+                                        <div>
+                                            <h4 className="text-xs font-bold leading-snug line-clamp-2 group-hover:text-red-600 transition-colors">
+                                                {news.title}
+                                            </h4>
+                                            <span className="text-[9px] text-slate-400 mt-2 block">
+                                                {new Date(news.createdAt).toLocaleDateString()}
+                                            </span>
+                                        </div>
+                                    </Link>
+                                ))}
+                            </div>
                         </div>
+                        <AdSpace position="skyscraper" />
                     </div>
                 </aside>
 
