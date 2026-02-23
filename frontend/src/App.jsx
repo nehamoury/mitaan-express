@@ -138,6 +138,7 @@ const App = () => {
                         toggleTheme={toggleTheme}
                         language={language}
                         toggleLanguage={toggleLanguage}
+                        onLanguageChange={setLanguage}
                     />
                 )}
 

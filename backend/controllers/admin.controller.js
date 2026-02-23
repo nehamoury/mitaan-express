@@ -28,7 +28,10 @@ exports.getStats = async (req, res) => {
                 name: cat.name,
                 count: stat ? stat._count.categoryId : 0
             };
-        });
+        }).sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
+
+        // Limit to top categories for dashboard to prevent huge response
+        const topCategories = categoryCounts.slice(0, 10);
 
         const totalViews = await prisma.article.aggregate({
             _sum: { views: true }

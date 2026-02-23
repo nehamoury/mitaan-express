@@ -109,7 +109,7 @@ const AdminSidebar = ({ isSidebarOpen, setIsSidebarOpen, handleLogout, theme, to
                 />
             )}
 
-            <aside className={`fixed lg:sticky top-0 left-0 z-50 w-72 h-screen bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-white/5 transform transition-transform duration-300 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
+            <aside className={`fixed lg:sticky top-0 left-0 z-50 w-72 h-screen bg-white dark:bg-slate-800 transform transition-transform duration-300 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
                 <div className="h-full flex flex-col overflow-hidden">
                     {/* Logo Area */}
                     <div className="p-6 border-b border-slate-100 dark:border-white/5 flex-shrink-0">

@@ -84,7 +84,7 @@ const AdminDonations = () => {
     const totalAmount = donations.reduce((sum, d) => sum + d.amount, 0);
 
     return (
-        <div className="space-y-8 animate-in fade-in duration-500">
+        <div className="space-y-8 animate-in fade-in duration-500 px-6 lg:px-12 py-8">
             {/* Page Header */}
             <div className="flex items-center justify-between">
                 <div>

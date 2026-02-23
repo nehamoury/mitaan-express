@@ -59,16 +59,7 @@ const DonationPage = ({ language, toggleLanguage }) => {
 
     return (
         <div className="min-h-screen pt-32 pb-20 px-4 sm:px-6 lg:px-8 bg-slate-50 dark:bg-[#030712] transition-colors duration-300 relative">
-            {/* Language Toggle */}
-            <div className="absolute top-24 right-4 sm:right-8 lg:right-12">
-                <button
-                    onClick={toggleLanguage}
-                    className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-white/10 border border-slate-200 dark:border-white/10 rounded-full text-xs font-black uppercase tracking-widest hover:scale-105 transition-transform"
-                >
-                    <Globe size={16} className="text-red-600" />
-                    {language === 'hi' ? 'Switch to English' : 'हिंदी में देखें'}
-                </button>
-            </div>
+
 
             <div className="max-w-4xl mx-auto">
                 {/* Header */}
@@ -205,6 +196,56 @@ const DonationPage = ({ language, toggleLanguage }) => {
 
                                 {/* Right Column: Donation Form */}
                                 <form onSubmit={handleSubmit} className="space-y-6">
+                                    <div className="flex justify-end">
+                                        <button
+                                            type="button"
+                                            onClick={() => setFormData({
+                                                name: 'Demo User',
+                                                email: 'demo@example.com',
+                                                amount: '500',
+                                                message: 'Test donation message',
+                                                details: 'TXN-DEMO-12345'
+                                            })}
+                                            className="text-[10px] font-black text-red-600 uppercase tracking-widest hover:underline"
+                                        >
+                                            [ Fill Demo Data ]
+                                        </button>
+                                    </div>
+                                    {/* Amount Selection */}
+                                    <div className="space-y-4">
+                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">
+                                            {language === 'hi' ? 'सहयोग राशि' : 'Contribution Amount'} <span className="text-red-500">*</span>
+                                        </label>
+                                        <div className="grid grid-cols-3 gap-3">
+                                            {['100', '500', '1000'].map((amt) => (
+                                                <button
+                                                    key={amt}
+                                                    type="button"
+                                                    onClick={() => setFormData(prev => ({ ...prev, amount: amt }))}
+                                                    className={`py-3 rounded-xl font-bold text-sm transition-all border ${formData.amount === amt
+                                                        ? 'bg-red-600 border-red-600 text-white shadow-lg shadow-red-600/20'
+                                                        : 'bg-white dark:bg-white/5 border-slate-100 dark:border-white/10 text-slate-600 dark:text-slate-400 hover:border-red-200'
+                                                        }`}
+                                                >
+                                                    ₹{amt}
+                                                </button>
+                                            ))}
+                                        </div>
+                                        <div className="relative">
+                                            <IndianRupee size={16} className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-400" />
+                                            <input
+                                                type="number"
+                                                name="amount"
+                                                required
+                                                min="1"
+                                                value={formData.amount}
+                                                onChange={handleInputChange}
+                                                placeholder={language === 'hi' ? 'अन्य राशि दर्ज करें' : 'Enter Custom Amount'}
+                                                className="w-full pl-14 pr-6 py-4 bg-slate-50 dark:bg-white/5 border border-slate-100 dark:border-white/10 rounded-2xl focus:ring-2 focus:ring-red-600 outline-none transition-all dark:text-white"
+                                            />
+                                        </div>
+                                    </div>
+
                                     {/* Sender Details */}
                                     <div className="pt-4 border-t border-slate-100 dark:border-white/10">
                                         <div className="mb-4">

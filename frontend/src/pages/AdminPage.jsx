@@ -86,7 +86,7 @@ const AdminContent = () => {
     }
 
     return (
-        <div className="min-h-screen bg-slate-50 dark:bg-[#0b0f1a] flex transition-colors duration-300 font-sans">
+        <div className="min-h-screen bg-slate-200 dark:bg-black flex lg:gap-4 transition-colors duration-300 font-sans">
             <AdminSidebar
                 isSidebarOpen={isSidebarOpen}
                 setIsSidebarOpen={setIsSidebarOpen}
@@ -95,7 +95,7 @@ const AdminContent = () => {
                 toggleTheme={toggleTheme}
             />
 
-            <main className="flex-1 min-w-0 overflow-y-auto h-screen relative">
+            <main className="flex-1 min-w-0 overflow-y-auto h-screen relative bg-slate-50 dark:bg-[#0b0f1a]">
                 {/* Mobile Header */}
                 <div className="lg:hidden p-4 flex items-center justify-between border-b border-slate-200 dark:border-white/5 bg-white dark:bg-slate-800 sticky top-0 z-30">
                     <div className="flex items-center gap-3">

@@ -175,7 +175,7 @@ const Dashboard = () => {
     ];
 
     return (
-        <div className="space-y-8 animate-fade-in-up">
+        <div className="space-y-8 animate-fade-in-up px-6 lg:px-12 py-8">
             <div className="flex items-center justify-between">
                 <div>
                     <h2 className="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight">{t('dashboard')} {adminLanguage === 'hi' ? 'पूर्वावलोकन' : 'Overview'}</h2>

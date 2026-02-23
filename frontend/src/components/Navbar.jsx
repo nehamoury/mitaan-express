@@ -7,10 +7,11 @@ import {
     Feather, Share2, Instagram, Facebook, Twitter, AlertTriangle,
     Brain, Palette, Award, Star, Sunrise, Smile, Smartphone, Code, Heart as HeartIcon
 } from 'lucide-react';
-import { motion, AnimatePresence, useScroll, useSpring } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { fetchCategories } from '../services/api';
 import { useSettings } from '../hooks/useQueries';
 import LiveCounter from './LiveCounter';
+import LanguagePopup from './LanguagePopup';
 import logo from '../assets/logo.png';
 
 const Navbar = ({
@@ -19,7 +20,8 @@ const Navbar = ({
     theme,
     toggleTheme,
     language,
-    toggleLanguage
+    toggleLanguage,
+    onLanguageChange
 }) => {
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -33,12 +35,7 @@ const Navbar = ({
         setEmail('');
     };
 
-    const { scrollYProgress } = useScroll();
-    const scaleX = useSpring(scrollYProgress, {
-        stiffness: 100,
-        damping: 30,
-        restDelta: 0.001
-    });
+
 
     const iconMap = {
         'TrendingUp': <TrendingUp size={16} />,
@@ -147,12 +144,7 @@ const Navbar = ({
             ? 'bg-red-600/95 backdrop-blur-md shadow-xl py-2'
             : 'bg-transparent py-4'
             }`}>
-            <div className="absolute top-0 left-0 w-full h-[2px] bg-slate-100 dark:bg-white/5 overflow-hidden">
-                <motion.div
-                    className={`h-full origin-left ${isNavbarSolid ? 'bg-white' : 'bg-red-600'}`}
-                    style={{ scaleX }}
-                />
-            </div>
+
 
             <nav className="max-w-[1600px] mx-auto px-4 lg:px-12 flex items-center justify-between relative h-14 lg:h-auto">
                 {/* Left Section: Menu Toggle */}
@@ -178,7 +170,7 @@ const Navbar = ({
                         <img src={logo} alt="Mitaan Logo" className="w-8 h-8 lg:w-10 lg:h-10 object-contain shadow-lg shadow-black/10 rounded-lg bg-white" />
                         <div className="flex flex-col items-start leading-none">
                             <h1 className={`text-lg sm:text-xl lg:text-3xl font-black tracking-tighter font-serif transition-all duration-300 drop-shadow-sm whitespace-nowrap ${isNavbarSolid ? 'text-white' : 'text-red-600'}`}>
-                                MITAAN EXPRESS
+                                Mitaan Express
                             </h1>
                         </div>
                     </button>
@@ -188,9 +180,14 @@ const Navbar = ({
                 <div className="flex items-center justify-end gap-3 lg:gap-8 z-10">
                     <div className="hidden lg:flex items-center gap-6">
                         <LiveCounter />
-                        <button onClick={toggleLanguage} className="text-[10px] font-black uppercase tracking-widest px-3 py-1 border rounded-full transition-all text-white border-white/20 hover:bg-white hover:text-red-600">
-                            {language === 'hi' ? 'Hindi' : 'English'}
-                        </button>
+                        <div className="relative">
+                            <button onClick={toggleLanguage} className="bg-white text-red-600 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.15em] flex items-center gap-1.5 shadow-sm hover:scale-105 transition-all active:scale-95 border border-white/10">
+                                <span className={language === 'en' ? 'opacity-100' : 'opacity-40'}>EN</span>
+                                <span className="opacity-30">/</span>
+                                <span className={language === 'hi' ? 'opacity-100' : 'opacity-40'}>HI</span>
+                            </button>
+                            <LanguagePopup onSelect={onLanguageChange} />
+                        </div>
                         <button onClick={toggleTheme} className="transition-all hover:scale-110 text-white hover:text-white/80">
                             {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
                         </button>
@@ -233,13 +230,20 @@ const Navbar = ({
                                     <div className="lg:col-span-3 space-y-10">
                                         {/* Mobile Only: Toggles - Compact Vertical Stack (Line by Line) */}
                                         <div className="lg:hidden flex flex-col gap-2 pb-8 border-b border-slate-100 dark:border-white/5">
-                                            <button onClick={toggleLanguage} className="flex items-center justify-between p-3 border border-slate-100 dark:border-white/10 rounded-xl transition-all active:scale-[0.98] bg-slate-50/50 dark:bg-white/5">
-                                                <div className="flex items-center gap-3">
-                                                    <Globe size={18} className="text-red-600" />
-                                                    <span className="text-[11px] font-black uppercase tracking-tight">{language === 'hi' ? 'भाषा: हिंदी' : 'Lang: English'}</span>
-                                                </div>
-                                                <ChevronDown size={14} className="text-slate-400" />
-                                            </button>
+                                            <div className="relative">
+                                                <button onClick={toggleLanguage} className="w-full flex items-center justify-between p-3 border border-slate-100 dark:border-white/10 rounded-xl transition-all active:scale-[0.98] bg-white dark:bg-white/10 shadow-sm">
+                                                    <div className="flex items-center gap-3">
+                                                        <Globe size={18} className="text-red-600" />
+                                                        <span className="text-[11px] font-black uppercase tracking-tight flex items-center gap-2 text-red-600 dark:text-red-500">
+                                                            <span className={language === 'en' ? 'opacity-100' : 'opacity-40'}>EN</span>
+                                                            <span className="opacity-20">/</span>
+                                                            <span className={language === 'hi' ? 'opacity-100' : 'opacity-40'}>HI</span>
+                                                        </span>
+                                                    </div>
+                                                    <ChevronDown size={14} className="text-red-600/50" />
+                                                </button>
+                                                <LanguagePopup onSelect={onLanguageChange} />
+                                            </div>
 
                                             <button onClick={toggleTheme} className="flex items-center justify-between p-3 border border-slate-100 dark:border-white/10 rounded-xl transition-all active:scale-[0.98] bg-slate-50/50 dark:bg-white/5">
                                                 <div className="flex items-center gap-3">

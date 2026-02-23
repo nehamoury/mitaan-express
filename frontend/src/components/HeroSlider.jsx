@@ -9,23 +9,26 @@ const HeroSlider = ({ language }) => {
     const { featured, loading } = useArticles();
     const [[page, direction], setPage] = useState([0, 0]);
 
-    // Map featured articles to slides format
-    const slides = featured.length > 0
-        ? featured.slice(0, 2).map(a => ({
-            id: a.id,
-            tag: a.category?.name || 'FEATURED',
-            title: a.title,
-            description: a.shortDescription || a.content?.substring(0, 100) || '',
-            image: a.image || 'https://images.unsplash.com/photo-1476242906366-d8eb64c2f661?auto=format&fit=crop&q=80&w=2000',
-            articleId: a.slug
-        }))
-        : [{
-            id: 'default',
-            tag: 'WELCOME',
-            title: 'Welcome to Mitaan Express',
-            description: 'Your trusted source for news and stories.',
-            image: 'https://images.unsplash.com/photo-1476242906366-d8eb64c2f661?auto=format&fit=crop&q=80&w=2000'
-        }];
+    // Prepare slides: Always start with Welcome, then featured articles
+    const welcomeSlide = {
+        id: 'welcome',
+        tag: language === 'hi' ? 'स्वागत' : 'WELCOME',
+        title: language === 'hi' ? 'मिटान एक्सप्रेस में आपका स्वागत है' : 'Welcome to Mitaan Express',
+        description: language === 'hi' ? 'समाचार और कहानियों के लिए आपका विश्वसनीय स्रोत।' : 'Your trusted source for news and stories.',
+        image: 'https://images.unsplash.com/photo-1476242906366-d8eb64c2f661?auto=format&fit=crop&q=80&w=2000',
+        isWelcome: true
+    };
+
+    const articleSlides = featured.slice(0, 3).map(a => ({
+        id: a.id,
+        tag: language === 'hi' ? (a.category?.nameHi || 'विशेष') : (a.category?.name || 'FEATURED'),
+        title: a.title,
+        description: a.shortDescription || a.content?.substring(0, 100) || '',
+        image: a.image || 'https://images.unsplash.com/photo-1476242906366-d8eb64c2f661?auto=format&fit=crop&q=80&w=2000',
+        articleId: a.id
+    }));
+
+    const slides = [welcomeSlide, ...articleSlides];
 
     const activeIndex = slides.length > 0 ? (page % slides.length + slides.length) % slides.length : 0;
     const currentSlide = slides[activeIndex];
@@ -145,12 +148,10 @@ const HeroSlider = ({ language }) => {
                             {currentSlide.title}
                         </motion.h1>
 
-
-
                         <motion.div variants={itemVariants} className="flex flex-row gap-3 sm:gap-5 pt-4 sm:pt-6 w-full sm:w-auto">
-                            {/* Primary Button: Read Story */}
+                            {/* Primary Button: Read Story / Get Started */}
                             <button
-                                onClick={() => navigate(`/article/${currentSlide.articleId}`)}
+                                onClick={() => currentSlide.isWelcome ? navigate('/about') : navigate(`/article/${currentSlide.articleId}`)}
                                 className="group relative px-4 py-3 sm:px-8 sm:py-4 overflow-hidden rounded-xl transition-all duration-500 flex-1 sm:flex-none sm:w-auto cursor-pointer"
                             >
                                 <span className="absolute inset-0 bg-red-600 transition-transform duration-500 group-hover:scale-105"></span>
@@ -160,7 +161,7 @@ const HeroSlider = ({ language }) => {
                                 <span className="absolute inset-0 w-1/2 h-full bg-white/20 -skew-x-[25deg] -translate-x-[150%] group-hover:translate-x-[300%] transition-transform duration-1000 ease-in-out"></span>
 
                                 <span className="relative z-10 flex items-center justify-center gap-2 sm:gap-3 text-white font-black text-[10px] sm:text-[11px] uppercase tracking-[0.1em] sm:tracking-[0.2em] whitespace-nowrap">
-                                    {language === 'hi' ? 'अभी पढ़ें' : 'READ STORY'}
+                                    {currentSlide.isWelcome ? (language === 'hi' ? 'जानीए हमारे बारे में' : 'LEARN MORE') : (language === 'hi' ? 'अभी पढ़ें' : 'READ STORY')}
                                     <ArrowRight size={16} className="group-hover:translate-x-1.5 transition-transform duration-300 ml-1" />
                                 </span>
                             </button>
@@ -233,4 +234,3 @@ const HeroSlider = ({ language }) => {
 };
 
 export default HeroSlider;
-
