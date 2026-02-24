@@ -218,7 +218,7 @@ const ArticleDetailPage = ({ language }) => {
                     <div className="lg:col-span-8">
                         <div
                             ref={contentRef}
-                            className={`space-y-0 transition-all duration-500 ${isShort ? 'lg:sticky lg:top-32' : ''}`}
+                            className={`transition-all duration-500 ${isShort ? 'lg:sticky lg:top-32' : ''}`}
                         >
                             {/* Featured Image */}
                             {article.image && (
@@ -263,7 +263,7 @@ const ArticleDetailPage = ({ language }) => {
 
                             {/* Tags */}
                             {article.tags && article.tags.length > 0 && (
-                                <div className="flex flex-wrap gap-2 mt-12 pt-10 border-t border-slate-200 dark:border-slate-800">
+                                <div className="flex flex-wrap gap-2 mt-12 pt-10 border-t border-slate-200 dark:border-slate-800 mb-12">
                                     {article.tags.map(tag => (
                                         <Link
                                             key={tag.id}
@@ -277,12 +277,14 @@ const ArticleDetailPage = ({ language }) => {
                             )}
 
                             {/* Share Section (Bottom) */}
-                            <div className="flex items-center gap-4 mt-8">
-                                <span className="font-bold text-slate-700 dark:text-slate-300">Share this story:</span>
-                                <div className="flex gap-2">
-                                    <button onClick={() => handleShare('facebook')} className="p-3 bg-[#1877F2] text-white rounded-full hover:opacity-90 transition-opacity"><Facebook size={18} /></button>
-                                    <button onClick={() => handleShare('twitter')} className="p-3 bg-[#1DA1F2] text-white rounded-full hover:opacity-90 transition-opacity"><Twitter size={18} /></button>
-                                    <button onClick={() => handleShare('linkedin')} className="p-3 bg-[#0A66C2] text-white rounded-full hover:opacity-90 transition-opacity"><Linkedin size={18} /></button>
+                            <div className="pt-20">
+                                <div className="flex items-center gap-4">
+                                    <span className="font-bold text-slate-700 dark:text-slate-300">{language === 'hi' ? 'कहानी साझा करें:' : 'Share this story:'}</span>
+                                    <div className="flex gap-2">
+                                        <button onClick={() => handleShare('facebook')} className="p-3 bg-[#1877F2] text-white rounded-full hover:opacity-90 transition-opacity"><Facebook size={18} /></button>
+                                        <button onClick={() => handleShare('twitter')} className="p-3 bg-[#1DA1F2] text-white rounded-full hover:opacity-90 transition-opacity"><Twitter size={18} /></button>
+                                        <button onClick={() => handleShare('linkedin')} className="p-3 bg-[#0A66C2] text-white rounded-full hover:opacity-90 transition-opacity"><Linkedin size={18} /></button>
+                                    </div>
                                 </div>
                             </div>
                         </div>

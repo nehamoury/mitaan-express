@@ -25,12 +25,16 @@ const Footer = ({ language, onCategoryChange }) => {
         }));
     }, [published]);
 
-    const socialLinks = [
-        { icon: <Twitter size={18} />, bg: 'hover:bg-[#1da1f2]', color: 'text-[#1da1f2]' },
-        { icon: <Facebook size={18} />, bg: 'hover:bg-[#3b5998]', color: 'text-[#3b5998]' },
-        { icon: <Instagram size={18} />, bg: 'hover:bg-[#e1306c]', color: 'text-[#e1306c]' },
-        { icon: <Youtube size={18} />, bg: 'hover:bg-[#ff0000]', color: 'text-[#ff0000]' }
-    ];
+    const socialLinks = useMemo(() => {
+        const links = [
+            { id: 'twitter', icon: <Twitter size={18} />, bg: 'hover:bg-[#1da1f2]', color: 'text-[#1da1f2]', href: settings?.social_twitter || '#' },
+            { id: 'facebook', icon: <Facebook size={18} />, bg: 'hover:bg-[#3b5998]', color: 'text-[#3b5998]', href: settings?.social_facebook || '#' },
+            { id: 'instagram', icon: <Instagram size={18} />, bg: 'hover:bg-[#e1306c]', color: 'text-[#e1306c]', href: settings?.social_instagram || '#' },
+            { id: 'youtube', icon: <Youtube size={18} />, bg: 'hover:bg-[#ff0000]', color: 'text-[#ff0000]', href: settings?.social_youtube || '#' }
+        ];
+        // Only show if they have a real link OR they are the primary 3 requested by the user
+        return links.filter(l => (l.href && l.href !== '#') || ['twitter', 'facebook', 'instagram'].includes(l.id));
+    }, [settings]);
 
     const quickLinks = useMemo(() => {
         const links = language === 'hi'
@@ -63,29 +67,35 @@ const Footer = ({ language, onCategoryChange }) => {
             <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8">
                 {/* Top Section: Branding & Newsletter */}
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 mb-20 pb-20 border-b border-slate-200 dark:border-white/5">
-                    <div className="lg:col-span-5 space-y-8">
+                    <div className="lg:col-span-5 space-y-6">
                         <div onClick={() => onCategoryChange('home')} className="flex items-center gap-4 cursor-pointer group">
-                            <img src={logo} alt="Mitaan Logo" className="w-12 h-12 object-contain shadow-lg shadow-red-600/20 rounded-xl bg-white group-hover:scale-110 transition-transform" />
-                            <h2 className="text-3xl font-black font-serif tracking-tighter">
-                                MITAAN <span className="text-red-600">EXPRESS.</span>
+                            <img src={settings?.logo_url || logo} alt="Mitaan Logo" className="w-12 h-12 object-contain shadow-lg shadow-red-600/20 rounded-xl bg-white group-hover:scale-110 transition-transform" />
+                            <h2 className="text-3xl font-black font-serif tracking-tighter uppercase">
+                                {settings?.site_title || 'MITAAN EXPRESS'}
                             </h2>
                         </div>
-                        <p className="text-slate-600 dark:text-slate-400 text-lg leading-relaxed max-w-md">
-                            {language === 'hi'
-                                ? 'मिटान का अर्थ है "मित्र"। हम निष्पक्ष पत्रकारिता और गहरी कहानियों के माध्यम से समाज को जोड़ने में विश्वास रखते हैं।'
-                                : 'Mitaan means "Friend". We believe in connecting society through impartial journalism and deep-dive storytelling.'}
-                        </p>
-                        <div className="flex gap-4">
+
+                        {/* Social Icons directly under title */}
+                        <div className="flex gap-3">
                             {socialLinks.map((social, idx) => (
                                 <a
                                     key={idx}
-                                    href="#"
-                                    className={`w-12 h-12 bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl flex items-center justify-center transition-all hover:scale-110 hover:border-transparent hover:text-white ${social.bg} group`}
+                                    href={social.href}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className={`w-10 h-10 bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl flex items-center justify-center transition-all hover:scale-110 hover:border-transparent hover:text-white ${social.bg} group shadow-sm`}
+                                    title={social.href === '#' ? 'Link not set in Admin' : social.id}
                                 >
                                     {social.icon}
                                 </a>
                             ))}
                         </div>
+
+                        <p className="text-slate-600 dark:text-slate-400 text-lg leading-relaxed max-w-md pt-2">
+                            {language === 'hi'
+                                ? 'मिटान का अर्थ है "मित्र"। हम निष्पक्ष पत्रकारिता और गहरी कहानियों के माध्यम से समाज को जोड़ने में विश्वास रखते हैं।'
+                                : 'Mitaan means "Friend". We believe in connecting society through impartial journalism and deep-dive storytelling.'}
+                        </p>
                     </div>
 
                     <div className="lg:col-span-7 flex flex-col justify-center">
@@ -106,13 +116,13 @@ const Footer = ({ language, onCategoryChange }) => {
                                             <div className="w-10 h-10 rounded-full bg-red-600/10 flex items-center justify-center text-red-600">
                                                 <Phone size={18} />
                                             </div>
-                                            <span className="font-bold">+91 11 2345 6789</span>
+                                            <span className="font-bold">{settings?.contact_phone || '+91 11 2345 6789'}</span>
                                         </div>
                                         <div className="flex items-center gap-4 text-slate-700 dark:text-slate-300">
                                             <div className="w-10 h-10 rounded-full bg-red-600/10 flex items-center justify-center text-red-600">
                                                 <Mail size={18} />
                                             </div>
-                                            <span className="font-bold">contact@mitaanexpress.in</span>
+                                            <span className="font-bold">{settings?.contact_email || 'contact@mitaanexpress.in'}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -256,9 +266,9 @@ const Footer = ({ language, onCategoryChange }) => {
                 {/* Bottom Section */}
                 <div className="mt-24 pt-12 border-t border-slate-200 dark:border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
                     <p className="text-slate-500 text-sm font-medium">
-                        {language === 'hi'
+                        {settings?.footer_text || (language === 'hi'
                             ? `© 2026 मिटान एक्सप्रेस। सभी अधिकार सुरक्षित।`
-                            : `© 2026 Mitaan Express. All Rights Reserved.`}
+                            : `© 2026 Mitaan Express. All Rights Reserved.`)}
                     </p>
                     <div className="flex gap-8">
                         <button onClick={() => window.location.href = '/terms'} className="text-xs font-bold text-slate-500 hover:text-red-600 transition-colors uppercase tracking-widest">

@@ -142,7 +142,7 @@ const App = () => {
                     />
                 )}
 
-                <main className={`relative ${!isAdminRoute && activeCategory !== 'home' ? 'pt-14 lg:pt-20' : ''}`}>
+                <main className={`relative ${!isAdminRoute && !['home', 'contact'].includes(activeCategory) ? 'pt-14 lg:pt-20' : ''}`}>
                     <React.Suspense fallback={<LoadingSkeletons type="page" />}>
                         <AnimatePresence mode="wait">
                             <Routes location={location} key={location.pathname}>
